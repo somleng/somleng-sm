@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\MyStateMachine\Stateful;
 use Finite\StateMachine\StateMachine;
 use Finite\State\StateInterface;
 use Finite\Loader\ArrayLoader;
-use Finite\Stateful;
 use Finite\Exception\StateException;
 
 class StateMachineController extends Controller
@@ -72,11 +72,17 @@ class StateMachineController extends Controller
 
 // Applying a transition
         echo "Applying a Transition <br>";
-        //$stateMachine->apply('propose');
-        $stateMachine->apply('reject');
+        $stateMachine->apply('propose');
+        // $stateMachine->apply('reject');
         echo "<br> get_current_state_name: "; var_dump($stateMachine->getCurrentState()->getName());
         echo "<br> get_finite_state: "; var_dump($document->getFiniteState());
         echo "<br><br>";
+        $stateMachine->apply('reject');
+        // $stateMachine->apply('reject');
+        echo "<br> get_current_state_name: "; var_dump($stateMachine->getCurrentState()->getName());
+        echo "<br> get_finite_state: "; var_dump($document->getFiniteState());
+        echo "<br><br>";
+
     }
 }
 
