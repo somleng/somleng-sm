@@ -16,3 +16,13 @@ Route::get('/', function () {
 });
 
 Route::get('/test', 'StateMachineController@test');
+
+// Example of State machine
+Route::get('/basic_graph', 'StateMachineExampleController@basic_graph');
+Route::get('/callback', 'StateMachineExampleController@callback');
+Route::get('/multiple_graph', 'StateMachineExampleController@multiple_graph');
+Route::get('/transition_properties', 'StateMachineExampleController@transition_properties');
+
+// not working
+ Route::get('/guard', 'StateMachineExampleController@guard');
+ Route::get('/multiple_graphs_with_factory', 'StateMachineExampleController@multiple_graphs_with_factory');

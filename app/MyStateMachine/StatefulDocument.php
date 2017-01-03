@@ -11,7 +11,7 @@ namespace App\MyStateMachine;
 
 use Finite\StatefulInterface;
 
-class Stateful implements StatefulInterface
+class StatefulDocument implements StatefulInterface
 {
     private $state;
     public function getFiniteState()
@@ -21,5 +21,10 @@ class Stateful implements StatefulInterface
     public function setFiniteState($state)
     {
         $this->state = $state;
+    }
+
+    public function display()
+    {
+        echo '<br> Hello, I\'m a document and I\'m currently at the ', $this->state, ' state.', "\n";
     }
 }
