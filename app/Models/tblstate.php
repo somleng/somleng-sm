@@ -6,5 +6,5 @@ use Illuminate\Database\Eloquent\Model;
 
 class tblstate extends Model
 {
-
+    protected $table = 'tblstate';
 }
