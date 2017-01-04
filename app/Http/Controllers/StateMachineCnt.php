@@ -2,24 +2,24 @@
 
 namespace App\Http\Controllers;
 
-use App\MyStateMachine\StatefulDocument;
-use Finite\StateMachine\StateMachine;
-use Finite\State\StateInterface;
+use App\MyStateMachine\Stateful;
 use Finite\Loader\ArrayLoader;
+use Finite\State\StateInterface;
+use Finite\StateMachine\StateMachine;
 
-
-class StateMachineController extends Controller
+class StateMachineCnt extends Controller
 {
-    public function test()
+
+    public function example_new()
     {
         // Configure your graph
-        $document     = new StatefulDocument;
+        $document     = new Stateful;
         $stateMachine = new StateMachine($document);
         $loader       = new ArrayLoader(array(
             'class'  => 'Document',
             'states'  => array(
                 's0' => array(
-                    'type'       => StateInterface::TYPE_INITIAL,
+                   'type'       => StateInterface::TYPE_INITIAL,
                     'properties' => array(),
                 ),
                 's1' => array(
@@ -52,8 +52,6 @@ class StateMachineController extends Controller
                 's42' => array('from' => array('s4'), 'to' => 's0'),
                 's43' => array('from' => array('s4'), 'to' => 's3'),
                 's44' => array('from' => array('s4'), 'to' => 'hangout'),
-
-
             ),
 //            'callbacks' => array(
 //                'before' => array(
@@ -79,8 +77,16 @@ class StateMachineController extends Controller
         ));
         $loader->load($stateMachine);
         $stateMachine->initialize();
+        dd($loader);
 
+        $stateMachine->apply('s02');
 
+        // Working with workflow
+        // Current state
+        echo "<br> 1. current state ====== ";
+        echo "<br> name: "; var_dump($stateMachine->getCurrentState()->getName());
+        echo "<br> properties: "; var_dump($stateMachine->getCurrentState()->getProperties());
+        echo "<br> =========== <br>";
 
         // set state
         //$document->setFiniteState('s2');
@@ -91,51 +97,8 @@ class StateMachineController extends Controller
         // get list of array of transitions
         // dd($stateMachine->getTransitions());
         // dd($stateMachine->getObject());
-       // dd($stateMachine->getGraph());
+        // dd($stateMachine->getGraph());
 
-
-        // Working with workflow
-        // Current state
-        echo "<br> 1. current state ====== ";
-        echo "<br> name: "; var_dump($stateMachine->getCurrentState()->getName());
-        echo "<br> properties: "; var_dump($stateMachine->getCurrentState()->getProperties());
-        echo "<br> =========== <br>";
-//
-//        // Available transitions
-//        echo "<br> 2. Available transition ======== ";
-//        echo "<br> get_transition: "; var_dump($stateMachine->getCurrentState()->getTransitions());
-//        echo "<br> can_propose: "; var_dump($stateMachine->can('s11'));
-//        echo "<br> can_accept: "; var_dump($stateMachine->can('s12'));
-//        echo "<br> can_reject: "; var_dump($stateMachine->can('s13'));
-//        echo "<br> =========== <br>";
-
-//        // Apply transitions
-//        echo "Try to Apply Transitions <br>";
-//        try {
-//            $stateMachine->apply('accept');
-//        } catch (StateException $e) {
-//            echo $e->getMessage(), "\n";
-//        }
-//        echo "<br><br>";
-
-//        // Applying a transition
-//        echo "<br> 3. Applying a Transition ======== ";
-//        $stateMachine->apply('s11');
-//        echo "<br> get_current_state_name: "; var_dump($stateMachine->getCurrentState()->getName());
-//        echo "<br> get_finite_state: "; var_dump($document->getFiniteState());
-//        echo "<br> =========== <br>";
-//        $stateMachine->apply('s12');
-//        echo "<br> get_current_state_name: "; var_dump($stateMachine->getCurrentState()->getName());
-//        echo "<br> get_finite_state: "; var_dump($document->getFiniteState());
-//        echo "<br> =========== <br>";
-//        $stateMachine->apply('s13');
-//        echo "<br> get_current_state_name: "; var_dump($stateMachine->getCurrentState()->getName());
-//        echo "<br> get_finite_state: "; var_dump($document->getFiniteState());
-//        echo "<br> =========== <br>";
 
     }
-
-
 }
-
-

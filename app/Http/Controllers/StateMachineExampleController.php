@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\MyStateMachine\Order;
-use App\MyStateMachine\StatefulDocument;
+use App\MyStateMachine\Stateful;
 use Finite\Event\Callback\CallbackBuilder;
 use Finite\Event\FiniteEvents;
 use Finite\Event\TransitionEvent;
@@ -23,7 +23,7 @@ class StateMachineExampleController extends Controller
     public function basic_graph()
     {
         // Configure your graph
-        $document     = new StatefulDocument;
+        $document     = new Stateful;
         $stateMachine = new StateMachine($document);
         $loader       = new ArrayLoader(array(
             'class'  => 'Document',
@@ -94,7 +94,7 @@ class StateMachineExampleController extends Controller
     public function callback()
     {
         // Configure your graph
-        $document     = new StatefulDocument;
+        $document     = new Stateful;
         $stateMachine = new StateMachine($document);
         $loader       = new ArrayLoader(array(
             'class'       => 'Document',
@@ -167,7 +167,7 @@ class StateMachineExampleController extends Controller
     public function guard()
     {
         // Configure your graph
-        $document     = new StatefulDocument;
+        $document     = new Stateful;
         $stateMachine = new StateMachine($document);
         $loader       = new ArrayLoader(array(
             'class'  => 'Document',
@@ -324,7 +324,7 @@ class StateMachineExampleController extends Controller
     public function transition_properties()
     {
         // Configure your graph
-        $document     = new StatefulDocument;
+        $document     = new Stateful;
         $stateMachine = new StateMachine($document);
         $loader       = new ArrayLoader(array(
             'class'       => 'Document',

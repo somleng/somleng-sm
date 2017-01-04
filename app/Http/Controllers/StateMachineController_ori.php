@@ -13,7 +13,7 @@ class StateMachineController_ori extends Controller
     public function test()
     {
         // Configure your graph
-        $document     = new StatefulDocument;
+        $document     = new Stateful;
         $stateMachine = new StateMachine($document);
         $loader       = new ArrayLoader(array(
             'class'  => 'Document',
