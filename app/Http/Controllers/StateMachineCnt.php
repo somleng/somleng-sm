@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 //use App\MyStateMachine\AllFunctions;
+use App\Models\tblcall;
 use App\Models\tblstate;
 use App\MyStateMachine\Stateful;
 use Finite\Loader\ArrayLoader;
@@ -12,7 +13,7 @@ use Finite\StateMachine\StateMachine;
 class StateMachineCnt extends Controller
 {
 
-    /** To insert transition testign data in tblstate */
+    /** To insert transition testing data in tblstate */
     public function insert_transition_test_data()
     {
         $tbl_state = new tblstate;
@@ -28,11 +29,22 @@ class StateMachineCnt extends Controller
         $tbl_state->insertNewTransitionData('s2', '', '1', null, '/public/test.xml', null, 'hangup', '');
         $tbl_state->insertNewTransitionData('s3', '', '1', null, '/public/test.xml', null, 'hangup', '');
         $tbl_state->insertNewTransitionData('hangup', '', '1', '/public/test.xml', null, null, '', '2');
-
         echo "Transition test data are inserted.";
-
     }
 
+    /** To insert or update call test data in tblcall */
+    public function insert_update_call_test_data()
+    {
+        $tbl_call = new tblcall;
+        $tbl_call->insertNewCallData('c001', '1');
+        $tbl_call->insertNewCallData('c002', '2');
+        $tbl_call->insertNewCallData('c003', '3');
+        echo "Call test data are inserted.";
+
+        // update call record
+        $tbl_call->updateCallData('c003', '3');
+
+    }
 
     public function example_new()
     {
