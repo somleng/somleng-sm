@@ -11,7 +11,7 @@ namespace App\MyStateMachine;
 
 use Finite\StatefulInterface;
 
-class StatefulDocument implements StatefulInterface
+class Stateful implements StatefulInterface
 {
     private $state;
     public function getFiniteState()

@@ -10,6 +10,7 @@ use Finite\StateMachine\StateMachine;
 class StateMachineCnt extends Controller
 {
 
+
     public function example_new()
     {
         // Configure your graph
