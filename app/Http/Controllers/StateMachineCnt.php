@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+//use App\MyStateMachine\AllFunctions;
+use App\Models\tblstate;
 use App\MyStateMachine\Stateful;
 use Finite\Loader\ArrayLoader;
 use Finite\State\StateInterface;
@@ -9,6 +11,27 @@ use Finite\StateMachine\StateMachine;
 
 class StateMachineCnt extends Controller
 {
+
+    /** To insert transition testign data in tblstate */
+    public function insert_transition_test_data()
+    {
+        $tbl_state = new tblstate;
+        // Model insertNewTransitionData($state, $input=null, $callflow_id, $twilml=null, $path=null, $action=null, $new_state, $state_type)
+        $tbl_state->insertNewTransitionData('s0', '1', '1', null, '/public/test.xml', null, 's1', '1');
+        $tbl_state->insertNewTransitionData('s0', '2', '1', null, '/public/test.xml', null, 's2', '');
+        $tbl_state->insertNewTransitionData('s0', '3', '1', null, '/public/test.xml', null, 's3', '');
+        $tbl_state->insertNewTransitionData('s1', '1', '1', null, '/public/test.xml', null, 's4', '');
+        $tbl_state->insertNewTransitionData('s4', '1', '1', null, '/public/test.xml', null, 's1', '');
+        $tbl_state->insertNewTransitionData('s4', '2', '1', null, '/public/test.xml', null, 's0', '');
+        $tbl_state->insertNewTransitionData('s4', '3', '1', null, '/public/test.xml', null, 's3', '');
+        $tbl_state->insertNewTransitionData('s4', '4', '1', null, '/public/test.xml', null, 'hangup', '');
+        $tbl_state->insertNewTransitionData('s2', '', '1', null, '/public/test.xml', null, 'hangup', '');
+        $tbl_state->insertNewTransitionData('s3', '', '1', null, '/public/test.xml', null, 'hangup', '');
+        $tbl_state->insertNewTransitionData('hangup', '', '1', '/public/test.xml', null, null, '', '2');
+
+        echo "Transition test data are inserted.";
+
+    }
 
 
     public function example_new()

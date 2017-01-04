@@ -26,3 +26,6 @@ Route::get('/transition_properties', 'StateMachineExampleController@transition_p
 // not working
 // Route::get('/guard', 'StateMachineExampleController@guard');
 // Route::get('/multiple_graphs_with_factory', 'StateMachineExampleController@multiple_graphs_with_factory');
+
+/** To insert transition test data into tblstate */
+Route::get('/insert_transition_test_data', 'StateMachineCnt@insert_transition_test_data');

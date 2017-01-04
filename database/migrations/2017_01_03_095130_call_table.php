@@ -13,6 +13,7 @@ class CallTable extends Migration
     public function up()
     {
         Schema::create('tblcall', function (Blueprint $table) {
+            $table->increments('id');
             $table->string('call_id');
             $table->string('state');
             $table->timestamps();
