@@ -32,4 +32,27 @@ class tblstate extends Model
         $tbl_state->state_type = $state_type;
         $tbl_state->save();
     }
+
+
+    /**
+     * Function to get states of specific callflow from tblstate
+     * @param $CallFlow_ID is call flow id
+     * author: Samak
+     */
+    public function getStatesFromStateTable($CallFlow_ID)
+    {
+        $callflowStates = $this::distinct()->select('state','state_type')->where('callflow_id', $CallFlow_ID)->get();
+        return $callflowStates;
+    }
+
+    /**
+     * Function to get transitions of specific callflow from tblstate
+     * @param $CallFlow_ID is call flow id
+     * * author: Samak
+     */
+    public function getTranstionsFromStateTable($CallFlow_ID)
+    {
+        $callflowTransitions = $this::select('state','input')->where('callflow_id', $CallFlow_ID)->get();
+        return $callflowTransitions;
+    }
 }

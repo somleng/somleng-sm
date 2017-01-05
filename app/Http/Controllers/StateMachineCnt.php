@@ -34,18 +34,69 @@ class StateMachineCnt extends Controller
     }
 
 
+    /**
+     *
+     */
     public function example_new()
     {
+        // Create States for Graph
+        $getStates = $this->getStates();
+        $arrayStringStates = array();
+        foreach ($getStates as $getState){
+            echo $getState;
+            $state_name = $getState['state'];
+            $state_type = $getState['state_type'];
+            $state_type_str = "";
+            switch ($state_type)
+            {
+                case 0:
+                    $state_type_str = StateInterface::TYPE_NORMAL;
+                    break;
+
+                case 1:
+                    $state_type_str = StateInterface::TYPE_INITIAL;
+                    break;
+
+                case 2:
+                    $state_type_str = StateInterface::TYPE_FINAL;
+                    break;
+            }
+
+            $arrayStringStates[] = array(
+                $state_name => array(
+                    'type' => $state_type_str,
+                    'properties' => array(),
+                ),
+            );
+        }
+        dd($arrayStringStates);
+        // Create Transitions for Graph
+        $getTransitions = $this->getTransitions();
+        $arrayStringTransitions = array();
+        foreach ($getTransitions as $getTransition){
+            echo $getTransition;
+            $transition_name = $getTransition['state_name'].'-'.$getTransition['input'];
+            $new_state = $getTransition['new_state'];
+            $fromStates = array($getTransition['state_name']);
+            $toStates = array($new_state);
+            $arrayStringStates[] = array(
+                $transition_name => array(
+                    'from' => $fromStates,'to' => $toStates,
+                ),
+            );
+        }
         // Configure your graph
         $document     = new Stateful;
         $stateMachine = new StateMachine($document);
         $loader       = new ArrayLoader(array(
             'class'  => 'Document',
             'states'  => array(
+
                 's0' => array(
                    'type'       => StateInterface::TYPE_INITIAL,
                     'properties' => array(),
                 ),
+
                 's1' => array(
                     'type'       => StateInterface::TYPE_NORMAL,
                     'properties' => array(),
@@ -124,5 +175,20 @@ class StateMachineCnt extends Controller
         // dd($stateMachine->getGraph());
 
 
+    }
+
+    public function getStates()
+    {
+        $tbl_state = new tblstate;
+        $states = $tbl_state->getStatesFromStateTable('1');
+        return $states;
+        //dd($states);
+    }
+
+    public function getTransitions()
+    {
+        $tbl_state = new tblstate;
+        $transitions = $tbl_state->getTranstionsFromStateTable('1');
+        dd($transitions);
     }
 }
