@@ -9,10 +9,10 @@ class tblstate extends Model
     protected $table = 'tblstate';
     protected $fillable = ['state', 'state_type'];
 
-    public function transition()
+    /*public function transition()
     {
         $this->belongsTo('App\Models\tbltransition');
-    }
+    }*/
     /**
      * Function to Insert new data into tblstate
      * @param $state

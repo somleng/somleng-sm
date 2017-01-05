@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class StateTable extends Migration
+class TblCallflow extends Migration
 {
     /**
      * Run the migrations.
@@ -12,11 +12,10 @@ class StateTable extends Migration
      */
     public function up()
     {
-        Schema::create('tblstate', function (Blueprint $table) {
+
+        Schema::create('tblcallflow', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('state');
-            $table->Integer('callflow_id');
-            $table->tinyInteger('state_type')->comment('1: initial state; 2: final state; 0: (default) normal state');
+            $table->string('callflow_name');
             $table->timestamps();
         });
 
@@ -30,6 +29,8 @@ class StateTable extends Migration
      */
     public function down()
     {
-        Schema::drop('tblstate');
+        Schema::table('tblcallflow', function (Blueprint $table) {
+            //
+        });
     }
 }
