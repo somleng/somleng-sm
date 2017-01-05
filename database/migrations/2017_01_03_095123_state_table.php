@@ -15,12 +15,6 @@ class StateTable extends Migration
         Schema::create('tblstate', function (Blueprint $table) {
             $table->increments('id');
             $table->string('state');
-            $table->string('input')->nullable();
-            $table->string('callflow_id');
-            $table->text('twilml')->nullable();
-            $table->text('path')->nullable();
-            $table->text('action')->nullable();
-            $table->string('new_state');
             $table->tinyInteger('state_type')->comment('1: initial state; 2: final state; 0: (default) normal state');
             $table->timestamps();
         });
@@ -33,6 +27,6 @@ class StateTable extends Migration
      */
     public function down()
     {
-        Schema::drop('users');
+        Schema::drop('tblstate');
     }
 }

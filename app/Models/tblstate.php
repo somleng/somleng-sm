@@ -7,30 +7,50 @@ use Illuminate\Database\Eloquent\Model;
 class tblstate extends Model
 {
     protected $table = 'tblstate';
+    protected $fillable = ['state', 'state_type'];
 
+    public function transition()
+    {
+        $this->belongsTo('App\Models\tbltransition');
+    }
     /**
      * Function to Insert new data into tblstate
      * @param $state
-     * @param null $input
-     * @param $callflow_id
-     * @param null $twilml
-     * @param null $path
-     * @param null $action
-     * @param $new_state
      * @param $state_type
      */
-    public function insertNewTransitionData($state, $input=null, $callflow_id, $twilml=null, $path=null, $action=null, $new_state, $state_type)
+    public function insertNewState($state, $state_type=null)
     {
-        $tbl_state = new tblstate;
-        $tbl_state->state = $state;
-        $tbl_state->input = $input;
-        $tbl_state->callflow_id = $callflow_id;
-        $tbl_state->twilml = $twilml;
-        $tbl_state->path = $path;
-        $tbl_state->action = $action;
-        $tbl_state->new_state = $new_state;
-        $tbl_state->state_type = $state_type;
-        $tbl_state->save();
+        if(!empty($state))
+        {
+            $check_existing_record = $this::where('state', $state)->first();
+            //var_dump("<br> state='" . $state . "'; existing_record= '" . $check_existing_record . "'<br>");
+            if(empty($check_existing_record))
+            {
+                $inserted = $this::create(['state' => $state,
+                    'state_type' => $state_type]);
+                return $inserted->id;
+            }
+            else return $check_existing_record->id;
+        }
+    }
+
+    public function getTransitionID($state, $input=null)
+    {
+        $transition_id="";
+        // to make sure that state and input are exist in DB
+        // to avoid concate transition id which doesn't exist in DB
+        $check_existing_record = $this::where('state', $state)
+                        ->where('input', $input)
+                        ->first();
+        if(!empty($check_existing_record))
+        {
+            if($input != null)
+                $transition_id = $state.$input;
+            else
+                $transition_id = $state;
+        }
+        return $transition_id;
+
     }
 
 

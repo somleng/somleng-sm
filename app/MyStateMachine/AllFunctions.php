@@ -8,17 +8,27 @@
 
 namespace App\MyStateMachine;
 
-
 use App\Models\tblstate;
 
-class AllFunctions
+trait AllFunctions
 {
-//    public function __construct()
-//    {
-//        // Write Log into a user defined log file i.e storage/log/sensor_log.log
-//        $this->logger = new Logger('all_functions');
-//        $this->logger->pushHandler(new StreamHandler(storage_path('logs/sensor_log.log')),Logger::INFO);
-//    }
+    private $tbl_state;
+    private $tbl_call;
 
+    public function __construct()
+    {
+        $this->tbl_state = new tblstate;
+        $this->tbl_call = new tblcall;
+    }
+
+    public function act($call_id, $input=null)
+    {
+        // state
+        $state = $this->tbl_call->search($call_id);
+        dd($state);
+        $transition_id = $this->tbl_state->getTransitionID('s10','');
+        dd($transition_id);
+        // getTransitionID($state, $input=null)
+    }
 
 }
