@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\DB;
 
 class tblcall extends Model
 {
@@ -25,5 +24,12 @@ class tblcall extends Model
             $update_call_state->state=$current_state;
             $update_call_state->save();
         }
+    }
+
+    public function search($call_id)
+    {
+        $find_call_id = $this::where('call_id', $call_id)->first();
+        if(!empty($find_call_id))
+            return $find_call_id->state;
     }
 }

@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 //use App\MyStateMachine\AllFunctions;
 use App\Models\tblcall;
 use App\Models\tblstate;
+use App\Models\tbltransition;
+use App\MyStateMachine\AllFunctions;
 use App\MyStateMachine\Stateful;
 use Finite\Loader\ArrayLoader;
 use Finite\State\StateInterface;
@@ -12,37 +14,49 @@ use Finite\StateMachine\StateMachine;
 
 class StateMachineCnt extends Controller
 {
+    private $tbl_transition;
+    private $tbl_call;
+
+    public function __construct()
+    {
+        $this->tbl_transition = new tbltransition;
+        $this->tbl_call = new tblcall;
+    }
 
     /** To insert transition testing data in tblstate */
     public function insert_transition_test_data()
     {
-        $tbl_state = new tblstate;
         // Model insertNewTransitionData($state, $input=null, $callflow_id, $twilml=null, $path=null, $action=null, $new_state, $state_type)
-        $tbl_state->insertNewTransitionData('s0', '1', '1', null, '/public/test.xml', null, 's1', '1');
-        $tbl_state->insertNewTransitionData('s0', '2', '1', null, '/public/test.xml', null, 's2', '');
-        $tbl_state->insertNewTransitionData('s0', '3', '1', null, '/public/test.xml', null, 's3', '');
-        $tbl_state->insertNewTransitionData('s1', '1', '1', null, '/public/test.xml', null, 's4', '');
-        $tbl_state->insertNewTransitionData('s4', '1', '1', null, '/public/test.xml', null, 's1', '');
-        $tbl_state->insertNewTransitionData('s4', '2', '1', null, '/public/test.xml', null, 's0', '');
-        $tbl_state->insertNewTransitionData('s4', '3', '1', null, '/public/test.xml', null, 's3', '');
-        $tbl_state->insertNewTransitionData('s4', '4', '1', null, '/public/test.xml', null, 'hangup', '');
-        $tbl_state->insertNewTransitionData('s2', '', '1', null, '/public/test.xml', null, 'hangup', '');
-        $tbl_state->insertNewTransitionData('s3', '', '1', null, '/public/test.xml', null, 'hangup', '');
-        $tbl_state->insertNewTransitionData('hangup', '', '1', '/public/test.xml', null, null, '', '2');
+        $this->tbl_transition->insertNewTransitionData('s0', '1', '1', null, '/public/test.xml', null, 's1', '1');
+        $this->tbl_transition->insertNewTransitionData('s0', '2', '1', null, '/public/test.xml', null, 's2', '');
+        $this->tbl_transition->insertNewTransitionData('s0', '3', '1', null, '/public/test.xml', null, 's3', '');
+        $this->tbl_transition->insertNewTransitionData('s1', '1', '1', null, '/public/test.xml', null, 's4', '');
+        $this->tbl_transition->insertNewTransitionData('s4', '1', '1', null, '/public/test.xml', null, 's1', '');
+        $this->tbl_transition->insertNewTransitionData('s4', '2', '1', null, '/public/test.xml', null, 's0', '');
+        $this->tbl_transition->insertNewTransitionData('s4', '3', '1', null, '/public/test.xml', null, 's3', '');
+        $this->tbl_transition->insertNewTransitionData('s4', '4', '1', null, '/public/test.xml', null, 'hangup', '');
+        $this->tbl_transition->insertNewTransitionData('s2', '', '1', null, '/public/test.xml', null, 'hangup', '');
+        $this->tbl_transition->insertNewTransitionData('s3', '', '1', null, '/public/test.xml', null, 'hangup', '');
+        $this->tbl_transition->insertNewTransitionData('hangup', '', '1', '/public/test.xml', null, null, '', '2');
         echo "Transition test data are inserted.";
     }
 
     /** To insert or update call test data in tblcall */
     public function insert_update_call_test_data()
     {
-        $tbl_call = new tblcall;
-        $tbl_call->insertNewCallData('c001', '1');
-        $tbl_call->insertNewCallData('c002', '2');
-        $tbl_call->insertNewCallData('c003', '3');
+//        $tbl_call = new tblcall;
+        $this->tbl_call->insertNewCallData('c001', '1');
+        $this->tbl_call->insertNewCallData('c002', '2');
+        $this->tbl_call->insertNewCallData('c003', '3');
         echo "Call test data are inserted.";
 
         // update call record
-        $tbl_call->updateCallData('c003', '3');
+        $this->tbl_call->updateCallData('c003', '4');
+    }
+
+    public function act()
+    {
+        AllFunctions::act("c001", '1');
 
     }
 
