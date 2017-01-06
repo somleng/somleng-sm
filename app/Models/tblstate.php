@@ -36,7 +36,7 @@ class tblstate extends Model
 
     public function getTransitionID($state, $input=null)
     {
-        $transition_id="";
+        $transition_id = "";
         // to make sure that state and input are exist in DB
         // to avoid concate transition id which doesn't exist in DB
         $check_existing_record = $this::where('state', $state)
@@ -61,18 +61,9 @@ class tblstate extends Model
      */
     public function getStatesFromStateTable($CallFlow_ID)
     {
-        $callflowStates = $this::distinct()->select('state','state_type')->where('callflow_id', $CallFlow_ID)->get();
+        $callflowStates = $this::select('state','state_type')->where('callflow_id', $CallFlow_ID)->get();
         return $callflowStates;
     }
 
-    /**
-     * Function to get transitions of specific callflow from tblstate
-     * @param $CallFlow_ID is call flow id
-     * * author: Samak
-     */
-    public function getTranstionsFromStateTable($CallFlow_ID)
-    {
-        $callflowTransitions = $this::select('state','input')->where('callflow_id', $CallFlow_ID)->get();
-        return $callflowTransitions;
-    }
+
 }
