@@ -26,44 +26,25 @@ class tbltransition extends Model
      */
     public function insertNewTransitionData($state, $input=null, $callflow_id, $twilml=null, $path=null, $action=null, $new_state=null, $state_type)
     {
+
         $state_table = new tblstate;
-        $state_id = $state_table->insertNewState($state, $state_type);
-        $new_state_id = $state_table->insertNewState($new_state, '');
+        $state_id = $state_table->insertNewState($state, $callflow_id, $state_type);
+        $new_state_id = $state_table->insertNewState($new_state, $callflow_id ,'');
 
         $check_existing_record = $this::where('state_id', $state_id)
                                 ->where('input', $input)
-                                ->where('callflow_id', $callflow_id)
                                 ->where('new_state', $new_state_id)
                                 ->first();
 
         if(empty($check_existing_record))
             $this::create(['state_id' => $state_id,
                             'input' => $input,
-                            'callflow_id' => $callflow_id,
                             'twilml' => $twilml,
                             'path' => $path,
                             'action' => $action,
                             'new_state' => $new_state_id]);
     }
 
-    public function getTransitionID($state, $input=null)
-    {
-        $transition_id="";
-        // to make sure that state and input are exist in DB
-        // to avoid concate transition id which doesn't exist in DB
-        $check_existing_record = $this::where('state', $state)
-                        ->where('input', $input)
-                        ->first();
-        if(!empty($check_existing_record))
-        {
-            if($input != null)
-                $transition_id = $state.$input;
-            else
-                $transition_id = $state;
-        }
-        return $transition_id;
-
-    }
 
     /**
      * Function to get transitions of specific callflow from tblstate
@@ -75,4 +56,22 @@ class tbltransition extends Model
         $callflowTransitions = $this::state()->select('state','input')->where('callflow_id', $CallFlow_ID)->get();
         return $callflowTransitions;
     }
+//    public function getTransitionID($state, $input=null)
+//    {
+//        $transition_id="";
+//        // to make sure that state and input are exist in DB
+//        // to avoid concate transition id which doesn't exist in DB
+//        $check_existing_record = $this::where('state', $state)
+//                        ->where('input', $input)
+//                        ->first();
+//        if(!empty($check_existing_record))
+//        {
+//            if($input != null)
+//                $transition_id = $state.$input;
+//            else
+//                $transition_id = $state;
+//        }
+//        return $transition_id;
+//
+//    }
 }
