@@ -16,7 +16,6 @@ class TransitionTable extends Migration
             $table->increments('id');
             $table->tinyInteger('state_id');
             $table->string('input')->nullable();
-            $table->string('callflow_id');
             $table->text('twilml')->nullable();
             $table->text('path')->nullable();
             $table->text('action')->nullable();

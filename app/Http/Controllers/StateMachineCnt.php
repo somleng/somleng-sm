@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 //use App\MyStateMachine\AllFunctions;
 use App\Models\tblcall;
+use App\Models\tblcallflow;
 use App\Models\tblstate;
 use App\Models\tbltransition;
 use App\MyStateMachine\AllFunctions;
@@ -26,18 +27,21 @@ class StateMachineCnt extends Controller
     /** To insert transition testing data in tblstate */
     public function insert_transition_test_data()
     {
+        $callflow_tbl = new tblcallflow;
+        $callflow_id = $callflow_tbl->insertNewCallflow('callflow_1');
+
         // Model insertNewTransitionData($state, $input=null, $callflow_id, $twilml=null, $path=null, $action=null, $new_state, $state_type)
-        $this->tbl_transition->insertNewTransitionData('s0', '1', '1', null, '/public/test.xml', null, 's1', '1');
-        $this->tbl_transition->insertNewTransitionData('s0', '2', '1', null, '/public/test.xml', null, 's2', '');
-        $this->tbl_transition->insertNewTransitionData('s0', '3', '1', null, '/public/test.xml', null, 's3', '');
-        $this->tbl_transition->insertNewTransitionData('s1', '1', '1', null, '/public/test.xml', null, 's4', '');
-        $this->tbl_transition->insertNewTransitionData('s4', '1', '1', null, '/public/test.xml', null, 's1', '');
-        $this->tbl_transition->insertNewTransitionData('s4', '2', '1', null, '/public/test.xml', null, 's0', '');
-        $this->tbl_transition->insertNewTransitionData('s4', '3', '1', null, '/public/test.xml', null, 's3', '');
-        $this->tbl_transition->insertNewTransitionData('s4', '4', '1', null, '/public/test.xml', null, 'hangup', '');
-        $this->tbl_transition->insertNewTransitionData('s2', '', '1', null, '/public/test.xml', null, 'hangup', '');
-        $this->tbl_transition->insertNewTransitionData('s3', '', '1', null, '/public/test.xml', null, 'hangup', '');
-        $this->tbl_transition->insertNewTransitionData('hangup', '', '1', '/public/test.xml', null, null, '', '2');
+        $this->tbl_transition->insertNewTransitionData('s0', '1', $callflow_id, null, '/public/test.xml', null, 's1', '1');
+        $this->tbl_transition->insertNewTransitionData('s0', '2', $callflow_id, null, '/public/test.xml', null, 's2', '');
+        $this->tbl_transition->insertNewTransitionData('s0', '3', $callflow_id, null, '/public/test.xml', null, 's3', '');
+        $this->tbl_transition->insertNewTransitionData('s1', '1', $callflow_id, null, '/public/test.xml', null, 's4', '');
+        $this->tbl_transition->insertNewTransitionData('s4', '1', $callflow_id, null, '/public/test.xml', null, 's1', '');
+        $this->tbl_transition->insertNewTransitionData('s4', '2', $callflow_id, null, '/public/test.xml', null, 's0', '');
+        $this->tbl_transition->insertNewTransitionData('s4', '3', $callflow_id, null, '/public/test.xml', null, 's3', '');
+        $this->tbl_transition->insertNewTransitionData('s4', '4', $callflow_id, null, '/public/test.xml', null, 'hangup', '');
+        $this->tbl_transition->insertNewTransitionData('s2', '', $callflow_id, null, '/public/test.xml', null, 'hangup', '');
+        $this->tbl_transition->insertNewTransitionData('s3', '', $callflow_id, null, '/public/test.xml', null, 'hangup', '');
+        $this->tbl_transition->insertNewTransitionData('hangup', '', $callflow_id, '/public/test.xml', null, null, '', '2');
         echo "Transition test data are inserted.";
     }
 
@@ -60,18 +64,69 @@ class StateMachineCnt extends Controller
 
     }
 
+    /**
+     *
+     */
     public function example_new()
     {
+        // Create States for Graph
+        $getStates = $this->getStates();
+        $arrayStringStates = array();
+        foreach ($getStates as $getState){
+            echo $getState;
+            $state_name = $getState['state'];
+            $state_type = $getState['state_type'];
+            $state_type_str = "";
+            switch ($state_type)
+            {
+                case 0:
+                    $state_type_str = StateInterface::TYPE_NORMAL;
+                    break;
+
+                case 1:
+                    $state_type_str = StateInterface::TYPE_INITIAL;
+                    break;
+
+                case 2:
+                    $state_type_str = StateInterface::TYPE_FINAL;
+                    break;
+            }
+
+            $arrayStringStates[] = array(
+                $state_name => array(
+                    'type' => $state_type_str,
+                    'properties' => array(),
+                ),
+            );
+        }
+        dd($arrayStringStates);
+        // Create Transitions for Graph
+        $getTransitions = $this->getTransitions();
+        $arrayStringTransitions = array();
+        foreach ($getTransitions as $getTransition){
+            echo $getTransition;
+            $transition_name = $getTransition['state_name'].'-'.$getTransition['input'];
+            $new_state = $getTransition['new_state'];
+            $fromStates = array($getTransition['state_name']);
+            $toStates = array($new_state);
+            $arrayStringStates[] = array(
+                $transition_name => array(
+                    'from' => $fromStates,'to' => $toStates,
+                ),
+            );
+        }
         // Configure your graph
         $document     = new Stateful;
         $stateMachine = new StateMachine($document);
         $loader       = new ArrayLoader(array(
             'class'  => 'Document',
             'states'  => array(
+
                 's0' => array(
                    'type'       => StateInterface::TYPE_INITIAL,
                     'properties' => array(),
                 ),
+
                 's1' => array(
                     'type'       => StateInterface::TYPE_NORMAL,
                     'properties' => array(),
@@ -150,5 +205,20 @@ class StateMachineCnt extends Controller
         // dd($stateMachine->getGraph());
 
 
+    }
+
+    public function getStates()
+    {
+        $tbl_state = new tblstate;
+        $states = $tbl_state->getStatesFromStateTable('1');
+        return $states;
+        //dd($states);
+    }
+
+    public function getTransitions()
+    {
+        $tbl_state = new tblstate;
+        $transitions = $tbl_state->getTranstionsFromStateTable('1');
+        dd($transitions);
     }
 }

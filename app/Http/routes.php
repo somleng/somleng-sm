@@ -30,6 +30,9 @@ Route::get('/transition_properties', 'StateMachineExampleController@transition_p
 /** To insert transition test data into tblstate */
 Route::get('/insert_transition_test_data', 'StateMachineCnt@insert_transition_test_data');
 
+Route::get('/get_states_from_table', 'StateMachineCnt@getStates');
+
+Route::get('/get_transitions_from_table', 'StateMachineCnt@getTransitions');
 /** To insert call test data into tblcall */
 Route::get('/insert_update_call_test_data', 'StateMachineCnt@insert_update_call_test_data');
 
