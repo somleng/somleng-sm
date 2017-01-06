@@ -45,6 +45,17 @@ class tbltransition extends Model
                             'new_state' => $new_state_id]);
     }
 
+
+    /**
+     * Function to get transitions of specific callflow from tblstate
+     * @param $CallFlow_ID is call flow id
+     * * author: Samak
+     */
+    public function getTranstionsFromStateTable($CallFlow_ID)
+    {
+        $callflowTransitions = $this::state()->select('state','input')->where('callflow_id', $CallFlow_ID)->get();
+        return $callflowTransitions;
+    }
 //    public function getTransitionID($state, $input=null)
 //    {
 //        $transition_id="";
