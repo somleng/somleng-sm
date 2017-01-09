@@ -14,7 +14,7 @@ class TransitionTable extends Migration
     {
         Schema::create('tbltransition', function (Blueprint $table) {
             $table->increments('id');
-            $table->tinyInteger('state_id');
+            $table->integer('state_id')->unsigned();
             $table->string('input')->nullable();
             $table->text('twilml')->nullable();
             $table->text('path')->nullable();

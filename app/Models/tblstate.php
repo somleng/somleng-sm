@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+//class tblstate extends Model
 class tblstate extends Model
 {
     protected $table = 'tblstate';
@@ -24,6 +25,12 @@ class tblstate extends Model
         return $data;
     }
 
+    /**
+     * find state id
+     * @author: phyrum
+     * @param $state_name
+     * @return mixed
+     */
     public function findStateID($state_name)
     {
         $state_id = $this::where('state', $state_name)->first();
@@ -33,6 +40,7 @@ class tblstate extends Model
 
     /**
      * Function to Insert new data into tblstate
+     * @author: phyrum
      * @param $state
      * @param $state_type
      * @return record_id
@@ -59,12 +67,27 @@ class tblstate extends Model
      * Function to get states of specific callflow from tblstate
      * @param $CallFlow_ID is call flow id
      * author: Samak
+     * @return callflowstate
      */
+
     public function getStatesFromStateTable($CallFlow_ID)
     {
-        $callflowStates = $this::select('state','state_type')->where('callflow_id', $CallFlow_ID)->get();
+//        $callflowStates1 = tblstate::find(1)->transition()->select('state_id')->get(); => works
+        $callflowStates = tblstate::with('transition')->where('callflow_id','=',$CallFlow_ID)->get();
         return $callflowStates;
     }
 
+    /**
+     * Function to get states of specific callflow from tblstate
+     * @param $CallFlow_ID is call flow id
+     * author: Samak
+     */
+
+    public function getStateName($stateId)
+    {
+//        $callflowStates1 = tblstate::find(1)->transition()->select('state_id')->get(); => works
+        $stateName = tblstate::select('state')->where('id','=',$stateId)->first();
+        return $stateName['state'];
+    }
 
 }

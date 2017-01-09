@@ -15,7 +15,7 @@ class StateTable extends Migration
         Schema::create('tblstate', function (Blueprint $table) {
             $table->increments('id');
             $table->string('state');
-            $table->Integer('callflow_id');
+            $table->integer('callflow_id');
             $table->tinyInteger('state_type')->comment('1: initial state; 2: final state; 0: (default) normal state');
             $table->timestamps();
         });
