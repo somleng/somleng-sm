@@ -15,7 +15,7 @@ class tblcallflow extends Model
         if(empty($check_existing_callflow))
         {
             $callflow_id = $this::create(['callflow_name' => $callflow_name]);
-            return $callflow_id;
+            return $callflow_id->id;
         }
         else return $check_existing_callflow->id;
     }

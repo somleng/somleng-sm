@@ -11,8 +11,16 @@ class tbltransition extends Model
 
     public function state()
     {
-        return $this->hasMany('App\Models\tblstate');
+        return $this->hasMany('App\Models\tbltransition','state_id');
     }
+
+    // get result as null
+    /*public function state()
+    {
+        return $this->belongsTo('App\Models\tblstate');
+        //dd($this->hasMany('App\Models\tblstate','id','state_id'));
+        //return $this->hasMany('App\Models\tblstate','id','state_id');
+    }*/
     /**
      * Function to Insert new data into tblstate
      * @param $state
@@ -53,7 +61,12 @@ class tbltransition extends Model
      */
     public function getTranstionsFromStateTable($CallFlow_ID)
     {
-        $callflowTransitions = $this::state()->select('state','input')->where('callflow_id', $CallFlow_ID)->get();
+//        $callflowTransitions = $this::select('state_id','input')->$this->state()->where('tblcallflow.id', $CallFlow_ID)->get();
+//        $callflowTransitions = $this::find(1)->states;
+//        $callflowTransitions = $this::select('state_id','input')->with('state')->where('callflow_id', $CallFlow_ID)->get();
+        $callflowTransitions = $this::state()->select('id')->get();
+        //dd($callflowTransitions);
+
         return $callflowTransitions;
     }
 //    public function getTransitionID($state, $input=null)

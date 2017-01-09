@@ -17,11 +17,13 @@ class StateMachineCnt extends Controller
 {
     private $tbl_transition;
     private $tbl_call;
+    public  $tbl_states;
 
     public function __construct()
     {
         $this->tbl_transition = new tbltransition;
         $this->tbl_call = new tblcall;
+        $this->tbl_states = new tblstate;
     }
 
     /** To insert transition testing data in tblstate */
@@ -29,6 +31,7 @@ class StateMachineCnt extends Controller
     {
         $callflow_tbl = new tblcallflow;
         $callflow_id = $callflow_tbl->insertNewCallflow('callflow_1');
+//        dd($callflow_id);
 
         // Model insertNewTransitionData($state, $input=null, $callflow_id, $twilml=null, $path=null, $action=null, $new_state, $state_type)
         $this->tbl_transition->insertNewTransitionData('s0', '1', $callflow_id, null, '/public/test.xml', null, 's1', '1');
@@ -70,10 +73,13 @@ class StateMachineCnt extends Controller
     public function example_new()
     {
         // Create States for Graph
-        $getStates = $this->getStates();
+//        $getStates = $this->getStates('1');
+        $getStates = $this->tbl_states->getStatesFromStateTable('1');
+//        dd($getStates);
         $arrayStringStates = array();
+        $arrayStringTransitions = array();
         foreach ($getStates as $getState){
-            echo $getState;
+//            echo $getState;
             $state_name = $getState['state'];
             $state_type = $getState['state_type'];
             $state_type_str = "";
@@ -91,100 +97,96 @@ class StateMachineCnt extends Controller
                     $state_type_str = StateInterface::TYPE_FINAL;
                     break;
             }
+//            $eachState = array(
+//                $state_name => array(
+//                    'type' => $state_type_str,
+//                    'properties' => array(),
+//                ));
+            //$arrayStringStates[] = $eachState[0];
 
-            $arrayStringStates[] = array(
+            $eachState [$state_name] = array(
+                    'type' => $state_type_str,
+                    'properties' => array()
+                );
+
+            $test = array_push($arrayStringStates,$eachState);
+
+
+            /*$arrayStringStates[] = array(
                 $state_name => array(
                     'type' => $state_type_str,
                     'properties' => array(),
                 ),
-            );
+
+            );*/
+
+           /* $arrayStringStates[] =
+                $state_name => array(
+                'type' => $state_type_str,
+                'properties' => array(),
+            );*/
+
+
+            $Transitions = $getState->transition;
+            //dd($Transitions);
+
+            foreach ($Transitions as $Transition){
+                //dd($getTransition);
+                $transition_name = $getState['state'].'-'.$Transition['input'];
+                $new_state_id = $Transition['new_state'];
+                $new_state_name = $this->tbl_states->getStateName($new_state_id);
+                $fromStates = array($getState['state']);
+                $toStates = array($new_state_name);
+                $arrayStringTransitions[] = array(
+                    $transition_name => array(
+                        'from' => $fromStates,'to' => $toStates,
+                    ),
+                );
+            }
+
         }
+        //
+        var_dump($arrayStringStates);
+
         dd($arrayStringStates);
+//        dd($arrayStringStates);
+        //dd($arrayStringTransitions);
         // Create Transitions for Graph
-        $getTransitions = $this->getTransitions();
-        $arrayStringTransitions = array();
-        foreach ($getTransitions as $getTransition){
-            echo $getTransition;
-            $transition_name = $getTransition['state_name'].'-'.$getTransition['input'];
-            $new_state = $getTransition['new_state'];
-            $fromStates = array($getTransition['state_name']);
-            $toStates = array($new_state);
-            $arrayStringStates[] = array(
-                $transition_name => array(
-                    'from' => $fromStates,'to' => $toStates,
-                ),
-            );
-        }
+
         // Configure your graph
         $document     = new Stateful;
         $stateMachine = new StateMachine($document);
         $loader       = new ArrayLoader(array(
             'class'  => 'Document',
-            'states'  => array(
-
-                's0' => array(
-                   'type'       => StateInterface::TYPE_INITIAL,
-                    'properties' => array(),
+            'states'  => $arrayStringStates,
+            'transitions' => $arrayStringTransitions,
+            /*'callbacks' => array(
+                'before' => array(
+                    array(
+                        'from' => '-proposed',
+                        'do' => function(StatefulInterface $document, TransitionEvent $e) {
+                            echo '<br> Applying transition '.$e->getTransition()->getName(), "\n";
+                        }
+                    ),
+                    array(
+                        'from' => 'proposed',
+                        'do' => function() {
+                            echo '<br> Applying transition from proposed state', "\n";
+                        }
+                    )
                 ),
-
-                's1' => array(
-                    'type'       => StateInterface::TYPE_NORMAL,
-                    'properties' => array(),
-                ),
-                's2' => array(
-                    'type'       => StateInterface::TYPE_NORMAL,
-                    'properties' => array(),
-                ),
-                's3' => array(
-                    'type'       => StateInterface::TYPE_NORMAL,
-                    'properties' => array(),
-                ),
-                's4' => array(
-                    'type'       => StateInterface::TYPE_NORMAL,
-                    'properties' => array(),
-                ),
-                'hangout' => array(
-                    'type'       => StateInterface::TYPE_FINAL,
-                    'properties' => array(),
+                'after' => array(
+                    array(
+                        'to' => array('accepted'), 'do' => array($document, 'display')
+                    )
                 )
-            ),
-            'transitions' => array(
-                's01' => array('from' => array('s0'), 'to' => 's1'),
-                's02' => array('from' => array('s0'), 'to' => 's2'),
-                's03' => array('from' => array('s0'), 'to' => 's3'),
-                's11' => array('from' => array('s1'), 'to' => 's4'),
-                's41' => array('from' => array('s4'), 'to' => 's1'),
-                's42' => array('from' => array('s4'), 'to' => 's0'),
-                's43' => array('from' => array('s4'), 'to' => 's3'),
-                's44' => array('from' => array('s4'), 'to' => 'hangout'),
-            ),
-//            'callbacks' => array(
-//                'before' => array(
-//                    array(
-//                        'from' => '-proposed',
-//                        'do' => function(StatefulInterface $document, TransitionEvent $e) {
-//                            echo '<br> Applying transition '.$e->getTransition()->getName(), "\n";
-//                        }
-//                    ),
-//                    array(
-//                        'from' => 'proposed',
-//                        'do' => function() {
-//                            echo '<br> Applying transition from proposed state', "\n";
-//                        }
-//                    )
-//                ),
-//                'after' => array(
-//                    array(
-//                        'to' => array('accepted'), 'do' => array($document, 'display')
-//                    )
-//                )
-//            )
+            )*/
         ));
         $loader->load($stateMachine);
         $stateMachine->initialize();
-        dd($loader);
+//        dd($loader);
 
-        $stateMachine->apply('s02');
+        //$stateMachine->apply('s02');
 
         // Working with workflow
         // Current state
@@ -207,18 +209,35 @@ class StateMachineCnt extends Controller
 
     }
 
-    public function getStates()
-    {
-        $tbl_state = new tblstate;
-        $states = $tbl_state->getStatesFromStateTable('1');
-        return $states;
-        //dd($states);
-    }
+//    public function getStates($callflow_id)
+//    {
+//        $tbl_state = new tblstate;
+//        $states = $this->tbl_states->getStatesFromStateTable($callflow_id);
+//       // dd($states);
+//        return $states;
+//
+//    }
 
-    public function getTransitions()
+   /* public function getTransitions()
     {
-        $tbl_state = new tblstate;
+        $tbl_state = new tbltransition;
         $transitions = $tbl_state->getTranstionsFromStateTable('1');
         dd($transitions);
-    }
+    }*/
+
+//    public function getTransitions()
+//    {
+//        $states = $this->getStates('1');
+//        $transistions = array();
+//        foreach ($states as $state)
+//        {
+//
+//        }
+//        dd($states);
+//    }
+
+//    public  function lookupForStateName($new_state_id)
+//    {
+//        return
+//    }
 }
