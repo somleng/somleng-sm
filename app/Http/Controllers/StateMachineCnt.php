@@ -2,12 +2,10 @@
 
 namespace App\Http\Controllers;
 
-//use App\MyStateMachine\AllFunctions;
 use App\Models\tblcall;
 use App\Models\tblcallflow;
 use App\Models\tblstate;
 use App\Models\tbltransition;
-use App\MyStateMachine\AllFunctions;
 use App\MyStateMachine\Stateful;
 use Finite\Loader\ArrayLoader;
 use Finite\State\StateInterface;
@@ -17,11 +15,37 @@ class StateMachineCnt extends Controller
 {
     private $tbl_transition;
     private $tbl_call;
+    private $tbl_state;
 
     public function __construct()
     {
         $this->tbl_transition = new tbltransition;
         $this->tbl_call = new tblcall;
+        $this->tbl_state = new tblstate;
+    }
+
+    public function test_eloquent_relationship()
+    {
+        $test = $this->tbl_state->selectcross();
+        //dd($test);
+
+        //        $tbl_state_1 = new tblstate;
+        //        //$test = $this->tbl_state->firstOrFail(['*'])->tbltransition;
+        //        $test = $tbl_state_1::with('transition')->get();
+        //        //$test = $tbl_state_1->transition->get();
+        //        //$test = $this->tbl_transition->selectcross();
+        //        dd($test);
+        foreach($test as $test)
+        {
+            var_dump($test->state);
+            //dd($test);
+            foreach($test->transition as $transition)
+            {
+                dd($transition->state_id);
+            }
+
+        }
+
     }
 
     /** To insert transition testing data in tblstate */
@@ -48,19 +72,26 @@ class StateMachineCnt extends Controller
     /** To insert or update call test data in tblcall */
     public function insert_update_call_test_data()
     {
-//        $tbl_call = new tblcall;
-        $this->tbl_call->insertNewCallData('c001', '1');
-        $this->tbl_call->insertNewCallData('c002', '2');
-        $this->tbl_call->insertNewCallData('c003', '3');
+        $this->tbl_call->insertNewCallData('c001', 's0');
+        $this->tbl_call->insertNewCallData('c002', 's1');
+        $this->tbl_call->insertNewCallData('c003', 's4');
         echo "Call test data are inserted.";
 
         // update call record
-        $this->tbl_call->updateCallData('c003', '4');
+        $this->tbl_call->updateCallData('c003', 'hangup');
     }
 
-    public function act()
+    public function act_input()
     {
-        AllFunctions::act("c001", '1');
+        $ip = \Input::get('callid');
+        dd($ip);
+        //AllFunctions::act_input("c001", '1');
+        // state
+        $state = $this->tbl_call->searchForCallID("c001");
+        dd($state);
+        // $transition_id = $this->tbl_state->getTransitionID('s10','');
+        // dd($transition_id);
+        // getTransitionID($state, $input=null)
 
     }
 
