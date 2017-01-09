@@ -10,20 +10,37 @@ class tblstate extends Model
     protected $table = 'tblstate';
     protected $fillable = ['state', 'callflow_id', 'state_type'];
 
-
-    /*public function transition()
-    {
-        return $this->belongsTo('App\Models\tbltransition','id');
-    }*/
-
-    // get result as null
     public function transition()
     {
-        return $this->hasMany('App\Models\tbltransition','state_id','id');
+        return $this->hasMany('App\Models\tbltransition', 'state_id', 'id');
+    }
+
+    public function selectcross()
+    {
+        $data = $this::with('transition')->get();
+//        \DB::enableQueryLog();
+//        //$data = $this->tbltransition();
+//        $data = $this::all()->tbltransition();
+//        dd(\DB::getQueryLog());
+        return $data;
+    }
+
+    /**
+     * find state id
+     * @author: phyrum
+     * @param $state_name
+     * @return mixed
+     */
+    public function findStateID($state_name)
+    {
+        $state_id = $this::where('state', $state_name)->first();
+        if(!empty($state_id))
+            return $state_id->id;
     }
 
     /**
      * Function to Insert new data into tblstate
+     * @author: phyrum
      * @param $state
      * @param $state_type
      * @return record_id
@@ -46,30 +63,11 @@ class tblstate extends Model
         }
     }
 
-
-//    public function getTransitionID($state, $input=null)
-//    {
-//        $transition_id="";
-//        // to make sure that state and input are exist in DB
-//        // to avoid concate transition id which doesn't exist in DB
-//        $check_existing_record = $this::where('state', $state)
-//                        //->where('input', $input)
-//                        ->first();
-//        if(!empty($check_existing_record))
-//        {
-//            if($input != null)
-//                $transition_id = $state.'-'.$input;
-//            else
-//                $transition_id = $state;
-//        }
-//        return $transition_id;
-//
-//    }
-
     /**
      * Function to get states of specific callflow from tblstate
      * @param $CallFlow_ID is call flow id
      * author: Samak
+     * @return callflowstate
      */
 
     public function getStatesFromStateTable($CallFlow_ID)

@@ -204,6 +204,7 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
         'Stateful' => App\Http\Stateful::class,
+        'Input' => Illuminate\Support\Facades\Input::class,
 
     ],
 

@@ -23,6 +23,7 @@ class tbltransition extends Model
     }*/
     /**
      * Function to Insert new data into tblstate
+     * @author: phyrum
      * @param $state
      * @param null $input
      * @param $callflow_id
@@ -34,7 +35,6 @@ class tbltransition extends Model
      */
     public function insertNewTransitionData($state, $input=null, $callflow_id, $twilml=null, $path=null, $action=null, $new_state=null, $state_type)
     {
-
         $state_table = new tblstate;
         $state_id = $state_table->insertNewState($state, $callflow_id, $state_type);
         $new_state_id = $state_table->insertNewState($new_state, $callflow_id ,'');
@@ -43,7 +43,6 @@ class tbltransition extends Model
                                 ->where('input', $input)
                                 ->where('new_state', $new_state_id)
                                 ->first();
-
         if(empty($check_existing_record))
             $this::create(['state_id' => $state_id,
                             'input' => $input,
@@ -52,7 +51,6 @@ class tbltransition extends Model
                             'action' => $action,
                             'new_state' => $new_state_id]);
     }
-
 
     /**
      * Function to get transitions of specific callflow from tblstate
@@ -69,22 +67,23 @@ class tbltransition extends Model
 
         return $callflowTransitions;
     }
-//    public function getTransitionID($state, $input=null)
-//    {
-//        $transition_id="";
-//        // to make sure that state and input are exist in DB
-//        // to avoid concate transition id which doesn't exist in DB
-//        $check_existing_record = $this::where('state', $state)
-//                        ->where('input', $input)
-//                        ->first();
-//        if(!empty($check_existing_record))
-//        {
-//            if($input != null)
-//                $transition_id = $state.$input;
-//            else
-//                $transition_id = $state;
-//        }
-//        return $transition_id;
-//
-//    }
+
+    /**
+     * get transition id
+     *  @author: phyrum
+     * @param $state
+     * @param null $input
+     */
+    public function getTransitionID($state, $input=null)
+    {
+        $transition_id="";
+        /**
+         * Check whether state and input are exist in tblstate and tbltransition
+         * to avoid concate transition id which doesn't exist in DB
+         */
+        $tran = $this::with('state')->where('state', $state)->get();
+        dd($tran);
+
+    }
+
 }
