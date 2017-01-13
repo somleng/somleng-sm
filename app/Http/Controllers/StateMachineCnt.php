@@ -186,7 +186,7 @@ class StateMachineCnt extends Controller
             'class'  => 'Document',
             'states'  => $arrayStringStates,
             'transitions' => $arrayStringTransitions,
-            /*'callbacks' => array(
+            'callbacks' => array(
                 'before' => array(
                     array(
                         'from' => '-proposed',
@@ -206,7 +206,7 @@ class StateMachineCnt extends Controller
                         'to' => array('accepted'), 'do' => array($document, 'display')
                     )
                 )
-            )*/
+            )
         ));
 
 //        var_dump(json_decode($arrayStringTransitions));die;

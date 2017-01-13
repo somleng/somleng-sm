@@ -78,8 +78,8 @@ class tblstate extends Model
     }
 
     /**
-     * Function to get states of specific callflow from tblstate
-     * @param $CallFlow_ID is call flow id
+     * Function to get state name of specific state id from tblstate
+     * @param $stateId is state id
      * author: Samak
      */
 
