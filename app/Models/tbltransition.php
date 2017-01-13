@@ -11,7 +11,7 @@ class tbltransition extends Model
 
     public function state()
     {
-        return $this->hasMany('App\Models\tbltransition','state_id');
+         return $this->belongsTo('App\Models\tblstate','state_id','id');
     }
 
     // get result as null
@@ -74,16 +74,27 @@ class tbltransition extends Model
      * @param $state
      * @param null $input
      */
-    public function getTransitionID($state, $input=null)
+    public function getTransitionID($state_id, $input=Null)
     {
+
         $transition_id="";
         /**
          * Check whether state and input are exist in tblstate and tbltransition
          * to avoid concate transition id which doesn't exist in DB
          */
-        $tran = $this::with('state')->where('state', $state)->get();
-        dd($tran);
-
+        $existing_tran_and_state = $this::with('state')->where('state_id',$state_id)
+                                    ->where('input', $input)
+                                    ->first();
+        dd($existing_tran_and_state);
+        if(!empty($existing_tran_and_state))
+        {
+            $state_name = $existing_tran_and_state->state->state;
+            if($input != null)
+                $transition_id = $state_name . '-' . $input;
+            else
+                $transition_id = $state_name;
+        }
+        return $transition_id;
     }
 
 }

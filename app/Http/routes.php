@@ -38,4 +38,5 @@ Route::get('/insert_update_call_test_data', 'StateMachineCnt@insert_update_call_
 
 /** To  */
 // Route::get('/act_input/c001/1', 'StateMachineCnt@act_input');
-Route::get('/act_input/{callid}/{input}', 'StateMachineCnt@act_input');
+//Route::get('/act_input/{callid}/{choice_input}/{non_choice_input}',  'StateMachineCnt@act_input');
+Route::get('/action', 'StateMachineCnt@action');

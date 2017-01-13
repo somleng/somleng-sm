@@ -62,9 +62,9 @@ class StateMachineCnt extends Controller
         $this->tbl_transition->insertNewTransitionData('s4', '2', $callflow_id, null, '/public/test.xml', null, 's0', '');
         $this->tbl_transition->insertNewTransitionData('s4', '3', $callflow_id, null, '/public/test.xml', null, 's3', '');
         $this->tbl_transition->insertNewTransitionData('s4', '4', $callflow_id, null, '/public/test.xml', null, 'hangup', '');
-        $this->tbl_transition->insertNewTransitionData('s2', '', $callflow_id, null, '/public/test.xml', null, 'hangup', '');
-        $this->tbl_transition->insertNewTransitionData('s3', '', $callflow_id, null, '/public/test.xml', null, 'hangup', '');
-        $this->tbl_transition->insertNewTransitionData('hangup', '', $callflow_id, '/public/test.xml', null, null, '', '2');
+        $this->tbl_transition->insertNewTransitionData('s2', 'null', $callflow_id, null, '/public/test.xml', null, 'hangup', '');
+        $this->tbl_transition->insertNewTransitionData('s3', 'null', $callflow_id, null, '/public/test.xml', null, 'hangup', '');
+        $this->tbl_transition->insertNewTransitionData('hangup', 'null', $callflow_id, '/public/test.xml', null, null, '', '2');
         echo "Transition test data are inserted.";
     }
 
@@ -80,17 +80,19 @@ class StateMachineCnt extends Controller
         $this->tbl_call->updateCallData('c003', 'hangup');
     }
 
-    public function act_input()
+    public function action()
     {
-        $ip = \Input::get('callid');
-        dd($ip);
-        //AllFunctions::act_input("c001", '1');
-        // state
-        $state = $this->tbl_call->searchForCallID("c001");
-        dd($state);
-        // $transition_id = $this->tbl_state->getTransitionID('s10','');
-        // dd($transition_id);
-        // getTransitionID($state, $input=null)
+       act('c001', null, null);
+    }
+
+    public function act($callid, $choice_input=null, $non_choice_input=null)
+    {
+        //dd($choice_input);
+        $state_id = $this->tbl_call->searchForCallID($callid);
+        $transition_id = $this->tbl_transition->getTransitionID($state_id, $choice_input);
+        dd($transition_id);
+
+
 
     }
 
