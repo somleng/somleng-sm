@@ -133,13 +133,14 @@ class StateMachineCnt extends Controller
 //                ));
             //$arrayStringStates[] = $eachState[0];
 
-            $eachState [$state_name] = array(
+            $arrayStringStates [$state_name] = array(
                     'type' => $state_type_str,
                     'properties' => array()
                 );
 
-            $test = array_push($arrayStringStates,$eachState);
-
+//            $test = array_push($arrayStringStates,$eachState);
+            //var_dump(json_decode($eachState));die;
+            //$arrayStringStates[] =  $eachState;
 
             /*$arrayStringStates[] = array(
                 $state_name => array(
@@ -165,19 +166,17 @@ class StateMachineCnt extends Controller
                 $new_state_id = $Transition['new_state'];
                 $new_state_name = $this->tbl_states->getStateName($new_state_id);
                 $fromStates = array($getState['state']);
-                $toStates = array($new_state_name);
-                $arrayStringTransitions[] = array(
-                    $transition_name => array(
+                $toStates = $new_state_name;
+                $arrayStringTransitions[$transition_name] = array(
                         'from' => $fromStates,'to' => $toStates,
-                    ),
                 );
             }
 
         }
         //
-        var_dump($arrayStringStates);
+        //var_dump(json_decode($arrayStringTransitions));
 
-        dd($arrayStringStates);
+//        dd($arrayStringStates);
 //        dd($arrayStringStates);
         //dd($arrayStringTransitions);
         // Create Transitions for Graph
@@ -189,7 +188,7 @@ class StateMachineCnt extends Controller
             'class'  => 'Document',
             'states'  => $arrayStringStates,
             'transitions' => $arrayStringTransitions,
-            /*'callbacks' => array(
+            'callbacks' => array(
                 'before' => array(
                     array(
                         'from' => '-proposed',
@@ -209,8 +208,10 @@ class StateMachineCnt extends Controller
                         'to' => array('accepted'), 'do' => array($document, 'display')
                     )
                 )
-            )*/
+            )
         ));
+
+//        var_dump(json_decode($arrayStringTransitions));die;
         $loader->load($stateMachine);
         $stateMachine->initialize();
 //        dd($loader);
@@ -223,6 +224,12 @@ class StateMachineCnt extends Controller
         echo "<br> name: "; var_dump($stateMachine->getCurrentState()->getName());
         echo "<br> properties: "; var_dump($stateMachine->getCurrentState()->getProperties());
         echo "<br> =========== <br>";
+        echo "<br> transitions: "; var_dump($stateMachine->getCurrentState()->getTransitions());
+
+        echo "<br> Apply transition: ";
+        $stateMachine->apply('s0-2');
+        echo "<br> 1. current state ====== ";
+        echo "<br> name: "; var_dump($stateMachine->getCurrentState()->getName());
 
         // set state
         //$document->setFiniteState('s2');
