@@ -74,7 +74,7 @@ class tbltransition extends Model
      * @param $state
      * @param null $input
      */
-    public function getTransitionID($state_id, $input=Null)
+    public function getTransitionID($state_id, $input=null)
     {
 
         $transition_id="";
