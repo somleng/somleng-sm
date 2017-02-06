@@ -7,6 +7,7 @@ use App\Models\tblcallflow;
 use App\Models\tblstate;
 use App\Models\tbltransition;
 use App\MyStateMachine\Stateful;
+use Finite\Event\TransitionEvent;
 use Finite\Loader\ArrayLoader;
 use Finite\State\StateInterface;
 use Finite\StateMachine\StateMachine;
@@ -54,26 +55,23 @@ class StateMachineCnt extends Controller
 //        dd($callflow_id);
 
         // Model insertNewTransitionData($state, $input=null, $callflow_id, $twilml=null, $path=null, $action=null, $new_state, $state_type)
-        $this->tbl_transition->insertNewTransitionData('s0', '1', $callflow_id, null, '/public/test.xml', null, 's1', '1');
-        $this->tbl_transition->insertNewTransitionData('s0', '2', $callflow_id, null, '/public/test.xml', null, 's2', '');
-        $this->tbl_transition->insertNewTransitionData('s0', '3', $callflow_id, null, '/public/test.xml', null, 's3', '');
-        $this->tbl_transition->insertNewTransitionData('s1', '1', $callflow_id, null, '/public/test.xml', null, 's4', '');
-        $this->tbl_transition->insertNewTransitionData('s4', '1', $callflow_id, null, '/public/test.xml', null, 's1', '');
-        $this->tbl_transition->insertNewTransitionData('s4', '2', $callflow_id, null, '/public/test.xml', null, 's0', '');
-        $this->tbl_transition->insertNewTransitionData('s4', '3', $callflow_id, null, '/public/test.xml', null, 's3', '');
-        $this->tbl_transition->insertNewTransitionData('s4', '4', $callflow_id, null, '/public/test.xml', null, 'hangup', '');
-        $this->tbl_transition->insertNewTransitionData('s2', '', $callflow_id, null, '/public/test.xml', null, 'hangup', '');
-        $this->tbl_transition->insertNewTransitionData('s3', '', $callflow_id, null, '/public/test.xml', null, 'hangup', '');
-        $this->tbl_transition->insertNewTransitionData('hangup', '', $callflow_id, '/public/test.xml', null, null, '', '2');
+        $this->tbl_transition->insertNewTransitionData('A', null, $callflow_id, null, '/public/TwilMLCodeToPlayMessage.xml', null, 'B', '1');
+        $this->tbl_transition->insertNewTransitionData('B', null, $callflow_id, null, 'Gater 5 digits', null, 'C', '');
+        $this->tbl_transition->insertNewTransitionData('C', '0', $callflow_id, null, 'Play invalid input, please try again', null, 'D0', '');
+        $this->tbl_transition->insertNewTransitionData('C', '1', $callflow_id, null, 'Play file5digits_twilML.xml', null, 'D1', '');
+        $this->tbl_transition->insertNewTransitionData('D0', null, $callflow_id, null, 'Play invalid input', null, 'B', '');
+        $this->tbl_transition->insertNewTransitionData('D1', null, $callflow_id, null, 'Play (found sound file)', null, 'E', '');
+        $this->tbl_transition->insertNewTransitionData('E', null, $callflow_id, null, 'hangout', null, '', '2');
+
         echo "Transition test data are inserted.";
     }
 
     /** To insert or update call test data in tblcall */
     public function insert_update_call_test_data()
     {
-        $this->tbl_call->insertNewCallData('c001', 's0');
-        $this->tbl_call->insertNewCallData('c002', 's1');
-        $this->tbl_call->insertNewCallData('c003', 's4');
+        $this->tbl_call->insertNewCallData('c001', 'A');
+        /*$this->tbl_call->insertNewCallData('c002', 's1');
+        $this->tbl_call->insertNewCallData('c003', 's4');*/
         echo "Call test data are inserted.";
 
         // update call record
@@ -160,7 +158,9 @@ class StateMachineCnt extends Controller
 
             foreach ($Transitions as $Transition){
                 //dd($getTransition);
-                $transition_name = $getState['state'].'-'.$Transition['input'];
+                $transition_name = $getState['state'];
+                if($Transition['input'] != "")
+                    $transition_name = $getState['state'].'-'.$Transition['input'];
                 $new_state_id = $Transition['new_state'];
                 $new_state_name = $this->tbl_states->getStateName($new_state_id);
                 $fromStates = array($getState['state']);
@@ -190,7 +190,7 @@ class StateMachineCnt extends Controller
                 'before' => array(
                     array(
                         'from' => '-proposed',
-                        'do' => function(StatefulInterface $document, TransitionEvent $e) {
+                        'do' => function(Stateful $document, TransitionEvent $e) {
                             echo '<br> Applying transition '.$e->getTransition()->getName(), "\n";
                         }
                     ),
@@ -203,7 +203,7 @@ class StateMachineCnt extends Controller
                 ),
                 'after' => array(
                     array(
-                        'to' => array('accepted'), 'do' => array($document, 'display')
+                        'to' => array('B'), 'do' => array($document, 'display')
                     )
                 )
             )
@@ -223,9 +223,10 @@ class StateMachineCnt extends Controller
         echo "<br> properties: "; var_dump($stateMachine->getCurrentState()->getProperties());
         echo "<br> =========== <br>";
         echo "<br> transitions: "; var_dump($stateMachine->getCurrentState()->getTransitions());
+        $tran = $stateMachine->getCurrentState()->getTransitions();
 
         echo "<br> Apply transition: ";
-        $stateMachine->apply('s0-2');
+        $stateMachine->apply($tran[0]);
         echo "<br> 1. current state ====== ";
         echo "<br> name: "; var_dump($stateMachine->getCurrentState()->getName());
 

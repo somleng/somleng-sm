@@ -11,6 +11,8 @@
 |
 */
 
+use Twilio\Twiml;
+
 Route::get('/', function () {
     return view('welcome');
 });
@@ -39,3 +41,38 @@ Route::get('/insert_update_call_test_data', 'StateMachineCnt@insert_update_call_
 /** To  */
 // Route::get('/act_input/c001/1', 'StateMachineCnt@act_input');
 Route::get('/act_input/{callid}/{input}', 'StateMachineCnt@act_input');
+
+Route::any('welcomTwiMLCode', ['as' => 'welcomTwiMLCode', 'uses' => function (){
+    // To play sound file
+    $response = new Twiml();
+//    $response->say('Hello');
+//    $response->play('https://api.twilio.com/cowbell.mp3', array("loop" => 5));
+//    $gather = $response->gather(array('numDigits' => 1, 'action' => 'http://503c8427.ngrok.io/choose'));
+    $gather = $response->gather(['numDigits' => 1, 'action' => 'https://8f4c3bd1.ngrok.io/choose']);
+    $gather->say("Verification code incorrect, please try again.");
+
+    header("Content-Type: text/xml");
+    print $response;
+    //dd($response);
+
+//    $response_1 = response($response,200);
+//    $response_1->header('Content-Type', 'text/xml');
+//    return $response_1;
+
+}]);
+
+//Route::any('playWelcomAndGather', ['as' => 'callflow', 'Stateful@showWelcome']);
+
+Route::any('choose', ['as' => 'choose', 'uses' => function (){
+
+    $digits = $_REQUEST['Digits'];
+    // To play sound file
+    $response1 = new Twiml();
+    if($digits == 1)
+        $response1->play('https://8f4c3bd1.ngrok.io/Pursat_03.mp3');
+    else
+        $response1->say('Sorry, your input is invalid, please try again');
+    //header("Content-Type: text/xml");
+    return $response1;
+
+}]);
