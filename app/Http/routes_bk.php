@@ -41,6 +41,8 @@ Route::get('/insert_update_call_test_data', 'StateMachineCnt@insert_update_call_
 //Route::get('/act_input/{callid}/{choice_input}/{non_choice_input}',  'StateMachineCnt@act_input');
 Route::get('/action', 'StateMachineCnt@action');
 
+
+/** Twilio callinging input */
 Route::group(
     ['prefix' => 'ivr'], function () {
 
@@ -58,18 +60,10 @@ Route::group(
         ]
     );
     Route::any(
-        '/inputvalidation', [
-            'as' => 'inputvalidation', 'uses' => 'IVRCnt@inputValidation'
+        '/planet', [
+            'as' => 'planet-connection',
+            'uses' => 'IVRCnt@showPlanetConnection'
         ]
     );
-
-    Route::any(
-        '/test_validation', [
-            'as' => 'test_validation', 'uses' => 'IVRCnt@test_validation'
-        ]
-    );
-
-
-
 }
 );
