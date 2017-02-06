@@ -12,6 +12,10 @@ class VerifyCsrfToken extends BaseVerifier
      * @var array
      */
     protected $except = [
-        'ivr/*'
+        'ivr/*',
+        "callflow",
+        "choose",
+        "showWelcome",
+        "welcomTwiMLCode"
     ];
 }
