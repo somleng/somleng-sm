@@ -16,7 +16,7 @@ class IVRCnt extends Controller
 {
     public function __construct()
     {
-        $this->ngrok_address = "http://a6af158c.ngrok.io";
+        $this->ngrok_address = "https://9fa794e3.ngrok.io";
     }
 
     /**
@@ -51,12 +51,13 @@ class IVRCnt extends Controller
             'input is ' . $input
         );
         // validate the input
-        $this->validation_sound_file($input);
+       // $this->validation_sound_file($input);
 
 //      $response->redirect(route('welcome', [], false));
         //$response->redirect($this->ngrok_address . "/ivr/welcome");
         return $response;
     }
+
     public function makeCall()
     {
         // array("url" => "http://demo.twilio.com/docs/voice.xml")
