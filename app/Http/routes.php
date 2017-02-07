@@ -66,11 +66,11 @@ Route::group(
         ]
     );
 
-    Route::any(
-        '/test_validation', [
-            'as' => 'test_validation', 'uses' => 'IVRCnt@test_validation'
-        ]
-    );
+//    Route::any(
+//        '/test_validation', [
+//            'as' => 'test_validation', 'uses' => 'IVRCnt@test_validation'
+//        ]
+//    );
 
 }
 );
