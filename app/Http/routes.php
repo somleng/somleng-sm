@@ -48,29 +48,29 @@ Route::group(
     ['prefix' => 'ivr'], function () {
 
     Route::any('/makecall', [
-        'as' => 'makecall', 'uses' => 'IVRCnt@makeCall'
+        'as' => 'makecall', 'uses' => 'StateMachineCnt@makeCall'
     ]);
     Route::any(
         '/welcome', [
-            'as' => 'welcome', 'uses' => 'IVRCnt@showWelcome'
+            'as' => 'welcome', 'uses' => 'StateMachineCnt@showWelcome'
         ]
     );
     Route::any(
         '/menu-response', [
-            'as' => 'menu-response', 'uses' => 'IVRCnt@showMenuResponse'
+            'as' => 'menu-response', 'uses' => 'StateMachineCnt@showMenuResponse'
         ]
     );
     Route::any(
         '/inputvalidation', [
-            'as' => 'inputvalidation', 'uses' => 'IVRCnt@inputValidation'
+            'as' => 'inputvalidation', 'uses' => 'StateMachineCnt@inputValidation'
         ]
     );
 
-    Route::any(
-        '/test_validation', [
-            'as' => 'test_validation', 'uses' => 'IVRCnt@test_validation'
-        ]
-    );
+//    Route::any(
+//        '/test_validation', [
+//            'as' => 'test_validation', 'uses' => 'IVRCnt@test_validation'
+//        ]
+//    );
 
 }
 );
@@ -97,7 +97,7 @@ Route::any('welcomTwiMLCode', ['as' => 'welcomTwiMLCode', 'uses' => function (){
 
 }]);
 
-//Route::any('playWelcomAndGather', ['as' => 'callflow', 'Stateful@showWelcome']);
+//Route::any('playWelcomAndGather', ['as' => 'callflow', 'StateMachineCnt@showWelcome']);
 
 Route::any('choose', ['as' => 'choose', 'uses' => function (){
 

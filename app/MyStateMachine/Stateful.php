@@ -18,6 +18,11 @@ class Stateful implements StatefulInterface
 {
     private $state;
 
+    /*public function __construct()
+    {
+        $this->ngrok_address = "https://9fa794e3.ngrok.io";
+    }*/
+
 //    public $ngrok_url = "https://b2b96fe7.ngrok.io/";
     public function getFiniteState()
     {
@@ -76,7 +81,7 @@ class Stateful implements StatefulInterface
 
     }
 
-    public function showWelcome()
+    /*public function showWelcome()
     {
         $sid = "ACe888d537776f80870b2ae5d8bd37bf4c"; // Your Account SID from www.twilio.com/console
         $token = "d09aa9dd6a4440d6984c60cfe1e41881"; // Your Auth Token from www.twilio.com/console
@@ -98,6 +103,8 @@ class Stateful implements StatefulInterface
                 'action' => 'https://b2b96fe7.ngrok.io/choose'
             ]
         );
-    }
+    }*/
+
+
 }
 
