@@ -236,13 +236,13 @@ class StateMachineCnt extends Controller
                     )
                ,
                     array(
-                        'to' => array('C0'), 'do' => $this->displayIncorrectInput()
+                        'to' => array('C0'), 'do' => array($this,'displayIncorrectInput')
                     ),
                     array(
-                        'to' => array('C1'), 'do' => $this->playSoundFile($this->url_sound)
+                        'to' => array('C1'), 'do' => array($this,'playSoundFile')
                     ),
                     array(
-                        'to' => array('D'), 'do' => $this->hangup()
+                        'to' => array('D'), 'do' => array($this,'hangup')
                     )
                 )
             )
@@ -391,9 +391,10 @@ class StateMachineCnt extends Controller
             $this->response->redirect($this->ngrok_address . "/ivr/gatherInput");
     }
 
-    public function playSoundFile($sound_file_name)
+    public function playSoundFile()
     {
-        $this->response->play('http://itenure.net/sounds/' . $sound_file_name);
+        //$this->response->play('http://itenure.net/sounds/' . $sound_file_name);
+        $this->response->play('http://itenure.net/sounds/357.mp3');
     }
 
     public function hangup()
