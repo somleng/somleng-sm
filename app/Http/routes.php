@@ -56,15 +56,16 @@ Route::group(
         ]
     );
     Route::any(
-        '/menu-response', [
-            'as' => 'menu-response', 'uses' => 'StateMachineCnt@showMenuResponse'
+        '/gatherInput', [
+            'as' => 'gatherInput', 'uses' => 'StateMachineCnt@gatherInput'
         ]
     );
-    Route::any(
-        '/inputvalidation', [
-            'as' => 'inputvalidation', 'uses' => 'StateMachineCnt@inputValidation'
-        ]
-    );
+
+//    Route::any(
+//        '/inputvalidation', [
+//            'as' => 'inputvalidation', 'uses' => 'StateMachineCnt@inputValidation'
+//        ]
+//    );
 
 //    Route::any(
 //        '/test_validation', [

@@ -28,14 +28,33 @@ class IVRCnt extends Controller
     public function showWelcome()
     {
         $response = new Twiml();
-        $gather = $response->gather(
+//        $gather = $response->gather(
+//            [
+//                'numDigits' => 3,
+////                'action' => route('menu-response', [], false)
+//                'action' => $this->ngrok_address . "/ivr/inputvalidation"
+//            ]
+//        );
+//        $gather->say('Please Enter 3 digits of input');
+        $response->say('Please Enter 3 digits of input');
+//        $response->redirect($this->ngrok_address . "/ivr/welcome");
+//        $gather->play(
+//            'http://howtodocs.s3.amazonaws.com/et-phone.mp3',
+//            ['loop' => 3]
+//        );
+        return $response;
+    }
+    public function gatherInput()
+    {
+        $response = new Twiml();
+        $response->gather(
             [
                 'numDigits' => 3,
 //                'action' => route('menu-response', [], false)
                 'action' => $this->ngrok_address . "/ivr/inputvalidation"
             ]
         );
-        $gather->say('Please Enter 3 digits of input');
+//        $gather->say('Please Enter 3 digits of input');
 //        $gather->play(
 //            'http://howtodocs.s3.amazonaws.com/et-phone.mp3',
 //            ['loop' => 3]
@@ -50,14 +69,14 @@ class IVRCnt extends Controller
         // validate the input
         $validation_result = $this->validation_sound_file($input.".mp3");
 
-        if($validation_result == '0')
-        {
-            $response->say('input is incorrect');
-            $response->redirect($this->ngrok_address . "/ivr/welcome");
-        }
-        else  {
-            $response->play('http://itenure.net/sounds/' . $validation_result);
-        }
+//        if($validation_result == '0')
+//        {
+//            $response->say('input is incorrect');
+//            $response->redirect($this->ngrok_address . "/ivr/welcome");
+//        }
+//        else  {
+//            $response->play('http://itenure.net/sounds/' . $validation_result);
+//        }
         return $response;
     }
 
