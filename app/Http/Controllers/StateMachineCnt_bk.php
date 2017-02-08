@@ -63,8 +63,25 @@ class StateMachineCnt extends Controller
     {
         $callflow_tbl = new tblcallflow;
         $callflow_id = $callflow_tbl->insertNewCallflow('callflow_1');
+//        dd($callflow_id);
 
         // Model insertNewTransitionData($state, $input=null, $callflow_id, $twilml=null, $path=null, $action=null, $new_state, $state_type)
+
+       /*
+       // old state machine transition table data
+        $this->tbl_transition->insertNewTransitionData('s0', '1', $callflow_id, null, '/public/test.xml', null, 's1', '1');
+        $this->tbl_transition->insertNewTransitionData('s0', '2', $callflow_id, null, '/public/test.xml', null, 's2', '');
+        $this->tbl_transition->insertNewTransitionData('s0', '3', $callflow_id, null, '/public/test.xml', null, 's3', '');
+        $this->tbl_transition->insertNewTransitionData('s1', '1', $callflow_id, null, '/public/test.xml', null, 's4', '');
+        $this->tbl_transition->insertNewTransitionData('s4', '1', $callflow_id, null, '/public/test.xml', null, 's1', '');
+        $this->tbl_transition->insertNewTransitionData('s4', '2', $callflow_id, null, '/public/test.xml', null, 's0', '');
+        $this->tbl_transition->insertNewTransitionData('s4', '3', $callflow_id, null, '/public/test.xml', null, 's3', '');
+        $this->tbl_transition->insertNewTransitionData('s4', '4', $callflow_id, null, '/public/test.xml', null, 'hangup', '');
+        $this->tbl_transition->insertNewTransitionData('s2', 'null', $callflow_id, null, '/public/test.xml', null, 'hangup', '');
+        $this->tbl_transition->insertNewTransitionData('s3', 'null', $callflow_id, null, '/public/test.xml', null, 'hangup', '');
+        $this->tbl_transition->insertNewTransitionData('hangup', 'null', $callflow_id, '/public/test.xml', null, null, '', '2');
+       */
+
         $this->tbl_transition->insertNewTransitionData('A', null, $callflow_id, null, '/public/TwilMLCodeToPlayMessage.xml', null, 'B', '1');
         $this->tbl_transition->insertNewTransitionData('B', null, $callflow_id, null, 'Gater 5 digits', null, 'C', '');
         $this->tbl_transition->insertNewTransitionData('C', '0', $callflow_id, null, 'Play invalid input, please try again', null, 'D0', '');
@@ -72,6 +89,7 @@ class StateMachineCnt extends Controller
         $this->tbl_transition->insertNewTransitionData('D0', null, $callflow_id, null, 'Play invalid input', null, 'B', '');
         $this->tbl_transition->insertNewTransitionData('D1', null, $callflow_id, null, 'Play (found sound file)', null, 'E', '');
         $this->tbl_transition->insertNewTransitionData('E', null, $callflow_id, null, 'hangout', null, '', '2');
+
         echo "Transition test data are inserted.";
     }
 
@@ -79,7 +97,10 @@ class StateMachineCnt extends Controller
     public function insert_update_call_test_data()
     {
         $this->tbl_call->insertNewCallData('c001', 'A');
+        /*$this->tbl_call->insertNewCallData('c002', 's1');
+        $this->tbl_call->insertNewCallData('c003', 's4');*/
         echo "Call test data are inserted.";
+
         // update call record
         $this->tbl_call->updateCallData('c003', 'hangup');
     }
@@ -95,6 +116,9 @@ class StateMachineCnt extends Controller
         $state_id = $this->tbl_call->searchForCallID($callid);
         $transition_id = $this->tbl_transition->getTransitionID($state_id, $choice_input);
         dd($transition_id);
+
+
+
     }
 
     /**
@@ -103,10 +127,13 @@ class StateMachineCnt extends Controller
     public function example_new()
     {
         // Create States for Graph
+//        $getStates = $this->getStates('1');
         $getStates = $this->tbl_states->getStatesFromStateTable('1');
+//        dd($getStates);
         $arrayStringStates = array();
         $arrayStringTransitions = array();
         foreach ($getStates as $getState){
+//            echo $getState;
             $state_name = $getState['state'];
             $state_type = $getState['state_type'];
             $state_type_str = "";
@@ -115,21 +142,51 @@ class StateMachineCnt extends Controller
                 case 0:
                     $state_type_str = StateInterface::TYPE_NORMAL;
                     break;
+
                 case 1:
                     $state_type_str = StateInterface::TYPE_INITIAL;
                     break;
+
                 case 2:
                     $state_type_str = StateInterface::TYPE_FINAL;
                     break;
             }
+//            $eachState = array(
+//                $state_name => array(
+//                    'type' => $state_type_str,
+//                    'properties' => array(),
+//                ));
+            //$arrayStringStates[] = $eachState[0];
+
             $arrayStringStates [$state_name] = array(
                     'type' => $state_type_str,
                     'properties' => array()
                 );
-            $Transitions = $getState->transition;
 
-            foreach ($Transitions as $Transition)
-            {
+//            $test = array_push($arrayStringStates,$eachState);
+            //var_dump(json_decode($eachState));die;
+            //$arrayStringStates[] =  $eachState;
+
+            /*$arrayStringStates[] = array(
+                $state_name => array(
+                    'type' => $state_type_str,
+                    'properties' => array(),
+                ),
+
+            );*/
+
+           /* $arrayStringStates[] =
+                $state_name => array(
+                'type' => $state_type_str,
+                'properties' => array(),
+            );*/
+
+
+            $Transitions = $getState->transition;
+            //dd($Transitions);
+
+            foreach ($Transitions as $Transition){
+                //dd($getTransition);
                 $transition_name = $getState['state'];
                 if($Transition['input'] != "")
                     $transition_name = $getState['state'].'-'.$Transition['input'];
@@ -143,9 +200,14 @@ class StateMachineCnt extends Controller
             }
 
         }
-//        dd($arrayStringTransitions);
+        //
+        //var_dump(json_decode($arrayStringTransitions));
 
+//        dd($arrayStringStates);
+//        dd($arrayStringStates);
+        //dd($arrayStringTransitions);
         // Create Transitions for Graph
+
         // Configure your graph
         $document     = new Stateful;
         $this->stateMachine = new StateMachine($document);
@@ -180,8 +242,8 @@ class StateMachineCnt extends Controller
             )
         ));
 
-        $sm_load = $loader->load($this->stateMachine);
-        dd($sm_load);
+//        var_dump(json_decode($arrayStringTransitions));die;
+        $loader->load($this->stateMachine);
         $this->stateMachine->initialize();
 //        dd($loader);
 
