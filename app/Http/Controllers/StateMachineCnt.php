@@ -23,6 +23,7 @@ class StateMachineCnt extends Controller
     private $callID;
     private $stateMachine;
     private $response;
+    private $document;
 
     public function __construct()
     {
@@ -32,8 +33,11 @@ class StateMachineCnt extends Controller
         $this->ngrok_address = "https://30b8d7d3.ngrok.io";
         $this->url_sound = "";
         $this->callID = "";
-        $this->stateMachine = "";
         $this->response = new Twiml();
+        $this->document     = new Stateful;
+        $this->stateMachine = new StateMachine($this->document);
+        echo "test";
+        //dd($this->stateMachine);
     }
 
     public function test_eloquent_relationship()
@@ -83,12 +87,12 @@ class StateMachineCnt extends Controller
        */
 
         $this->tbl_transition->insertNewTransitionData('A', null, $callflow_id, null, '/public/TwilMLCodeToPlayMessage.xml', null, 'B', '1');
-        $this->tbl_transition->insertNewTransitionData('B', null, $callflow_id, null, 'Gater 5 digits', null, 'C', '');
-        $this->tbl_transition->insertNewTransitionData('C', '0', $callflow_id, null, 'Play invalid input, please try again', null, 'D0', '');
-        $this->tbl_transition->insertNewTransitionData('C', '1', $callflow_id, null, 'Play file5digits_twilML.xml', null, 'D1', '');
-        $this->tbl_transition->insertNewTransitionData('D0', null, $callflow_id, null, 'Play invalid input', null, 'B', '');
-        $this->tbl_transition->insertNewTransitionData('D1', null, $callflow_id, null, 'Play (found sound file)', null, 'E', '');
-        $this->tbl_transition->insertNewTransitionData('E', null, $callflow_id, null, 'hangout', null, '', '2');
+//        $this->tbl_transition->insertNewTransitionData('B', null, $callflow_id, null, 'Gater 5 digits', null, 'C', '');
+        $this->tbl_transition->insertNewTransitionData('B', '0', $callflow_id, null, 'Play invalid input, please try again', null, 'C0', '');
+        $this->tbl_transition->insertNewTransitionData('B', '1', $callflow_id, null, 'Play file5digits_twilML.xml', null, 'C1', '');
+        $this->tbl_transition->insertNewTransitionData('C0', null, $callflow_id, null, 'Play invalid input', null, 'B', '');
+        $this->tbl_transition->insertNewTransitionData('C1', null, $callflow_id, null, 'Play (found sound file)', null, 'D', '');
+        $this->tbl_transition->insertNewTransitionData('D', null, $callflow_id, null, 'hangout', null, '', '2');
 
         echo "Transition test data are inserted.";
     }
@@ -209,26 +213,28 @@ class StateMachineCnt extends Controller
         // Create Transitions for Graph
 
         // Configure your graph
-        $document     = new Stateful;
-        $this->stateMachine = new StateMachine($document);
-        $loader       = new ArrayLoader(array(
+
+        $loader = new ArrayLoader(array(
             'class'  => 'Document',
             'states'  => $arrayStringStates,
-            'transitions' => $arrayStringTransitions,
+            'transitions' => $arrayStringTransitions
+        ,
             'callbacks' => array(
-                'before' => array(
+               /* 'before' => array(
 //                    array(
 //                        'from' => 'B',
 //                        'do' => $this->C0orC1($input_val = $this->gatherInput())
 //                    )
-                ),
+                ),*/
                 'after' => array(
                     array(
-                        'to' => array('A'), 'do' => $this->makeCall()
-                    ),
+                        'to' => array('A'), 'do' => array($this, 'makeCall')
+                    )
+                ,
                     array(
-                        'to' => array('B'), 'do' => $this->gatherInput()
-                    ),
+                        'to' => array('B'), 'do' => array($this, 'gatherInput')
+                    )
+               ,
                     array(
                         'to' => array('C0'), 'do' => $this->displayIncorrectInput()
                     ),
@@ -245,7 +251,8 @@ class StateMachineCnt extends Controller
 //        var_dump(json_decode($arrayStringTransitions));die;
         $loader->load($this->stateMachine);
         $this->stateMachine->initialize();
-//        dd($loader);
+//        dd($this->stateMachine);
+        dd($loader);
 
         //$stateMachine->apply('s02');
 
@@ -311,6 +318,7 @@ class StateMachineCnt extends Controller
 
     public function changeState($indexOfTrans)
     {
+        dd($this->stateMachine);
         $tran = $this->stateMachine->getCurrentState()->getTransitions();
         $new_state = $this->stateMachine->apply($tran[$indexOfTrans]);
         $this->tbl_call->updateCallData($this->callID,$new_state);
@@ -397,7 +405,7 @@ class StateMachineCnt extends Controller
     public function makeCall()
     {
         // array("url" => "http://demo.twilio.com/docs/voice.xml")
-        $test_phone_number = "+85589555127";
+        $test_phone_number = "+85517696365";
         $twilio_sid = env('TWILIO_ACCOUNT_SID');
         $twilio_token = env('TWILIO_AUTH_TOKEN');
         $twilio_phone_number = env('TWILIO_NUMBER');

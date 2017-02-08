@@ -61,6 +61,12 @@ Route::group(
         ]
     );
 
+    Route::any(
+        '/changeState/{indexOfTrans}', [
+            'as' => 'changeState', 'uses' => 'StateMachineCnt@changeState'
+        ]
+    );
+
 //    Route::any(
 //        '/inputvalidation', [
 //            'as' => 'inputvalidation', 'uses' => 'StateMachineCnt@inputValidation'
