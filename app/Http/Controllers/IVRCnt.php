@@ -80,7 +80,7 @@ class IVRCnt extends Controller
         return $response;
     }
 
-    public function makeCall()
+    /*public function makeCall()
     {
         // array("url" => "http://demo.twilio.com/docs/voice.xml")
         $test_phone_number = "+85589555127";
@@ -95,7 +95,7 @@ class IVRCnt extends Controller
             array("url" => $this->ngrok_address . "/ivr/welcome")
         );
         echo $call->sid;
-    }
+    }*/
 
 //    public function test_validation()
 //    {
