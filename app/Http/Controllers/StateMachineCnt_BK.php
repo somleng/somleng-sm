@@ -25,7 +25,7 @@ class StateMachineCnt extends Controller
     private $stateMachine;
     private $response;
     private $document;
-    private $loader;
+    private $array_loader;
 
     public function __construct()
     {
@@ -38,13 +38,8 @@ class StateMachineCnt extends Controller
         $this->response = new Twiml();
         $this->document     = new Stateful;
         $this->stateMachine = new StateMachine($this->document);
-        $this->loader = new ArrayLoader(array());
 
-    }
-
-    public function example_new()
-    {
-        // create transitiion
+        // create transition
         $getStates = $this->tbl_states->getStatesFromStateTable('1');
         $arrayStringStates = array();
         $arrayStringTransitions = array();
@@ -86,18 +81,16 @@ class StateMachineCnt extends Controller
         }
         //dd($arrayStringTransitions);
 
-        $this->loader = array(
+        $loader = array(
             'class'  => 'Document',
             'states'  => $arrayStringStates,
             'transitions' => $arrayStringTransitions,
             'callbacks' => array(
                 'before' => array(
-//                    array(
-//                        'from' => 'A',
-//                        'do' => function() {
-//                            $this->makeCall();
-//                        }
-//                    ),
+                    array(
+                        'from' => 'A',
+                        'do' => array($this, $this->makeCall())
+                    ),
 //                    array(
 //                        'from' => 'proposed',
 //                        'do' => function() {
@@ -105,14 +98,14 @@ class StateMachineCnt extends Controller
 //                        }
 //                    )
                 ),
-                'after' => array(
-                    array(
-                        'to' => array('B'), 'do' => function(){
-                        // $this->gatherInput();
-                        $this->makeCall();
-                    }
-                    )
-                )
+//                'after' => array(
+//                    array(
+//                        'to' => array('B'), 'do' => function(){
+//                        // $this->gatherInput();
+//                        $this->makeCall();
+//                    }
+//                    )
+//                )
             )
         );
 
@@ -134,12 +127,17 @@ class StateMachineCnt extends Controller
 //                    )
 //                )
 
-
-        $this->loader->load($this->stateMachine);
+        $array_loader = new ArrayLoader($this->loader);
+        $array_loader->load($this->stateMachine);
         //dd($this->loader);
         $this->stateMachine->initialize();
+        //dd($this->stateMachine);
 
+    }
 
+    public function example_new()
+    {
+        dd($this->stateMachine);
         echo "<br> 1. current state ====== ";
         echo "<br> a. name: "; var_dump($this->stateMachine->getCurrentState()->getName());
         echo "<br> b. properties: "; var_dump($this->stateMachine->getCurrentState()->getProperties());
@@ -161,21 +159,21 @@ class StateMachineCnt extends Controller
         $twilio_phone_number = env('TWILIO_NUMBER');
 
         $client = new Client($twilio_sid, $twilio_token);
-        dd($client);
-//        $call = $client->calls->create(
-//            $test_phone_number,
-//            $twilio_phone_number,
-//            array("url" => $this->ngrok_address . "/ivr/welcome")
-//        );
-//
-//        echo $call->sid;
-//        $this->tbl_call->insertNewCallData($call->sid, 'A');
-        $this->changeState(0);
+        //dd($client);
+        $call = $client->calls->create(
+            $test_phone_number,
+            $twilio_phone_number,
+            array("url" => $this->ngrok_address . "/ivr/welcome")
+        );
+
+        echo $call->sid;
+        $this->tbl_call->insertNewCallData($call->sid, 'A');
+        //$this->changeState(0);
     }
 
     public function changeState($indexOfTrans)
     {
-       // dd($this->stateMachine);
+        // dd($this->stateMachine);
         //dd($this->loader);
         $tran = $this->stateMachine->getCurrentState()->getTransitions();
         $new_state = $this->stateMachine->apply($tran[$indexOfTrans]);
@@ -188,7 +186,6 @@ class StateMachineCnt extends Controller
         $response = new Twiml();
         $response->say('Please Enter 3 digits of input');
         $this->changeState(0);
-
         return $response;
     }
 
@@ -224,7 +221,6 @@ class StateMachineCnt extends Controller
         }
     }
 
-
     public function displayIncorrectInput()
     {
         $this->response->say('input is incorrect, please try again');
@@ -246,8 +242,5 @@ class StateMachineCnt extends Controller
         $this->response->hangup();
         return $this->response;
     }
-
-
-
 
 }
