@@ -37,7 +37,7 @@ class Stateful implements StatefulInterface
     public function display()
     {
 
-        echo '<br> Play TwilML ', $this->state, ' state.', "\n";
+        //echo '<br> Play TwilML ', $this->state, ' state.', "\n";
         $sid = "ACe888d537776f80870b2ae5d8bd37bf4c"; // Your Account SID from www.twilio.com/console
         $token = "d09aa9dd6a4440d6984c60cfe1e41881"; // Your Auth Token from www.twilio.com/console
 
@@ -53,7 +53,7 @@ class Stateful implements StatefulInterface
             '+85517696365', // Call this number
             '+12013800532', // From a valid Twilio number
             array(
-                'url' => 'https://b2b96fe7.ngrok.io/welcomTwiMLCode'
+                'url' => 'https://ee198af6.ngrok.io/welcomTwiMLCode'
             )
         );
 

@@ -109,10 +109,10 @@ Route::get('/act_input/{callid}/{input}', 'StateMachineCnt@act_input');
 Route::any('welcomTwiMLCode', ['as' => 'welcomTwiMLCode', 'uses' => function (){
     // To play sound file
     $response = new Twiml();
-//    $response->say('Hello');
+    $response->say('Hello Please enter 5 digits code');
 //    $response->play('https://api.twilio.com/cowbell.mp3', array("loop" => 5));
 //    $gather = $response->gather(array('numDigits' => 1, 'action' => 'http://503c8427.ngrok.io/choose'));
-    $gather = $response->gather(['numDigits' => 1, 'action' => 'https://8f4c3bd1.ngrok.io/choose']);
+    $gather = $response->gather(['numDigits' => 1, 'action' => 'https://ee198af6.ngrok.io/choose']);
     $gather->say("Verification code incorrect, please try again.");
 
     header("Content-Type: text/xml");
@@ -133,7 +133,7 @@ Route::any('choose', ['as' => 'choose', 'uses' => function (){
     // To play sound file
     $response1 = new Twiml();
     if($digits == 1)
-        $response1->play('https://8f4c3bd1.ngrok.io/Pursat_03.mp3');
+        $response1->play('https://ee198af6.ngrok.io/Pursat_03.mp3');
     else
         $response1->say('Sorry, your input is invalid, please try again');
     //header("Content-Type: text/xml");
