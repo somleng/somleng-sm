@@ -24,19 +24,19 @@ class StateMachineCnt extends Controller
     private $tbl_states;
     private $url_sound;
     private $callID;
-    public static $stateMachine;
+//    public $stateMachine;
     private $response;
+    //public $document;
 
     public function __construct()
     {
         $this->tbl_transition = new tbltransition;
         $this->tbl_call = new tblcall;
         $this->tbl_states = new tblstate;
-        $this->ngrok_address = "http://823edc59.ngrok.io";
+        $this->ngrok_address = "https://f177ff94.ngrok.io";
         $this->url_sound = "";
         $this->callID = "";
         $this->response = new Twiml();
-
     }
 
     public function display()
@@ -167,9 +167,6 @@ class StateMachineCnt extends Controller
         $state_id = $this->tbl_call->searchForCallID($callid);
         $transition_id = $this->tbl_transition->getTransitionID($state_id, $choice_input);
         //dd($transition_id);
-
-
-
     }
 
     /**
@@ -177,9 +174,6 @@ class StateMachineCnt extends Controller
      */
     public function sm_callflow(Request $request)
     {
-        $document     = new Stateful;
-        $stateMachine = new StateMachine($document);
-
         $getStates = $this->tbl_states->getStatesFromStateTable('1');
 //        dd($getStates);
         $arrayStringStates = array();
@@ -269,80 +263,71 @@ class StateMachineCnt extends Controller
             'transitions' => $arrayStringTransitions,
             'callbacks' => array(
                 'before' => array(
-                     array(
+                     /*array(
                          'from' => 'A',
-                         'do' => function(StatefulInterface $document, TransitionEvent $e) {
-                             echo '<br> callback before: Applying transition '.$e->getTransition()->getName(), "\n";
-
+                         'do' => function($stateMachine) {
+//                             dd($stateMachine);
+                             $this->makeCall($stateMachine);
                          }
-                     ),
-                    array(
-                        'from' => 'B',
-                        'do' => function(StatefulInterface $document, TransitionEvent $e) {
-                            echo '<br> callback before: Applying transition '.$e->getTransition()->getName(), "\n";
-
-                        }
-                    ),
+                     )*/
                 ),
                 'after' => array(
-                    array(
-                        'to' => array('B'), 'do' => array($this, 'changeState(0)')
-                    ),
 
-//                    array(
-//                        'to' => array('B'), 'do' => array($this, 'makeCall')
-//                    ),
-//                    array(
-//                        'to' => array('C0'), 'do' => array($this, 'displayIncorrectInput')
-//                    ),
-//                    array(
-//                        'to' => array('C1'), 'do' => array($this, 'playSoundFile')
-//                    ),
-//                    array(
-//                        'to' => array('D'), 'do' => array($this, 'hangup')
-//                    )
+                   array(
+                        'to' => array('B'), 'do' => function($current_state) {
+//                             dd($stateMachine);
+                             $this->makeCall();
+                             $this->changeState($current_state);
+                         }
+                    )
+                    ,
+                    array(
+                        'to' => array('C0'), 'do' => function($current_state) {
+                            $this->displayIncorrectInput();
+                            $this->changeState($current_state);
+                        }
+                     ),
+                    array(
+                        'to' => array('C1'), 'do' => function($current_state) {
+                             $this->displayIncorrectInput();
+                             $this->changeState($current_state);
+                        }
+                    ),
+                    array(
+                        'to' => array('D'), 'do' => function($current_state) {
+                            $this->displayIncorrectInput();
+                            $this->changeState($current_state);
+                        }
+                    )
                 )
 
             )
         ));
 
 //        var_dump(json_decode($arrayStringTransitions));die;
+        $document     = new Stateful;
+        $stateMachine = new StateMachine($document);
+
         $loader->load($stateMachine);
         $stateMachine->initialize();
-
 
         // Working with workflow
         // Current state
         echo "<br> 1. initial state ====== ";
         echo "<br> a.name: "; var_dump($stateMachine->getCurrentState()->getName());
-//        echo "<br> properties: "; var_dump($this->stateMachine->getCurrentState()->getProperties());
+//        echo "<br> properties: "; var_dump($stateMachine->getCurrentState()->getProperties());
 //        echo "<br> =========== <br>";
         echo "<br> b. transitions: "; var_dump($stateMachine->getCurrentState()->getTransitions());
 
         $tran = $stateMachine->getCurrentState()->getTransitions();
         //dd($tran);
         echo "<br> B4 Apply transition: ";
-        echo($stateMachine->getCurrentState()->getName());
+        var_dump($stateMachine->getCurrentState()->getName());
         echo "<br> Apply transition: ";
-            $stateMachine->apply($tran[0]);
-
+        $stateMachine->apply($tran[0]);
         echo "<br> name: "; var_dump($stateMachine->getCurrentState()->getName());
 
-        // set state
-        //$document->setFiniteState('s2');
-        // get state
-        // dd($document->getFiniteState());
-
-        //getTransitions($object, $graph = 'default', $asObject = false)
-        // get list of array of transitions
-        // dd($stateMachine->getTransitions());
-        // dd($stateMachine->getObject());
-        // dd($stateMachine->getGraph());
-
-
     }
-
-
 
 //    public function getStates($callflow_id)
 //    {
@@ -376,23 +361,26 @@ class StateMachineCnt extends Controller
 //        return
 //    }
 
-    public function changeState($indexOfTrans)
+    public function changeState($current_state)
     {
-        //dd($this->stateMachine);
+        //dd($sm);
         //echo "<br>change state<br>";
         //echo "<br> B4 Apply transition: ";
-        //var_dump($this->stateMachine->getCurrentState()->getName());
 
-        $tran = $stateMachine->getCurrentState()->getTransitions(); // error because $this->stateMachine == null
-//        dd($this->stateMachine);
-        $stateMachine->apply($tran[$indexOfTrans]);
-        $new_state = $stateMachine->getCurrentState()->getName();
+        //var_dump($stateMachine->getCurrentState()->getName());
+//        $tran = $this->stateMachine->getCurrentState()->getTransitions(); // error because $stateMachine == null
+//        dd($stateMachine);
+//        $this->stateMachine->apply($tran[$indexOfTrans]);
+//        $new_state = $this->stateMachine->getCurrentState()->getName();
         //dd($new_state);
 //        $this->tbl_call->updateCallData($this->callID,$new_state);
-        $this->tbl_call->updateCallData('CA541eabc5cde4914a2234bdb3d370fe10',$new_state);
-//        echo $new_state;
-        return $new_state;
+//        dd($indexOfTrans->state);
+        $this->tbl_call->updateCallData('CA000d44bb9266cf88d59d7b0b3f9d7fbe',$current_state->state);
+
+        return $current_state;
+
     }
+
     /**
      * Responds with a welcome message with instructions
      *
@@ -412,9 +400,9 @@ class StateMachineCnt extends Controller
             echo 'Error: ' . $e->getMessage();
         }
         //dd($this->stateMachine);
-       // $this->changeState(0);
         //dd($this->response);
         return $this->response;
+
     }
 
     public function gatherInput()
@@ -441,13 +429,11 @@ class StateMachineCnt extends Controller
         if(strpos($header_response[0], "404")!==false )
         {
             // FILE DOES NOT EXIST
-//            $this->changeState(0);
             return 0;
         }
         else
         {
             // FILE EXISTS
-//            $this->changeState(1);
             return $sound_file_name;
         }
     }
@@ -470,7 +456,6 @@ class StateMachineCnt extends Controller
     {
 //        echo "<br> display incorrect input <br>";
         $this->response->say('input is incorrect, please try again');
-//        $this->changeState(0);
         $this->response->redirect($this->ngrok_address . "/ivr/gatherInput");
         return $this->response;
     }
@@ -480,14 +465,12 @@ class StateMachineCnt extends Controller
 //        echo "<br> play sound file <br>";
         //$this->response->play('http://itenure.net/sounds/' . $sound_file_name);
         $this->response->play('http://itenure.net/sounds/357.mp3');
-//        $this->changeState(0);
         return $this->response;
     }
 
     public function hangup()
     {
 //        echo "<br>hangup<br>";
-//        $this->changeState(0);
         $this->response->hangup();
         return $this->response;
     }
@@ -496,7 +479,7 @@ class StateMachineCnt extends Controller
     {
         // array("url" => "http://demo.twilio.com/docs/voice.xml")
         //echo "makeCall function<br>";
-        $test_phone_number = "+85589555127";
+        $test_phone_number = "+85517696365";
         $twilio_sid = env('TWILIO_ACCOUNT_SID');
         $twilio_token = env('TWILIO_AUTH_TOKEN');
         $twilio_phone_number = env('TWILIO_NUMBER');
@@ -518,10 +501,9 @@ class StateMachineCnt extends Controller
         //dd($call);
 //       echo "<br>" . $call->sid . "<br>";
 //        $this->tbl_call->insertNewCallData($call->sid, 'A');
-        //dd($this->stateMachine);
-//        $this->changeState(0);
 
     }
+
 
 //    public function test_validation()
 //    {
