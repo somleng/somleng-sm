@@ -30,7 +30,7 @@ class StateMachineCnt extends Controller
         $this->tbl_transition = new tbltransition;
         $this->tbl_call = new tblcall;
         $this->tbl_states = new tblstate;
-        $this->ngrok_address = "https://ee198af6.ngrok.io";
+        $this->ngrok_address = "https://f177ff94.ngrok.io";
         $this->url_sound = "";
         $this->callID = "";
         $this->response = new Twiml();
@@ -125,12 +125,12 @@ class StateMachineCnt extends Controller
             'transitions' => $arrayStringTransitions,
             'callbacks' => array(
                  'before' => array(
-                    /* array(
+                     array(
                          'from' => 'A',
                          'do' => function() {
                              $this->makeCall();
                          }
-                     )*/
+                     )
                  ),
                 'after' => array(
                    /* array(
@@ -145,13 +145,14 @@ class StateMachineCnt extends Controller
                 ,
                     array(
                         'to' => array('B'), 'do' => array($this, 'display')
-                    )*/
+                    )
 
                      array(
                          'to' => array('B'), 'do' => array($this, 'makeCall')
                      )
 
-                     /* ==========array(
+                      ==========*/
+                   array(
                         'to' => array('B'), 'do' => array($this, 'gatherInput')
                     )
                     ,
@@ -163,7 +164,7 @@ class StateMachineCnt extends Controller
                     ),
                     array(
                         'to' => array('D'), 'do' => array($this, 'hangup')
-                    )===========*/
+                    )
 
                    /* array(
                         'to' => array('B'), 'do' => array($this, 'makeCall')
@@ -416,10 +417,12 @@ class StateMachineCnt extends Controller
     public function changeState($indexOfTrans)
     {
         //dd($this->stateMachine);
-        //echo "<br>change state";
+        echo "<br>change state<br>";
         $tran = $this->stateMachine->getCurrentState()->getTransitions(); // error because $this->stateMachine == null
         $new_state = $this->stateMachine->apply($tran[$indexOfTrans]);
         $this->tbl_call->updateCallData($this->callID,$new_state);
+//        $this->tbl_call->updateCallData('CA000d44bb9266cf88d59d7b0b3f9d7fbe',$new_state);
+//        echo $new_state;
         return $new_state;
     }
     /**
@@ -435,6 +438,8 @@ class StateMachineCnt extends Controller
         $this->changeState(0);
 
         return $response;
+
+
     }
 
     public function gatherInput()
