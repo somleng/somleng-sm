@@ -60,6 +60,27 @@ Route::group(
             'as' => 'gatherInput', 'uses' => 'StateMachineCnt@gatherInput'
         ]
     );
+    Route::any(
+        '/validation_sound_file', [
+            'as' => 'validation_sound_file', 'uses' => 'StateMachineCnt@validation_sound_file'
+        ]
+    );
+    Route::any(
+        '/displayIncorrectInput', [
+            'as' => 'displayIncorrectInput', 'uses' => 'StateMachineCnt@displayIncorrectInput'
+        ]
+    );
+    Route::any(
+        '/playSoundFile', [
+            'as' => 'playSoundFile', 'uses' => 'StateMachineCnt@playSoundFile'
+        ]
+    );
+    Route::any(
+        '/hangup', [
+            'as' => 'hangup', 'uses' => 'StateMachineCnt@hangup'
+        ]
+    );
+
 
     Route::any(
         '/changeState/{indexOfTrans}', [

@@ -16,7 +16,7 @@ use Twilio\Twiml;
 
 class Stateful implements StatefulInterface
 {
-    private $state;
+    public $state;
 
     /*public function __construct()
     {
