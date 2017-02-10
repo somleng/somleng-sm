@@ -30,7 +30,7 @@ class StateMachineCnt extends Controller
         $this->tbl_transition = new tbltransition;
         $this->tbl_call = new tblcall;
         $this->tbl_states = new tblstate;
-        $this->ngrok_address = "https://ee198af6.ngrok.io";
+        $this->ngrok_address = "http://823edc59.ngrok.io";
         $this->url_sound = "";
         $this->callID = "";
         $this->response = new Twiml();
@@ -117,7 +117,7 @@ class StateMachineCnt extends Controller
         // Create Transitions for Graph
 
         // Configure your graph
-        $document1 = new Stateful();
+        // $document1 = new Stateful();
         //$document1->display();
         $loader = new ArrayLoader(array(
             'class'  => 'Document',
@@ -147,8 +147,23 @@ class StateMachineCnt extends Controller
                          'to' => array('B'), 'do' => array($this, 'display')
                      )*/
 
+//                    array(
+//                        'to' => array('B'), 'do' => function() {
+//                            $this->changeState(0);
+//                    }
+//                    ),
+
                     array(
                         'to' => array('B'), 'do' => array($this, 'makeCall')
+                    ),
+                    array(
+                        'to' => array('C0'), 'do' => array($this, 'displayIncorrectInput')
+                    ),
+                    array(
+                        'to' => array('C1'), 'do' => array($this, 'playSoundFile')
+                    ),
+                    array(
+                        'to' => array('D'), 'do' => array($this, 'hangup')
                     )
 
                     /* ==========array(
@@ -265,11 +280,11 @@ class StateMachineCnt extends Controller
         //        dd($test);
         foreach($test as $test)
         {
-            var_dump($test->state);
+            //var_dump($test->state);
             //dd($test);
             foreach($test->transition as $transition)
             {
-                dd($transition->state_id);
+                //dd($transition->state_id);
             }
 
         }
@@ -332,7 +347,7 @@ class StateMachineCnt extends Controller
         //dd($choice_input);
         $state_id = $this->tbl_call->searchForCallID($callid);
         $transition_id = $this->tbl_transition->getTransitionID($state_id, $choice_input);
-        dd($transition_id);
+        //dd($transition_id);
 
 
 
@@ -355,16 +370,19 @@ class StateMachineCnt extends Controller
 
         // Working with workflow
         // Current state
-        echo "<br> 1. current state ====== ";
-        echo "<br> name: "; var_dump($this->stateMachine->getCurrentState()->getName());
+        echo "<br> 1. initial state ====== ";
+        echo "<br> a.name: "; var_dump($this->stateMachine->getCurrentState()->getName());
 //        echo "<br> properties: "; var_dump($this->stateMachine->getCurrentState()->getProperties());
 //        echo "<br> =========== <br>";
-        echo "<br> transitions: "; var_dump($this->stateMachine->getCurrentState()->getTransitions());
-        $tran = $this->stateMachine->getCurrentState()->getTransitions();
+        echo "<br> b. transitions: "; var_dump($this->stateMachine->getCurrentState()->getTransitions());
 
+        $tran = $this->stateMachine->getCurrentState()->getTransitions();
+        //dd($tran);
+        echo "<br> B4 Apply transition: ";
+        var_dump($this->stateMachine->getCurrentState()->getName());
         echo "<br> Apply transition: ";
-        $this->stateMachine->apply($tran[0]);
-        echo "<br> 1. current state ====== ";
+            $this->stateMachine->apply($tran[0]);
+
         echo "<br> name: "; var_dump($this->stateMachine->getCurrentState()->getName());
 
         // set state
@@ -416,11 +434,16 @@ class StateMachineCnt extends Controller
     public function changeState($indexOfTrans)
     {
         //dd($this->stateMachine);
-        echo "<br>change state<br>";
+        //echo "<br>change state<br>";
+        //echo "<br> B4 Apply transition: ";
+        //var_dump($this->stateMachine->getCurrentState()->getName());
         $tran = $this->stateMachine->getCurrentState()->getTransitions(); // error because $this->stateMachine == null
-        $new_state = $this->stateMachine->apply($tran[$indexOfTrans]);
+//        dd($this->stateMachine);
+        $this->stateMachine->apply($tran[$indexOfTrans]);
+        $new_state = $this->stateMachine->getCurrentState()->getName();
+        //dd($new_state);
 //        $this->tbl_call->updateCallData($this->callID,$new_state);
-        $this->tbl_call->updateCallData('CA000d44bb9266cf88d59d7b0b3f9d7fbe',$new_state);
+        $this->tbl_call->updateCallData('CA541eabc5cde4914a2234bdb3d370fe10',$new_state);
 //        echo $new_state;
         return $new_state;
     }
@@ -431,6 +454,7 @@ class StateMachineCnt extends Controller
      */
     public function showWelcome()
     {
+//        echo "<br> show welcome <br>";
         $response = new Twiml();
         $response->say('Please Enter 3 digits of input');
         //dd($this->stateMachine);
@@ -443,6 +467,7 @@ class StateMachineCnt extends Controller
 
     public function gatherInput()
     {
+//        echo "<br> gather input <br>";
         //echo "gatherInput function<br>";
         $response = new Twiml();
         $response->gather(
@@ -457,7 +482,8 @@ class StateMachineCnt extends Controller
 
     public function validation_sound_file(Request $request)
     {
-        $sound_file_name = $request->input('Digits');
+//        echo "<br> validation sound file <br>";
+        $sound_file_name = $request->input('Digits').".mp3";
         $url = "http://itenure.net/sounds/";
         $header_response = get_headers($url.$sound_file_name, 1);
         if(strpos($header_response[0], "404")!==false )
@@ -474,35 +500,41 @@ class StateMachineCnt extends Controller
         }
     }
 
-    public function C0orC1($input_val)
-    {
-        if(!empty($input_val))
-        {
-            if($input_val == 0)
-                $this->changeState(0);
-            else
-            {
-                $this->changeState(1);
-                $this->url_sound = $input_val;
-            }
-        }
-    }
+//    public function C0orC1($input_val)
+//    {
+//        if(!empty($input_val))
+//        {
+//            if($input_val == 0)
+//                $this->changeState(0);
+//            else
+//            {
+//                $this->changeState(1);
+//                $this->url_sound = $input_val;
+//            }
+//        }
+//    }
 
     public function displayIncorrectInput()
     {
+//        echo "<br> display incorrect input <br>";
         $this->response->say('input is incorrect, please try again');
         $this->changeState(0);
         $this->response->redirect($this->ngrok_address . "/ivr/gatherInput");
+        return $this->response;
     }
 
     public function playSoundFile()
     {
+//        echo "<br> play sound file <br>";
         //$this->response->play('http://itenure.net/sounds/' . $sound_file_name);
         $this->response->play('http://itenure.net/sounds/357.mp3');
+        $this->changeState(0);
+        return $this->response;
     }
 
     public function hangup()
     {
+//        echo "<br>hangup<br>";
         $this->changeState(0);
         $this->response->hangup();
     }
@@ -511,21 +543,22 @@ class StateMachineCnt extends Controller
     {
         // array("url" => "http://demo.twilio.com/docs/voice.xml")
         //echo "makeCall function<br>";
-        $test_phone_number = "+85517696365";
+        $test_phone_number = "+85589555127";
         $twilio_sid = env('TWILIO_ACCOUNT_SID');
         $twilio_token = env('TWILIO_AUTH_TOKEN');
         $twilio_phone_number = env('TWILIO_NUMBER');
 
-        $client = new Client($twilio_sid, $twilio_token);
-        $call = $client->calls->create(
-            $test_phone_number,
-            $twilio_phone_number,
-            array("url" => $this->ngrok_address . "/ivr/welcome")
-        );
-
-        //echo $call->sid;
-        $this->tbl_call->insertNewCallData($call->sid, 'A');
+//        $client = new Client($twilio_sid, $twilio_token);
+//        $call = $client->calls->create(
+//            $test_phone_number,
+//            $twilio_phone_number,
+//            array("url" => $this->ngrok_address . "/ivr/welcome")
+//        );
+//
+//       echo "<br>" . $call->sid . "<br>";
+//        $this->tbl_call->insertNewCallData($call->sid, 'A');
         //dd($this->stateMachine);
+        $this->changeState(0);
     }
 
 
