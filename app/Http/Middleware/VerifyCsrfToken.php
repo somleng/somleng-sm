@@ -16,6 +16,7 @@ class VerifyCsrfToken extends BaseVerifier
         "callflow",
         "choose",
         "showWelcome",
-        "welcomTwiMLCode"
+        "welcomTwiMLCode",
+        "sm_callflow",
     ];
 }
