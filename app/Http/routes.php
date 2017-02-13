@@ -17,7 +17,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/example_new', 'StateMachineCnt@example_new');
+//Route::get('/example_new', 'StateMachineCnt@example_new');
 
 // Example of State machine
 Route::get('/basic_graph', 'StateMachineExampleController@basic_graph');
@@ -103,7 +103,6 @@ Route::group(
 }
 );
 
-
 Route::get('/act_input/{callid}/{input}', 'StateMachineCnt@act_input');
 
 Route::any('welcomTwiMLCode', ['as' => 'welcomTwiMLCode', 'uses' => function (){
@@ -140,4 +139,6 @@ Route::any('choose', ['as' => 'choose', 'uses' => function (){
     return $response1;
 
 }]);
+
+Route::any('sm_callflow', ['as' => 'sm_callflow', 'uses' => 'StateMachineCnt@sm_callflow']);
 
