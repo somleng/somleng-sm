@@ -248,7 +248,7 @@ class StateMachineCnt extends Controller
 
         }
         //
-        //var_dump(json_decode($arrayStringTransitions));
+        //var_dump($arrayStringTransitions);
 
         // Create Transitions for Graph
 
@@ -270,8 +270,7 @@ class StateMachineCnt extends Controller
                      )*/
                 ),
                 'after' => array(
-
-                   array(
+                    array(
                         'to' => array('B'), 'do' => function($current_state) {
 //                             dd($stateMachine);
                              $this->makeCall();
@@ -323,9 +322,30 @@ class StateMachineCnt extends Controller
             //$document->setFiniteState('C0');
 //            $stateMachine = new StateMachine($document);
             //GoToState()?????
-            echo "<br> a.name: "; var_dump($stateMachine->getCurrentState()->getName());
-            echo "<br> is_initial_state: "; var_dump($stateMachine->getCurrentState()->isInitial());
-//            echo "<br> is_initial_state: "; var_dump($stateMachine->findInitialState());
+            $document->setFiniteState('B');
+            //$document->setFiniteState('B');
+           // var_dump($document->getFiniteState())."<br><br>";
+
+            //var_dump($stateMachine->apply($document->getFiniteState()."-0"))."<br><br>";
+
+
+            // get list of array of transitions
+           // var_dump($stateMachine->getCurrentState()->getTransitions());
+//            var_dump($stateMachine->getTransitions())."<br><br>";
+//            var_dump($stateMachine->can('B-0'));
+//            var_dump($stateMachine->can('B-1'));
+
+           // var_dump($stateMachine->getObject())."<br><br>";
+            var_dump($stateMachine->setObject("B"))."<br><br>";
+            var_dump($stateMachine->getObject())."<br><br>";
+//            var_dump($stateMachine->getGraph())."<br><br>";
+
+            //echo "<br> can = "; var_dump($stateMachine->can('B'));
+           echo "<br> a.name: "; var_dump($stateMachine->getCurrentState()->getName());
+            echo "<br> a.name: "; var_dump($stateMachine->apply('B-0'));
+
+            //echo "<br> is_initial_state: "; var_dump($stateMachine->getCurrentState()->isInitial());
+//            echo "<br> $document->getFiniteState(): "; var_dump($document->getFiniteState());
 //            $stateMachine->goToState
         }
 //        else $this->tbl_call->insertNewCallData($CallSid, $current_state);
