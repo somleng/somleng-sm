@@ -51,8 +51,8 @@ Route::group(
         'as' => 'makecall', 'uses' => 'StateMachineCnt@makeCall'
     ]);
     Route::any(
-        '/welcome', [
-            'as' => 'welcome', 'uses' => 'StateMachineCnt@showWelcome'
+        '/playWelcome', [
+            'as' => 'playWelcome', 'uses' => 'StateMachineCnt@playWelcome'
         ]
     );
     Route::any(
