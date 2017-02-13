@@ -54,6 +54,7 @@ class tblcall extends Model
     public function searchForCallID($call_id)
     {
         $find_call_id = $this::where('call_id', $call_id)->first();
+//        dd($find_call_id);
         if(!empty($find_call_id))
             return $find_call_id->state_id;
     }
