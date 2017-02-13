@@ -309,13 +309,7 @@ class StateMachineCnt extends Controller
 
 //        var_dump(json_decode($arrayStringTransitions));die;
         $document     = new Stateful;
-        $document->setFiniteState('C0');
-        $stateMachine = new StateMachine($document);
 
-        $loader->load($stateMachine);
-        $stateMachine->initialize();
-
-        echo "<br> current state of SM new = "; var_dump($stateMachine->getCurrentState()->getName());
 
         /** find CallSid in TblCall
          * if it exists get the state and apply that state
@@ -329,7 +323,15 @@ class StateMachineCnt extends Controller
         if(!empty($find_call_sid))
         {
             $state_name = $this->tbl_states->getStateName($find_call_sid);
-            echo "state name = " . $state_name;
+            $document->setFiniteState($state_name);
+            $stateMachine = new StateMachine($document);
+
+            $loader->load($stateMachine);
+            $stateMachine->initialize();
+
+            echo "<br> current state of SM new = "; var_dump($stateMachine->getCurrentState()->getName());
+            echo "<br> current transitions = "; var_dump($stateMachine->getCurrentState()->getTransitions());
+//            echo "state name = " . $state_name;
 //            $stateMachine->$SAI->setState($stateMachine->getObject(), $state_name);
             // set state
             $document->setFiniteState($state_name);
@@ -527,7 +529,7 @@ class StateMachineCnt extends Controller
     public function makeCall()
     {
         // array("url" => "http://demo.twilio.com/docs/voice.xml")
-        //echo "makeCall function<br>";
+        echo "makeCall function<br>";
         // $test_phone_number = "+85517696365";
         $test_phone_number = "+85517696365";
         $twilio_sid = env('TWILIO_ACCOUNT_SID');
