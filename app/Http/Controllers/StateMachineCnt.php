@@ -35,7 +35,7 @@ class StateMachineCnt extends Controller
         $this->tbl_transition = new tbltransition;
         $this->tbl_call = new tblcall;
         $this->tbl_states = new tblstate;
-        $this->ngrok_address = "https://4d0283e1.ngrok.io";
+        $this->ngrok_address = "http://10d628f6.ngrok.io";
         $this->url_sound = "";
         $this->callID = "";
         $this->response = new Twiml();
@@ -51,7 +51,6 @@ class StateMachineCnt extends Controller
         $token = env('TWILIO_AUTH_TOKEN'); // Your Auth Token from www.twilio.com/console
 
         /*
-
             <Response>
                 <Play>http://demo.twilio.com/hellomonkey/monkey.mp3</Play>
             </Response>
@@ -60,7 +59,7 @@ class StateMachineCnt extends Controller
         // Read TwiML at this URL when a call connects (hold music)
         $call = $client->calls->create(
             '+85517696365', // Call this number
-            '+12013800532', // From a valid Twilio number
+            env('TWILIO_NUMBER'), // From a valid Twilio number
             array(
                 'url' => 'https://ee198af6.ngrok.io/welcomTwiMLCode'
             )
@@ -81,7 +80,7 @@ class StateMachineCnt extends Controller
 // Read TwiML at this URL when a call connects (hold music)
         $call = $client->calls->create(
             '+85517696365', // Call this number
-            '+12013800532', // From a valid Twilio number
+            env('TWILIO_NUMBER'), // From a valid Twilio number
             array(
                 'url' => route('call.flow')
             )
@@ -179,7 +178,7 @@ class StateMachineCnt extends Controller
     public function sm_callflow(Request $request)
     {
         $this->call_Sid = $request->CallSid;
-
+        dd($this->call_Sid);
 
         $getStates = $this->tbl_states->getStatesFromStateTable('1');
 //        dd($getStates);
@@ -277,18 +276,19 @@ class StateMachineCnt extends Controller
                     array(
                        'from' => 'A',
                        'do' => function($current_state, $tran) {
-                         //dd($tran->getStateMachine()->object);
+//                         dd($tran);
+                           //dd($tran->getStateMachine());
 //                         dd($tran->getTransition()->getName());
-                           $this->makeCall();
-//                           $this->playWelcome();
-                           $this->changeState($this->call_Sid, $current_state);
-
+                          $this->makeCall();
+                          // $this->playWelcome();
+                          $this->changeState($this->call_Sid, $current_state);
+//                           $this->transit($tran->getTransition()->getName());
+                          // $this->transit($tran->getStateMachine(), $tran->getTransition()->getName());
 //                           $tran->getStateMachine()->apply($tran->getTransition()->getName());
 //                           exit(0);
 //                           $this->transit($tran->getStateMachine(),$tran->getTransition()->getName());
-
                        }
-                   )
+                   ),
                 ),
                 'after' => array(
                     array(
@@ -359,6 +359,7 @@ class StateMachineCnt extends Controller
             //var_dump($current_state_name);
 //            var_dump($stateMachine->getCurrentState()->getTransitions());
             $stateMachine->apply($transition[0]);
+//            dd($stateMachine);
 
 
 
@@ -455,11 +456,9 @@ class StateMachineCnt extends Controller
 //    {
 //        return
 //    }
+
     public function transit($sm,$tran_name)
     {
-//        $transition = $stateMachine->getCurrentState()->getTransitions();
-        //var_dump($current_state_name);
-//            var_dump($stateMachine->getCurrentState()->getTransitions());
         $sm->apply($tran_name);
     }
 
