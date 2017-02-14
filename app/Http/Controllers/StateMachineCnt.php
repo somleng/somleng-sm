@@ -292,14 +292,14 @@ class StateMachineCnt extends Controller
 //                           $this->transit($tran->getStateMachine(),$tran->getTransition()->getName());
                        }
                    ),
-                   /* array(
+                    array(
                         'from' => 'B',
                         'do' => function($current_state) {
-                            $this->changeState($this->call_Sid, $current_state);
+//                            $this->changeState($this->call_Sid, $current_state);
                             echo $this->gatherInput();
 
                         }
-                    ),*/
+                    ),
                 ),
                 'after' => array(
                     array(
@@ -310,7 +310,7 @@ class StateMachineCnt extends Controller
 
                     array(
                         'to' => array('C0'), 'do' => function($current_state) {
-                            $this->displayIncorrectInput();
+//                            $this->displayIncorrectInput();
                             $this->changeState($this->call_Sid, $current_state);
                         }
                      ),
