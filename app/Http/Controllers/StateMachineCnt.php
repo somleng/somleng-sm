@@ -178,7 +178,7 @@ class StateMachineCnt extends Controller
     public function sm_callflow(Request $request)
     {
         $this->call_Sid = $request->CallSid;
-
+        dd($this->call_Sid);
 
         $getStates = $this->tbl_states->getStatesFromStateTable('1');
 //        dd($getStates);
