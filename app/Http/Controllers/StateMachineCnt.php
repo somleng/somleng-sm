@@ -492,9 +492,10 @@ class StateMachineCnt extends Controller
     public function playWelcome()
     {
 //        echo "<br> show welcome <br>";
+//        echo "call sid = ".$callSID;
         try{
             $this->response->say('Please Enter 3 digits of input');
-            $this->response->redirect($this->ngrok_address . "/ivr/gatherInput");
+            $this->response->redirect(route('sm_callflow'));
         }
         catch (Exception $e) {
             echo 'Error: ' . $e->getMessage();
@@ -511,7 +512,7 @@ class StateMachineCnt extends Controller
         $this->response->gather(
             [
                 'numDigits' => 3,
-                'action' => $this->ngrok_address . "/ivr/validation_sound_file"
+                'action' => route('validation_sound_file')
             ]
         );
         return $this->response;
@@ -540,7 +541,7 @@ class StateMachineCnt extends Controller
     {
 //        echo "<br> display incorrect input <br>";
         $this->response->say('input is incorrect, please try again');
-        $this->response->redirect($this->ngrok_address . "/ivr/gatherInput");
+        $this->response->redirect(route('gatherInput'));
         return $this->response;
     }
 
@@ -576,7 +577,7 @@ class StateMachineCnt extends Controller
             $call = $client->calls->create(
                 $test_phone_number,
                 $twilio_phone_number,
-                array("url" => $this->ngrok_address . "/ivr/playWelcome")
+                array("url" => route('playWelcome'))
             );
             echo "<br>" . $call->sid;
         }
