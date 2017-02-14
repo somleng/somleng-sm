@@ -444,7 +444,7 @@ class StateMachineCnt extends Controller
 //        echo "call sid = ".$callSID;
         try{
             $this->response->say('Please Enter 3 digits of input');
-            $this->response->redirect(route('sm_callflow'));
+            // $this->response->redirect(route('sm_callflow'));
         }
         catch (Exception $e) {
             echo 'Error: ' . $e->getMessage();
