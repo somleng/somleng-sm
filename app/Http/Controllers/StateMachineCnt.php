@@ -338,7 +338,6 @@ class StateMachineCnt extends Controller
             $state_name = $this->tbl_states->getStateName($find_call_sid);
             $document->setFiniteState($state_name);
             $stateMachine = new StateMachine($document);
-
             $loader->load($stateMachine);
             $stateMachine->initialize();
 
@@ -350,6 +349,9 @@ class StateMachineCnt extends Controller
         else
         {
             $stateMachine = new StateMachine($document);
+            $loader->load($stateMachine);
+            $stateMachine->initialize();
+
             $current_state = $stateMachine->getCurrentState()->getName();
             $this->tbl_call->insertNewCallData($this->call_Sid, $current_state);
         }
