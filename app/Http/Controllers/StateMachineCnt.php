@@ -446,6 +446,7 @@ class StateMachineCnt extends Controller
         catch (Exception $e) {
             echo 'Error: ' . $e->getMessage();
         }
+        Log::info($this->response);
         return $this->response;
 
     }
