@@ -282,7 +282,7 @@ class StateMachineCnt extends Controller
                            //dd($tran->getStateMachine());
 //                         dd($tran->getTransition()->getName());
 //                          $this->makeCall();
-                           $this->changeState($this->call_Sid, $current_state);
+//                           $this->changeState($this->call_Sid, $current_state);
                            echo $this->playWelcome();
 
 //                           $this->transit($tran->getTransition()->getName());
@@ -302,6 +302,11 @@ class StateMachineCnt extends Controller
                     ),*/
                 ),
                 'after' => array(
+                    array(
+                        'to' => array('B'), 'do' => function($current_state) {
+                        $this->changeState($this->call_Sid, $current_state);
+                    }
+                    ),
 
                     array(
                         'to' => array('C0'), 'do' => function($current_state) {
