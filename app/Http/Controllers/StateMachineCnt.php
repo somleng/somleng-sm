@@ -177,7 +177,7 @@ class StateMachineCnt extends Controller
      */
     public function sm_callflow(Request $request)
     {
-        dd($request);
+        Log::debug($request);
         $this->call_Sid = $request->CallSid;
 //        dd($this->call_Sid);
 
