@@ -292,14 +292,14 @@ class StateMachineCnt extends Controller
 //                           $this->transit($tran->getStateMachine(),$tran->getTransition()->getName());
                        }
                    ),
-                    array(
+                   /* array(
                         'from' => 'B',
                         'do' => function($current_state) {
                             $this->changeState($this->call_Sid, $current_state);
                             echo $this->gatherInput();
 
                         }
-                    ),
+                    ),*/
                 ),
                 'after' => array(
 
@@ -425,6 +425,7 @@ class StateMachineCnt extends Controller
 //        $this->tbl_call->updateCallData($this->callID,$new_state);
 //        dd($indexOfTrans->state);
 //        $this->tbl_call->updateCallData('CA000d44bb9266cf88d59d7b0b3f9d7fbe',$current_state->state);
+        Log::info($current_state);
         $this->tbl_call->updateCallData($call_sid,$current_state->state);
 
         return $current_state;
