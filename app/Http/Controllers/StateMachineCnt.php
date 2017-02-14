@@ -29,6 +29,7 @@ class StateMachineCnt extends Controller
     //public $document;
 //    private $object;
     private $call_Sid;
+    private $digits;
 
     public function __construct()
     {
@@ -41,6 +42,7 @@ class StateMachineCnt extends Controller
         $this->response = new Twiml();
 //        $this->object = $object;
         $this->call_Sid = "";
+        $this->digits = "";
     }
 
     public function display()
@@ -117,24 +119,7 @@ class StateMachineCnt extends Controller
     {
         $callflow_tbl = new tblcallflow;
         $callflow_id = $callflow_tbl->insertNewCallflow('callflow_1');
-//        dd($callflow_id);
 
-        // Model insertNewTransitionData($state, $input=null, $callflow_id, $twilml=null, $path=null, $action=null, $new_state, $state_type)
-
-        /*
-        // old state machine transition table data
-         $this->tbl_transition->insertNewTransitionData('s0', '1', $callflow_id, null, '/public/test.xml', null, 's1', '1');
-         $this->tbl_transition->insertNewTransitionData('s0', '2', $callflow_id, null, '/public/test.xml', null, 's2', '');
-         $this->tbl_transition->insertNewTransitionData('s0', '3', $callflow_id, null, '/public/test.xml', null, 's3', '');
-         $this->tbl_transition->insertNewTransitionData('s1', '1', $callflow_id, null, '/public/test.xml', null, 's4', '');
-         $this->tbl_transition->insertNewTransitionData('s4', '1', $callflow_id, null, '/public/test.xml', null, 's1', '');
-         $this->tbl_transition->insertNewTransitionData('s4', '2', $callflow_id, null, '/public/test.xml', null, 's0', '');
-         $this->tbl_transition->insertNewTransitionData('s4', '3', $callflow_id, null, '/public/test.xml', null, 's3', '');
-         $this->tbl_transition->insertNewTransitionData('s4', '4', $callflow_id, null, '/public/test.xml', null, 'hangup', '');
-         $this->tbl_transition->insertNewTransitionData('s2', 'null', $callflow_id, null, '/public/test.xml', null, 'hangup', '');
-         $this->tbl_transition->insertNewTransitionData('s3', 'null', $callflow_id, null, '/public/test.xml', null, 'hangup', '');
-         $this->tbl_transition->insertNewTransitionData('hangup', 'null', $callflow_id, '/public/test.xml', null, null, '', '2');
-        */
         // OLD GRAPH THAT COMBINE VALIDATE FUNCTION WITH GATHERING //
         /*$this->tbl_transition->insertNewTransitionData('A', null, $callflow_id, null, '/public/TwilMLCodeToPlayMessage.xml', null, 'B', '1');
 //        $this->tbl_transition->insertNewTransitionData('B', null, $callflow_id, null, 'Gater 5 digits', null, 'C', '');
@@ -152,16 +137,7 @@ class StateMachineCnt extends Controller
         $this->tbl_transition->insertNewTransitionData('D', '1', $callflow_id, null, 'Play file5digits_twilML.xml', null, 'E1', '');
         $this->tbl_transition->insertNewTransitionData('E0', null, $callflow_id, null, 'redirect to gathering', null, 'B', '');
         $this->tbl_transition->insertNewTransitionData('E1', null, $callflow_id, null, 'Play (found sound file)', null, 'F', '');
-        $this->tbl_transition->insertNewTransitionData('F', null, $callflow_id, null, 'hangout', null, '', '2');
-
-        /*// OLD GRAPH THAT COMBINE VALIDATE FUNCTION WITH GATHERING // => PHYRUM
-        $this->tbl_transition->insertNewTransitionData('A', null, $callflow_id, null, 'Gather 5 digits', null, 'B', '1');
-        $this->tbl_transition->insertNewTransitionData('B', null, $callflow_id, null, 'Validation', null, 'C', '');
-        $this->tbl_transition->insertNewTransitionData('C', '0', $callflow_id, null, 'invalid input', null, 'D0', '');
-        $this->tbl_transition->insertNewTransitionData('C', '1', $callflow_id, null, 'valid input', null, 'D1', '');
-        $this->tbl_transition->insertNewTransitionData('D0', null, $callflow_id, null, 'Play incorrect input', null, 'B', '');
-        $this->tbl_transition->insertNewTransitionData('D1', null, $callflow_id, null, 'play correct sound file', null, 'E', '');
-        $this->tbl_transition->insertNewTransitionData('E', null, $callflow_id, null, 'Hangup', null, '', '2');*/
+        $this->tbl_transition->insertNewTransitionData('F', null, $callflow_id, null, 'hang up', null, '', '2');
 
         echo "Transition test data are inserted.";
     }
@@ -198,6 +174,7 @@ class StateMachineCnt extends Controller
     {
 
         $this->call_Sid = $request->CallSid;
+        $this->digits = $request->Digits;
         //Log::info("callSid= " .  $this->call_Sid);
 //        dd($this->call_Sid);
 
@@ -296,26 +273,22 @@ class StateMachineCnt extends Controller
                      )*/
                     array(
                        'from' => 'A',
-                       'do' => function($current_state) {
-//                         dd($tran);
-                           //dd($tran->getStateMachine());
-//                         dd($tran->getTransition()->getName());
-//                          $this->makeCall();
-//                           $this->changeState($this->call_Sid, $current_state);
+                       'do' => function() {
                            echo $this->playWelcome();
-
-//                           $this->transit($tran->getTransition()->getName());
-                          // $this->transit($tran->getStateMachine(), $tran->getTransition()->getName());
-//                           $tran->getStateMachine()->apply($tran->getTransition()->getName());
-//                           exit(0);
-//                           $this->transit($tran->getStateMachine(),$tran->getTransition()->getName());
                        }
                    ),
                     array(
                         'from' => 'B',
-                        'do' => function($current_state) {
+                        'do' => function() {
 //                            $this->changeState($this->call_Sid, $current_state);
                             echo $this->gatherInput();
+
+                        }
+                    ),
+                    array(
+                        'from' => 'C',
+                        'do' => function() {
+                            echo $this->validation_sound_file($this->digits);
 
                         }
                     ),
@@ -328,7 +301,7 @@ class StateMachineCnt extends Controller
                     ),
 
                     array(
-                        'to' => array('C0'), 'do' => function($current_state) {
+                        'to' => array('C'), 'do' => function($current_state) {
 //                            $this->displayIncorrectInput();
                             $this->changeState($this->call_Sid, $current_state);
                         }
@@ -492,11 +465,12 @@ class StateMachineCnt extends Controller
         return $this->response;
     }
 
-    public function validation_sound_file(Request $request)
+    public function validation_sound_file($callSID, $digits)
     {
-        $CallSid = $request->input('CallSid');
+//        $CallSid = $request->input('CallSid');
 //        echo "<br> validation sound file <br>";
-        $sound_file_name = $request->input('Digits').".mp3";
+        //$sound_file_name = $request->input('Digits').".mp3";
+        $sound_file_name = $digits.".mp3";
         $url = "http://itenure.net/sounds/";
         $header_response = get_headers($url.$sound_file_name, 1);
         if(strpos($header_response[0], "404")!==false )
