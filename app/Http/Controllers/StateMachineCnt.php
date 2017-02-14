@@ -135,14 +135,33 @@ class StateMachineCnt extends Controller
          $this->tbl_transition->insertNewTransitionData('s3', 'null', $callflow_id, null, '/public/test.xml', null, 'hangup', '');
          $this->tbl_transition->insertNewTransitionData('hangup', 'null', $callflow_id, '/public/test.xml', null, null, '', '2');
         */
-
-        $this->tbl_transition->insertNewTransitionData('A', null, $callflow_id, null, '/public/TwilMLCodeToPlayMessage.xml', null, 'B', '1');
+        // OLD GRAPH THAT COMBINE VALIDATE FUNCTION WITH GATHERING //
+        /*$this->tbl_transition->insertNewTransitionData('A', null, $callflow_id, null, '/public/TwilMLCodeToPlayMessage.xml', null, 'B', '1');
 //        $this->tbl_transition->insertNewTransitionData('B', null, $callflow_id, null, 'Gater 5 digits', null, 'C', '');
         $this->tbl_transition->insertNewTransitionData('B', '0', $callflow_id, null, 'Play invalid input, please try again', null, 'C0', '');
         $this->tbl_transition->insertNewTransitionData('B', '1', $callflow_id, null, 'Play file5digits_twilML.xml', null, 'C1', '');
         $this->tbl_transition->insertNewTransitionData('C0', null, $callflow_id, null, 'Play invalid input', null, 'B', '');
         $this->tbl_transition->insertNewTransitionData('C1', null, $callflow_id, null, 'Play (found sound file)', null, 'D', '');
-        $this->tbl_transition->insertNewTransitionData('D', null, $callflow_id, null, 'hangout', null, '', '2');
+        $this->tbl_transition->insertNewTransitionData('D', null, $callflow_id, null, 'hangout', null, '', '2');*/
+
+        // NEW GRAPH THAT SEPARATE VALIDATION FUNCTION FROM GATHERING // => SAMAK
+        $this->tbl_transition->insertNewTransitionData('A', null, $callflow_id, null, '/public/TwilMLCodeToPlayMessage.xml', null, 'B', '1');
+        $this->tbl_transition->insertNewTransitionData('B', null, $callflow_id, null, 'Gater 5 digits', null, 'C', '');
+        $this->tbl_transition->insertNewTransitionData('C', null, $callflow_id, null, 'Validation', null, 'D', '');
+        $this->tbl_transition->insertNewTransitionData('D', '0', $callflow_id, null, 'Play invalid input, please try again', null, 'E0', '');
+        $this->tbl_transition->insertNewTransitionData('D', '1', $callflow_id, null, 'Play file5digits_twilML.xml', null, 'E1', '');
+        $this->tbl_transition->insertNewTransitionData('E0', null, $callflow_id, null, 'redirect to gathering', null, 'B', '');
+        $this->tbl_transition->insertNewTransitionData('E1', null, $callflow_id, null, 'Play (found sound file)', null, 'F', '');
+        $this->tbl_transition->insertNewTransitionData('F', null, $callflow_id, null, 'hangout', null, '', '2');
+
+        /*// OLD GRAPH THAT COMBINE VALIDATE FUNCTION WITH GATHERING // => PHYRUM
+        $this->tbl_transition->insertNewTransitionData('A', null, $callflow_id, null, 'Gather 5 digits', null, 'B', '1');
+        $this->tbl_transition->insertNewTransitionData('B', null, $callflow_id, null, 'Validation', null, 'C', '');
+        $this->tbl_transition->insertNewTransitionData('C', '0', $callflow_id, null, 'invalid input', null, 'D0', '');
+        $this->tbl_transition->insertNewTransitionData('C', '1', $callflow_id, null, 'valid input', null, 'D1', '');
+        $this->tbl_transition->insertNewTransitionData('D0', null, $callflow_id, null, 'Play incorrect input', null, 'B', '');
+        $this->tbl_transition->insertNewTransitionData('D1', null, $callflow_id, null, 'play correct sound file', null, 'E', '');
+        $this->tbl_transition->insertNewTransitionData('E', null, $callflow_id, null, 'Hangup', null, '', '2');*/
 
         echo "Transition test data are inserted.";
     }
@@ -467,7 +486,7 @@ class StateMachineCnt extends Controller
         $this->response->gather(
             [
                 'numDigits' => 3,
-                'action' => route('validation_sound_file')
+                'action' => route('sm_callflow')
             ]
         );
         return $this->response;
