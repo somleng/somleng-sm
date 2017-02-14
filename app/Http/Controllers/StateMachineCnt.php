@@ -35,7 +35,7 @@ class StateMachineCnt extends Controller
         $this->tbl_transition = new tbltransition;
         $this->tbl_call = new tblcall;
         $this->tbl_states = new tblstate;
-        $this->ngrok_address = "http://2ea5f734.ngrok.io";
+        $this->ngrok_address = "http://10d628f6.ngrok.io";
         $this->url_sound = "";
         $this->callID = "";
         $this->response = new Twiml();
@@ -277,14 +277,16 @@ class StateMachineCnt extends Controller
                     array(
                        'from' => 'A',
                        'do' => function($current_state, $tran) {
-//                         dd($tran->stateMachine);
+//                         dd($tran);
+                           //dd($tran->getStateMachine());
 //                         dd($tran->getTransition()->getName());
-                          // $this->makeCall();
-                           $this->playWelcome();
-                           $this->changeState($this->call_Sid, $current_state);
-                           $this->transit($tran->getTransition()->getName());
+                          $this->makeCall();
+                          // $this->playWelcome();
+                          $this->changeState($this->call_Sid, $current_state);
+//                           $this->transit($tran->getTransition()->getName());
+                          // $this->transit($tran->getStateMachine(), $tran->getTransition()->getName());
                        }
-                   )
+                   ),
                 ),
                 'after' => array(
                     array(
@@ -343,6 +345,8 @@ class StateMachineCnt extends Controller
             $document->setFiniteState($state_name);
 
             $stateMachine = new StateMachine($document);
+
+
             $loader->load($stateMachine);
             $stateMachine->initialize();
 
@@ -351,6 +355,7 @@ class StateMachineCnt extends Controller
             //var_dump($current_state_name);
 //            var_dump($stateMachine->getCurrentState()->getTransitions());
             $stateMachine->apply($transition[0]);
+//            dd($stateMachine);
 
 
 
@@ -447,12 +452,15 @@ class StateMachineCnt extends Controller
 //    {
 //        return
 //    }
-    public function transit($transition_name)
+    public function transit($state_machine, $transition_name)
     {
+//        dd($statemachine->object);
 //        $transition = $stateMachine->getCurrentState()->getTransitions();
         //var_dump($current_state_name);
 //            var_dump($stateMachine->getCurrentState()->getTransitions());
-        $stateMachine->apply($transition_name);
+//        $stateMachine->apply($transition_name);
+        $state_machine->apply($transition_name);
+        exit(0);
     }
 
     public function changeState($call_sid, $current_state)
@@ -486,7 +494,7 @@ class StateMachineCnt extends Controller
 //        echo "<br> show welcome <br>";
         try{
             $this->response->say('Please Enter 3 digits of input');
-//            $this->response->redirect($this->ngrok_address . "/ivr/gatherInput");
+            $this->response->redirect($this->ngrok_address . "/ivr/gatherInput");
         }
         catch (Exception $e) {
             echo 'Error: ' . $e->getMessage();
@@ -567,7 +575,7 @@ class StateMachineCnt extends Controller
             $call = $client->calls->create(
                 $test_phone_number,
                 $twilio_phone_number,
-                array("url" => $this->ngrok_address . "/ivr/play_welcome")
+                array("url" => $this->ngrok_address . "/ivr/playWelcome")
             );
             echo "<br>" . $call->sid;
         }
