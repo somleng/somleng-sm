@@ -292,6 +292,9 @@ class StateMachineCnt extends Controller
 
                         }
                     ),
+
+
+
                 ),
                 'after' => array(
                     array(
@@ -302,10 +305,9 @@ class StateMachineCnt extends Controller
 
                     array(
                         'to' => array('C'), 'do' => function($current_state) {
-//                            $this->displayIncorrectInput();
                             $this->changeState($this->call_Sid, $current_state);
                         }
-                     ),
+                     ),// validation return input then what to do next???
                     array(
                         'to' => array('C1'), 'do' => function($current_state) {
                              $this->playSoundFile();
@@ -465,7 +467,7 @@ class StateMachineCnt extends Controller
         return $this->response;
     }
 
-    public function validation_sound_file($callSID, $digits)
+    public function validation_sound_file($digits)
     {
 //        $CallSid = $request->input('CallSid');
 //        echo "<br> validation sound file <br>";
@@ -476,13 +478,18 @@ class StateMachineCnt extends Controller
         if(strpos($header_response[0], "404")!==false )
         {
             // FILE DOES NOT EXIST
-            return 0;
+            //return 0;
+//            $this->sm_callflow()
+
+            $this->response->redirect(route('sm_callflow',['return_input' => 0]));
         }
         else
         {
             // FILE EXISTS
-            return $sound_file_name;
+//            return $sound_file_name;
+            $this->response->redirect(route('sm_callflow',['return_input' => $sound_file_name]));
         }
+
     }
 
     public function displayIncorrectInput()
