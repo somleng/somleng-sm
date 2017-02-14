@@ -281,8 +281,8 @@ class StateMachineCnt extends Controller
 //                         dd($tran);
                            //dd($tran->getStateMachine());
 //                         dd($tran->getTransition()->getName());
-                          $this->makeCall();
-                          // $this->playWelcome();
+//                          $this->makeCall();
+                           $this->playWelcome();
                           $this->changeState($this->call_Sid, $current_state);
 //                           $this->transit($tran->getTransition()->getName());
                           // $this->transit($tran->getStateMachine(), $tran->getTransition()->getName());
@@ -340,11 +340,6 @@ class StateMachineCnt extends Controller
             $stateMachine = new StateMachine($document);
             $loader->load($stateMachine);
             $stateMachine->initialize();
-
-//            echo "<br> current state of SM new = "; var_dump($stateMachine->getCurrentState()->getName());
-//            echo "<br> current transitions = "; var_dump($stateMachine->getCurrentState()->getTransitions());
-            $transition = $stateMachine->getCurrentState()->getTransitions();
-            $stateMachine->apply($transition[0]);
         }
         else
         {
@@ -355,6 +350,8 @@ class StateMachineCnt extends Controller
             $current_state = $stateMachine->getCurrentState()->getName();
             $this->tbl_call->insertNewCallData($this->call_Sid, $current_state);
         }
+        $transition = $stateMachine->getCurrentState()->getTransitions();
+        $stateMachine->apply($transition[0]);
 
 
         // Working with workflow
