@@ -291,17 +291,16 @@ class StateMachineCnt extends Controller
 //                           $this->transit($tran->getStateMachine(),$tran->getTransition()->getName());
                        }
                    ),
+                    array(
+                        'from' => 'B',
+                        'do' => function($current_state) {
+                            echo $this->gatherInput();
+                            $this->changeState($this->call_Sid, $current_state);
+                        }
+                    ),
                 ),
                 'after' => array(
-                    array(
-                        'to' => array('B'), 'do' => function($current_state) {
-//                             dd($stateMachine);
-                             //$this->makeCall();
-                             $this->gatherInput();
-                             $this->changeState($this->call_Sid, $current_state);
-                         }
-                    )
-                    ,
+
                     array(
                         'to' => array('C0'), 'do' => function($current_state) {
                             $this->displayIncorrectInput();
