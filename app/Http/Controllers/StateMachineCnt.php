@@ -283,7 +283,7 @@ class StateMachineCnt extends Controller
 //                         dd($tran->getTransition()->getName());
 //                          $this->makeCall();
                            echo $this->playWelcome();
-                          //$this->changeState($this->call_Sid, $current_state);
+                           $this->changeState($this->call_Sid, $current_state);
 //                           $this->transit($tran->getTransition()->getName());
                           // $this->transit($tran->getStateMachine(), $tran->getTransition()->getName());
 //                           $tran->getStateMachine()->apply($tran->getTransition()->getName());
@@ -441,12 +441,12 @@ class StateMachineCnt extends Controller
 //        echo "call sid = ".$callSID;
         try{
             $this->response->say('Please Enter 3 digits of input');
-            // $this->response->redirect(route('sm_callflow'));
+            $this->response->redirect(route('sm_callflow'));
         }
         catch (Exception $e) {
             echo 'Error: ' . $e->getMessage();
         }
-        Log::debug($this->response);
+//        Log::debug($this->response);
         //Log::info($this->response);
 
         return $this->response;
