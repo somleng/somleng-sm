@@ -28,25 +28,27 @@ class StateMachineCnt extends Controller
     private $response;
     //public $document;
 //    private $object;
+    private $call_Sid;
 
     public function __construct()
     {
         $this->tbl_transition = new tbltransition;
         $this->tbl_call = new tblcall;
         $this->tbl_states = new tblstate;
-        $this->ngrok_address = "https://82f89c70.ngrok.io";
+        $this->ngrok_address = "https://4d0283e1.ngrok.io";
         $this->url_sound = "";
         $this->callID = "";
         $this->response = new Twiml();
 //        $this->object = $object;
+        $this->call_Sid = "";
     }
 
     public function display()
     {
 
         //echo '<br> Play TwilML ', $this->state, ' state.', "\n";
-        $sid = "ACe888d537776f80870b2ae5d8bd37bf4c"; // Your Account SID from www.twilio.com/console
-        $token = "d09aa9dd6a4440d6984c60cfe1e41881"; // Your Auth Token from www.twilio.com/console
+        $sid = env('TWILIO_ACCOUNT_SID'); // Your Account SID from www.twilio.com/console
+        $token = env('TWILIO_AUTH_TOKEN'); // Your Auth Token from www.twilio.com/console
 
         /*
 
@@ -176,8 +178,7 @@ class StateMachineCnt extends Controller
      */
     public function sm_callflow(Request $request)
     {
-        $CallSid = $request->CallSid;
-
+        $this->call_Sid = $request->CallSid;
 
 
         $getStates = $this->tbl_states->getStatesFromStateTable('1');
@@ -253,7 +254,7 @@ class StateMachineCnt extends Controller
 
         }
         //
-        //var_dump(json_decode($arrayStringTransitions));
+        //var_dump($arrayStringTransitions);
 
         // Create Transitions for Graph
 
@@ -273,33 +274,48 @@ class StateMachineCnt extends Controller
                              $this->makeCall($stateMachine);
                          }
                      )*/
+                    array(
+                       'from' => 'A',
+                       'do' => function($current_state, $tran) {
+                         //dd($tran->getStateMachine()->object);
+//                         dd($tran->getTransition()->getName());
+                           $this->makeCall();
+//                           $this->playWelcome();
+                           $this->changeState($this->call_Sid, $current_state);
+
+//                           $tran->getStateMachine()->apply($tran->getTransition()->getName());
+//                           exit(0);
+//                           $this->transit($tran->getStateMachine(),$tran->getTransition()->getName());
+
+                       }
+                   )
                 ),
                 'after' => array(
-
-                   array(
+                    array(
                         'to' => array('B'), 'do' => function($current_state) {
 //                             dd($stateMachine);
-                             $this->makeCall();
-                             $this->changeState('CA000d44bb9266cf88d59d7b0b3f9d7fbe',$current_state);
+                             //$this->makeCall();
+                             $this->gatherInput();
+                             $this->changeState($this->call_Sid, $current_state);
                          }
                     )
                     ,
                     array(
                         'to' => array('C0'), 'do' => function($current_state) {
                             $this->displayIncorrectInput();
-                            $this->changeState('CA000d44bb9266cf88d59d7b0b3f9d7fbe',$current_state);
+                            $this->changeState($this->call_Sid, $current_state);
                         }
                      ),
                     array(
                         'to' => array('C1'), 'do' => function($current_state) {
-                             $this->displayIncorrectInput();
-                             $this->changeState('CA000d44bb9266cf88d59d7b0b3f9d7fbe',$current_state);
+                             $this->playSoundFile();
+                             $this->changeState($this->call_Sid, $current_state);
                         }
                     ),
                     array(
                         'to' => array('D'), 'do' => function($current_state) {
-                            $this->displayIncorrectInput();
-                            $this->changeState('CA000d44bb9266cf88d59d7b0b3f9d7fbe',$current_state);
+                            $this->hangup();
+                            $this->changeState($this->call_Sid, $current_state);
                         }
                     )
                 )
@@ -309,16 +325,20 @@ class StateMachineCnt extends Controller
 
 //        var_dump(json_decode($arrayStringTransitions));die;
         $document     = new Stateful;
+//        $document->setFiniteState('C0');
+//        $stateMachine = new StateMachine($document);
+//
+//        $loader->load($stateMachine);
+//        $stateMachine->initialize();
 
+//        echo "<br> current state of SM new = "; var_dump($stateMachine->getCurrentState()->getName());
 
         /** find CallSid in TblCall
          * if it exists get the state and apply that state
          * if the CallSid is not exist insert this data into TblCall with the default inital state
          *
          */
-//        $find_call_sid = $this->tbl_call->searchForCallID($CallSid);
-        $find_call_sid = $this->tbl_call->searchForCallID('CA000d44bb9266cf88d59d7b0b3f9d7fbe');
-//        dd($find_call_sid);
+        $find_call_sid = $this->tbl_call->searchForCallID($this->call_Sid);
 
         if(!empty($find_call_sid))
         {
@@ -333,10 +353,14 @@ class StateMachineCnt extends Controller
             echo "<br> current transitions = "; var_dump($stateMachine->getCurrentState()->getTransitions());
 //            echo "state name = " . $state_name;
 //            $stateMachine->$SAI->setState($stateMachine->getObject(), $state_name);
-            // set state
-            $document->setFiniteState($state_name);
-            // get state
-            echo "<br>finite state of doc = ".($document->getFiniteState());
+
+//            $current_state_name = $stateMachine->getCurrentState()->getName();
+            $transition = $stateMachine->getCurrentState()->getTransitions();
+            //var_dump($current_state_name);
+//            var_dump($stateMachine->getCurrentState()->getTransitions());
+            $stateMachine->apply($transition[0]);
+
+
 
 //            $stateMachine->setStateAccessor();
 //            $SAI =new StateAccessorInterface;
@@ -349,16 +373,37 @@ class StateMachineCnt extends Controller
             // =====================
 
             //GoToState()?????
-            echo "<br> current state of SM = "; var_dump($stateMachine->getCurrentState()->getName());
-            echo "<br> is_initial_state: "; var_dump($stateMachine->getCurrentState()->isInitial());
+//            $document->setFiniteState('B');
+            //$document->setFiniteState('B');
+           // var_dump($document->getFiniteState())."<br><br>";
 
-//            echo "<br> is_initial_state: "; var_dump($stateMachine->findInitialState());
+            //var_dump($stateMachine->apply($document->getFiniteState()."-0"))."<br><br>";
+
+
+            // get list of array of transitions
+           // var_dump($stateMachine->getCurrentState()->getTransitions());
+//            var_dump($stateMachine->getTransitions())."<br><br>";
+//            var_dump($stateMachine->can('B-0'));
+//            var_dump($stateMachine->can('B-1'));
+
+           // var_dump($stateMachine->getObject())."<br><br>";
+//            var_dump($stateMachine->setObject("B"))."<br><br>";
+//            var_dump($stateMachine->getObject())."<br><br>";
+//            var_dump($stateMachine->getGraph())."<br><br>";
+
+            //echo "<br> can = "; var_dump($stateMachine->can('B'));
+            // echo "<br> a.name: "; var_dump($stateMachine->getCurrentState()->getName());
+            // echo "<br> a.name: "; var_dump($stateMachine->apply('B-0'));
+
+            //echo "<br> is_initial_state: "; var_dump($stateMachine->getCurrentState()->isInitial());
+//            echo "<br> $document->getFiniteState(): "; var_dump($document->getFiniteState());
+//            echo "<br> current state of SM = "; var_dump($stateMachine->getCurrentState()->getName());
+//            echo "<br> is_initial_state: "; var_dump($stateMachine->getCurrentState()->isInitial());
+//
+////            echo "<br> is_initial_state: "; var_dump($stateMachine->findInitialState());
 //            $stateMachine->goToState
         }
 //        else $this->tbl_call->insertNewCallData($CallSid, $current_state);
-
-
-
 
 
         // Working with workflow
@@ -410,6 +455,13 @@ class StateMachineCnt extends Controller
 //    {
 //        return
 //    }
+    public function transit($sm,$tran_name)
+    {
+//        $transition = $stateMachine->getCurrentState()->getTransitions();
+        //var_dump($current_state_name);
+//            var_dump($stateMachine->getCurrentState()->getTransitions());
+        $sm->apply($tran_name);
+    }
 
     public function changeState($call_sid, $current_state)
     {
@@ -437,21 +489,16 @@ class StateMachineCnt extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function showWelcome(Request $request)
+    public function playWelcome()
     {
 //        echo "<br> show welcome <br>";
-//        dd($request);
-        $CallSid = $request->CallSid;
-        Log::info('CallSid=' . $CallSid);
         try{
             $this->response->say('Please Enter 3 digits of input');
-           // $this->response->redirect($this->ngrok_address . "/ivr/gatherInput");
+            $this->response->redirect($this->ngrok_address . "/ivr/gatherInput");
         }
         catch (Exception $e) {
             echo 'Error: ' . $e->getMessage();
         }
-        //dd($this->stateMachine);
-        //dd($this->response);
         return $this->response;
 
     }
@@ -489,20 +536,6 @@ class StateMachineCnt extends Controller
         }
     }
 
-//    public function C0orC1($input_val)
-//    {
-//        if(!empty($input_val))
-//        {
-//            if($input_val == 0)
-//                $this->changeState(0);
-//            else
-//            {
-//                $this->changeState(1);
-//                $this->url_sound = $input_val;
-//            }
-//        }
-//    }
-
     public function displayIncorrectInput()
     {
 //        echo "<br> display incorrect input <br>";
@@ -529,8 +562,9 @@ class StateMachineCnt extends Controller
     public function makeCall()
     {
         // array("url" => "http://demo.twilio.com/docs/voice.xml")
-        echo "makeCall function<br>";
-        // $test_phone_number = "+85517696365";
+
+        //echo "makeCall function<br>";
+//         $test_phone_number = "+85589555127";
         $test_phone_number = "+85517696365";
         $twilio_sid = env('TWILIO_ACCOUNT_SID');
         $twilio_token = env('TWILIO_AUTH_TOKEN');
@@ -542,8 +576,9 @@ class StateMachineCnt extends Controller
             $call = $client->calls->create(
                 $test_phone_number,
                 $twilio_phone_number,
-                array("url" => $this->ngrok_address . "/ivr/welcome")
+                array("url" => $this->ngrok_address . "/ivr/playWelcome")
             );
+            echo "<br>" . $call->sid;
         }
         catch (Exception $e) {
             echo "Error: " . $e->getMessage();

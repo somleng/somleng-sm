@@ -38,8 +38,8 @@ class Stateful implements StatefulInterface
     {
 
         //echo '<br> Play TwilML ', $this->state, ' state.', "\n";
-        $sid = "ACe888d537776f80870b2ae5d8bd37bf4c"; // Your Account SID from www.twilio.com/console
-        $token = "d09aa9dd6a4440d6984c60cfe1e41881"; // Your Auth Token from www.twilio.com/console
+        $sid = env('TWILIO_ACCOUNT_SID'); // Your Account SID from www.twilio.com/console
+        $token = env('TWILIO_AUTH_TOKEN'); // Your Auth Token from www.twilio.com/console
 
         /*
 
