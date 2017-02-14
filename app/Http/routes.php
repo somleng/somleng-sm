@@ -80,6 +80,11 @@ Route::group(
             'as' => 'hangup', 'uses' => 'StateMachineCnt@hangup'
         ]
     );
+    Route::any(
+        '/transitToNextState/{sm}/{tran_name}', [
+            'as' => 'hangup', 'uses' => 'StateMachineCnt@transit'
+        ]
+    );
 
 
     Route::any(

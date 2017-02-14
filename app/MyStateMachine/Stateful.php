@@ -38,8 +38,8 @@ class Stateful implements StatefulInterface
     {
 
         //echo '<br> Play TwilML ', $this->state, ' state.', "\n";
-        $sid = "ACe888d537776f80870b2ae5d8bd37bf4c"; // Your Account SID from www.twilio.com/console
-        $token = "d09aa9dd6a4440d6984c60cfe1e41881"; // Your Auth Token from www.twilio.com/console
+        $sid = env('TWILIO_ACCOUNT_SID'); // Your Account SID from www.twilio.com/console
+        $token = env('TWILIO_AUTH_TOKEN'); // Your Auth Token from www.twilio.com/console
 
         /*
 
@@ -51,7 +51,7 @@ class Stateful implements StatefulInterface
         // Read TwiML at this URL when a call connects (hold music)
         $call = $client->calls->create(
             '+85517696365', // Call this number
-            '+12013800532', // From a valid Twilio number
+            env('TWILIO_NUMBER'), // From a valid Twilio number
             array(
                 'url' => 'https://ee198af6.ngrok.io/welcomTwiMLCode'
             )
@@ -69,10 +69,10 @@ class Stateful implements StatefulInterface
 
          $client = new Client($sid, $token);
 
-// Read TwiML at this URL when a call connects (hold music)
+        // Read TwiML at this URL when a call connects (hold music)
         $call = $client->calls->create(
             '+85517696365', // Call this number
-            '+12013800532', // From a valid Twilio number
+            env('TWILIO_NUMBER'), // From a valid Twilio number
             array(
                 'url' => route('call.flow')
             )
@@ -80,31 +80,6 @@ class Stateful implements StatefulInterface
 
 
     }
-
-    /*public function showWelcome()
-    {
-        $sid = "ACe888d537776f80870b2ae5d8bd37bf4c"; // Your Account SID from www.twilio.com/console
-        $token = "d09aa9dd6a4440d6984c60cfe1e41881"; // Your Auth Token from www.twilio.com/console
-        $client = new Client($sid, $token);
-        // Read TwiML at this URL when a call connects (hold music)
-        $call = $client->calls->create(
-            '+85517696365', // Call this number
-            '+12013800532', // From a valid Twilio number
-            array(
-                'url' => 'https://b2b96fe7.ngrok.io/welcomTwiMLCode'
-            )
-        );
-
-        $response = new Twiml();
-        $gather = $response->gather(
-            [
-                'numDigits' => 1,
-//                'action' => route('menu-response', [], false)
-                'action' => 'https://b2b96fe7.ngrok.io/choose'
-            ]
-        );
-    }*/
-
 
 }
 

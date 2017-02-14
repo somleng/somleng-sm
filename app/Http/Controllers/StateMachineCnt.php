@@ -47,11 +47,10 @@ class StateMachineCnt extends Controller
     {
 
         //echo '<br> Play TwilML ', $this->state, ' state.', "\n";
-        $sid = "ACe888d537776f80870b2ae5d8bd37bf4c"; // Your Account SID from www.twilio.com/console
-        $token = "d09aa9dd6a4440d6984c60cfe1e41881"; // Your Auth Token from www.twilio.com/console
+        $sid = env('TWILIO_ACCOUNT_SID'); // Your Account SID from www.twilio.com/console
+        $token = env('TWILIO_AUTH_TOKEN'); // Your Auth Token from www.twilio.com/console
 
         /*
-
             <Response>
                 <Play>http://demo.twilio.com/hellomonkey/monkey.mp3</Play>
             </Response>
@@ -60,7 +59,7 @@ class StateMachineCnt extends Controller
         // Read TwiML at this URL when a call connects (hold music)
         $call = $client->calls->create(
             '+85517696365', // Call this number
-            '+12013800532', // From a valid Twilio number
+            env('TWILIO_NUMBER'), // From a valid Twilio number
             array(
                 'url' => 'https://ee198af6.ngrok.io/welcomTwiMLCode'
             )
@@ -81,7 +80,7 @@ class StateMachineCnt extends Controller
 // Read TwiML at this URL when a call connects (hold music)
         $call = $client->calls->create(
             '+85517696365', // Call this number
-            '+12013800532', // From a valid Twilio number
+            env('TWILIO_NUMBER'), // From a valid Twilio number
             array(
                 'url' => route('call.flow')
             )
@@ -285,6 +284,9 @@ class StateMachineCnt extends Controller
                           $this->changeState($this->call_Sid, $current_state);
 //                           $this->transit($tran->getTransition()->getName());
                           // $this->transit($tran->getStateMachine(), $tran->getTransition()->getName());
+//                           $tran->getStateMachine()->apply($tran->getTransition()->getName());
+//                           exit(0);
+//                           $this->transit($tran->getStateMachine(),$tran->getTransition()->getName());
                        }
                    ),
                 ),
@@ -341,14 +343,16 @@ class StateMachineCnt extends Controller
         if(!empty($find_call_sid))
         {
             $state_name = $this->tbl_states->getStateName($find_call_sid);
-            // set state
             $document->setFiniteState($state_name);
-
             $stateMachine = new StateMachine($document);
-
 
             $loader->load($stateMachine);
             $stateMachine->initialize();
+
+            echo "<br> current state of SM new = "; var_dump($stateMachine->getCurrentState()->getName());
+            echo "<br> current transitions = "; var_dump($stateMachine->getCurrentState()->getTransitions());
+//            echo "state name = " . $state_name;
+//            $stateMachine->$SAI->setState($stateMachine->getObject(), $state_name);
 
 //            $current_state_name = $stateMachine->getCurrentState()->getName();
             $transition = $stateMachine->getCurrentState()->getTransitions();
@@ -452,15 +456,10 @@ class StateMachineCnt extends Controller
 //    {
 //        return
 //    }
-    public function transit($state_machine, $transition_name)
+
+    public function transit($sm,$tran_name)
     {
-//        dd($statemachine->object);
-//        $transition = $stateMachine->getCurrentState()->getTransitions();
-        //var_dump($current_state_name);
-//            var_dump($stateMachine->getCurrentState()->getTransitions());
-//        $stateMachine->apply($transition_name);
-        $state_machine->apply($transition_name);
-        exit(0);
+        $sm->apply($tran_name);
     }
 
     public function changeState($call_sid, $current_state)
@@ -562,9 +561,10 @@ class StateMachineCnt extends Controller
     public function makeCall()
     {
         // array("url" => "http://demo.twilio.com/docs/voice.xml")
+
         //echo "makeCall function<br>";
-         $test_phone_number = "+85589555127";
-//        $test_phone_number = "+85517696365";
+//         $test_phone_number = "+85589555127";
+        $test_phone_number = "+85517696365";
         $twilio_sid = env('TWILIO_ACCOUNT_SID');
         $twilio_token = env('TWILIO_AUTH_TOKEN');
         $twilio_phone_number = env('TWILIO_NUMBER');
