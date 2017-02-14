@@ -323,16 +323,7 @@ class StateMachineCnt extends Controller
             )
         ));
 
-//        var_dump(json_decode($arrayStringTransitions));die;
         $document     = new Stateful;
-//        $document->setFiniteState('C0');
-//        $stateMachine = new StateMachine($document);
-//
-//        $loader->load($stateMachine);
-//        $stateMachine->initialize();
-
-//        echo "<br> current state of SM new = "; var_dump($stateMachine->getCurrentState()->getName());
-
         /** find CallSid in TblCall
          * if it exists get the state and apply that state
          * if the CallSid is not exist insert this data into TblCall with the default inital state
@@ -349,62 +340,17 @@ class StateMachineCnt extends Controller
             $loader->load($stateMachine);
             $stateMachine->initialize();
 
-            echo "<br> current state of SM new = "; var_dump($stateMachine->getCurrentState()->getName());
-            echo "<br> current transitions = "; var_dump($stateMachine->getCurrentState()->getTransitions());
-//            echo "state name = " . $state_name;
-//            $stateMachine->$SAI->setState($stateMachine->getObject(), $state_name);
-
-//            $current_state_name = $stateMachine->getCurrentState()->getName();
+//            echo "<br> current state of SM new = "; var_dump($stateMachine->getCurrentState()->getName());
+//            echo "<br> current transitions = "; var_dump($stateMachine->getCurrentState()->getTransitions());
             $transition = $stateMachine->getCurrentState()->getTransitions();
-            //var_dump($current_state_name);
-//            var_dump($stateMachine->getCurrentState()->getTransitions());
             $stateMachine->apply($transition[0]);
-//            dd($stateMachine);
-
-
-
-//            $stateMachine->setStateAccessor();
-//            $SAI =new StateAccessorInterface;
-//            $stateMachine->setStateAccessor($SAI);
-
-            // =====================
-            //* To set finiteState for $document, then re-instantiate $stateMachine */ => not working
-            // $document->setFiniteState('C0');
-            // $stateMachine1 = new StateMachine($document);
-            // =====================
-
-            //GoToState()?????
-//            $document->setFiniteState('B');
-            //$document->setFiniteState('B');
-           // var_dump($document->getFiniteState())."<br><br>";
-
-            //var_dump($stateMachine->apply($document->getFiniteState()."-0"))."<br><br>";
-
-
-            // get list of array of transitions
-           // var_dump($stateMachine->getCurrentState()->getTransitions());
-//            var_dump($stateMachine->getTransitions())."<br><br>";
-//            var_dump($stateMachine->can('B-0'));
-//            var_dump($stateMachine->can('B-1'));
-
-           // var_dump($stateMachine->getObject())."<br><br>";
-//            var_dump($stateMachine->setObject("B"))."<br><br>";
-//            var_dump($stateMachine->getObject())."<br><br>";
-//            var_dump($stateMachine->getGraph())."<br><br>";
-
-            //echo "<br> can = "; var_dump($stateMachine->can('B'));
-            // echo "<br> a.name: "; var_dump($stateMachine->getCurrentState()->getName());
-            // echo "<br> a.name: "; var_dump($stateMachine->apply('B-0'));
-
-            //echo "<br> is_initial_state: "; var_dump($stateMachine->getCurrentState()->isInitial());
-//            echo "<br> $document->getFiniteState(): "; var_dump($document->getFiniteState());
-//            echo "<br> current state of SM = "; var_dump($stateMachine->getCurrentState()->getName());
-//            echo "<br> is_initial_state: "; var_dump($stateMachine->getCurrentState()->isInitial());
-//
-////            echo "<br> is_initial_state: "; var_dump($stateMachine->findInitialState());
-//            $stateMachine->goToState
         }
-//        else $this->tbl_call->insertNewCallData($CallSid, $current_state);
+        else
+        {
+            $stateMachine = new StateMachine($document);
+            $current_state = $stateMachine->getCurrentState()->getName();
+            $this->tbl_call->insertNewCallData($this->call_Sid, $current_state);
+        }
 
 
         // Working with workflow
