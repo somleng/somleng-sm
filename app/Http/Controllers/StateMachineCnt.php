@@ -282,8 +282,8 @@ class StateMachineCnt extends Controller
                            //dd($tran->getStateMachine());
 //                         dd($tran->getTransition()->getName());
 //                          $this->makeCall();
-                           $this->playWelcome();
-                          $this->changeState($this->call_Sid, $current_state);
+                           echo $this->playWelcome();
+                          //$this->changeState($this->call_Sid, $current_state);
 //                           $this->transit($tran->getTransition()->getName());
                           // $this->transit($tran->getStateMachine(), $tran->getTransition()->getName());
 //                           $tran->getStateMachine()->apply($tran->getTransition()->getName());
@@ -446,7 +446,9 @@ class StateMachineCnt extends Controller
         catch (Exception $e) {
             echo 'Error: ' . $e->getMessage();
         }
-        Log::info($this->response);
+        Log::debug($this->response);
+        //Log::info($this->response);
+
         return $this->response;
 
     }
