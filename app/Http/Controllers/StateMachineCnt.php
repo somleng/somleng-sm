@@ -183,7 +183,7 @@ class StateMachineCnt extends Controller
 //        dd($this->call_Sid);
         /*if(!empty($request->return_input))
         {*/
-//            Log::info($request);
+            Log::info($request);
 
 //            Log::info("return_input = " .  $request->return_input);
 //            Log::info("return_input using REQUEST= " .  $_REQUEST['return_input']);
@@ -381,15 +381,15 @@ class StateMachineCnt extends Controller
             $stateMachine->initialize();
 
             $transition = $stateMachine->getCurrentState()->getTransitions();
-            Log::debug($transition);
+//            Log::debug($transition);
             if($this->return_input != 0)
             {
                 $stateMachine->apply($transition[1]);
-                Log::debug($transition[1]);
+//                Log::debug($transition[1]);
             }
             else // when $return_input = 0 || null
             {
-                Log::debug($transition[0]);
+//                Log::debug($transition[0]);
                 $stateMachine->apply($transition[0]);
             }
 
