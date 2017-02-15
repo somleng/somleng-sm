@@ -183,7 +183,7 @@ class StateMachineCnt extends Controller
 //        dd($this->call_Sid);
         /*if(!empty($request->return_input))
         {*/
-        Log::info($request);
+//        Log::info($request);
 
 //            Log::info("return_input = " .  $request->return_input);
 //            Log::info("return_input using REQUEST= " .  $_REQUEST['return_input']);
@@ -321,6 +321,15 @@ class StateMachineCnt extends Controller
                         }
                     ),
                     array(
+                        'from' => 'E0',
+                        'to' => 'B',
+                        'do' => function($current_state) {
+                            Log::info($current_state);
+                            $this->changeState($this->call_Sid, $current_state);
+
+                        }
+                    ),
+                    array(
                         'from' => 'E1',
                         'do' => function() {
                             echo $this->hangup();
@@ -389,8 +398,8 @@ class StateMachineCnt extends Controller
             }
             else // when $return_input = 0 || null
             {
-                Log::debug($transition[0]);
                 $stateMachine->apply($transition[0]);
+                Log::debug($transition[0]);
             }
 
         }
@@ -556,7 +565,8 @@ class StateMachineCnt extends Controller
     {
 //        echo "<br> display incorrect input <br>";
         $this->response->say('input is incorrect, please try again');
-        $this->response->redirect(route('gatherInput'));
+//        $this->response->redirect(route('gatherInput'));
+        $this->response->redirect(route('sm_callflow'));
         return $this->response;
     }
 
@@ -573,7 +583,6 @@ class StateMachineCnt extends Controller
     {
 //        echo "<br>hangup<br>";
         $this->response->hangup();
-//        $this->response->redirect(route('sm_callflow'));
         return $this->response;
     }
 
