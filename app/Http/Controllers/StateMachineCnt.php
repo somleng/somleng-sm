@@ -322,19 +322,13 @@ class StateMachineCnt extends Controller
                             echo $this->playSoundFile($this->return_input);
                         }
                     ),
-//                    array(
-//                        'from' => 'E0',
-//                        'to' => 'B',
-//                        'do' => function(){
-//                            /*Log::info('gatherInput 2');
-//                            echo $this->gatherInput();*/
-//                        }
-////                        'do' => function($current_state) {
-//////                            Log::info($current_state);
-////                            $this->changeState($this->call_Sid, $current_state);
-//
-////                        }
-//                    ),
+                    array(
+                        'from' => 'E0',
+                        'to' => 'B',
+                        'do' => function(){
+                            echo $this->redirectToSM_Callflow();
+                        }
+                    ),
                     array(
                         'from' => 'E1',
                         'do' => function() {
@@ -584,7 +578,13 @@ class StateMachineCnt extends Controller
         $this->response->say('input is incorrect, please try again');
 //        $this->response->redirect(route('gatherInput'));
         $this->response->redirect(route('sm_callflow'));
-        Log::debug(route('sm_callflow'));
+//        Log::debug(route('sm_callflow'));
+        return $this->response;
+    }
+    public function redirectToSM_Callflow()
+    {
+        $this->response->redirect(route('sm_callflow'));
+//        Log::debug(route('sm_callflow'));
         return $this->response;
     }
 
