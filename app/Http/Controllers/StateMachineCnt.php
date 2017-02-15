@@ -182,6 +182,7 @@ class StateMachineCnt extends Controller
         /*if(!empty($request->return_input))
         {*/
             Log::info($request);
+
 //            Log::info("return_input = " .  $request->return_input);
 //            Log::info("return_input using REQUEST= " .  $_REQUEST['return_input']);
 //            Log::info("return_input using input= " .  Input::post('return_input'));
@@ -500,7 +501,7 @@ class StateMachineCnt extends Controller
             Log::debug(route('sm_callflow',['return_input' => $sound_file_name]));
             $this->response->redirect(route('sm_callflow',['return_input' => $sound_file_name]));
         }
-
+        return $this->response;
     }
 
     public function displayIncorrectInput()
