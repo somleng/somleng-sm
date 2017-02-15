@@ -364,15 +364,15 @@ class StateMachineCnt extends Controller
                         $this->changeState($this->call_Sid, $current_state);
                     }
                     ),
-                    array(
-                        'from' => 'E0',
-                        'to' => 'B',
-                        'do' => function($current_state) {
-//                            Log::info($current_state);
-                            $this->changeState($this->call_Sid, $current_state);
-
-                        }
-                    ),
+//                    array(
+//                        'from' => 'E0',
+//                        'to' => 'B',
+//                        'do' => function($current_state) {
+////                            Log::info($current_state);
+//                            $this->changeState($this->call_Sid, $current_state);
+//
+//                        }
+//                    ),
                     array(
                         'to' => array('E1'), 'do' => function($current_state) {
                         $this->changeState($this->call_Sid, $current_state);
