@@ -52,8 +52,8 @@ class StateMachineCnt extends Controller
     {
 
         //echo '<br> Play TwilML ', $this->state, ' state.', "\n";
-        $sid = env('TWILIO_ACCOUNT_SID'); // Your Account SID from www.twilio.com/console
-        $token = env('TWILIO_AUTH_TOKEN'); // Your Auth Token from www.twilio.com/console
+        $sid = env('SOMLENG_ACCOUNT_SID'); // Your Account SID from www.twilio.com/console
+        $token = env('SOMLENG_AUTH_TOKEN'); // Your Auth Token from www.twilio.com/console
 
         /*
             <Response>
@@ -64,7 +64,7 @@ class StateMachineCnt extends Controller
         // Read TwiML at this URL when a call connects (hold music)
         $call = $client->calls->create(
             '+85517696365', // Call this number
-            env('TWILIO_NUMBER'), // From a valid Twilio number
+            env('SOMLENG_NUMBER'), // From a valid Twilio number
             array(
                 'url' => 'https://ee198af6.ngrok.io/welcomTwiMLCode'
             )
@@ -85,7 +85,7 @@ class StateMachineCnt extends Controller
 // Read TwiML at this URL when a call connects (hold music)
         $call = $client->calls->create(
             '+85517696365', // Call this number
-            env('TWILIO_NUMBER'), // From a valid Twilio number
+            env('SOMLENG_NUMBER'), // From a valid Twilio number
             array(
                 'url' => route('call.flow')
             )
@@ -183,7 +183,7 @@ class StateMachineCnt extends Controller
 //        dd($this->call_Sid);
         /*if(!empty($request->return_input))
         {*/
-            Log::info($request);
+//        Log::info($request);
 
 //            Log::info("return_input = " .  $request->return_input);
 //            Log::info("return_input using REQUEST= " .  $_REQUEST['return_input']);
@@ -277,19 +277,19 @@ class StateMachineCnt extends Controller
             'transitions' => $arrayStringTransitions,
             'callbacks' => array(
                 'before' => array(
-                     /*array(
-                         'from' => 'A',
-                         'do' => function($stateMachine) {
+                    /*array(
+                        'from' => 'A',
+                        'do' => function($stateMachine) {
 //                             dd($stateMachine);
-                             $this->makeCall($stateMachine);
-                         }
-                     )*/
+                            $this->makeCall($stateMachine);
+                        }
+                    )*/
                     array(
-                       'from' => 'A',
-                       'do' => function() {
-                           echo $this->playWelcome();
-                       }
-                   ),
+                        'from' => 'A',
+                        'do' => function() {
+                            echo $this->playWelcome();
+                        }
+                    ),
                     array(
                         'from' => 'B',
                         'do' => function() {
@@ -321,6 +321,18 @@ class StateMachineCnt extends Controller
                         }
                     ),
                     array(
+                        'from' => 'E0',
+                        'to' => 'B',
+                        'do' => function(){
+                            echo $this->gatherInput();
+                        }
+//                        'do' => function($current_state) {
+////                            Log::info($current_state);
+//                            $this->changeState($this->call_Sid, $current_state);
+
+//                        }
+                    ),
+                    array(
                         'from' => 'E1',
                         'do' => function() {
                             echo $this->hangup();
@@ -337,9 +349,9 @@ class StateMachineCnt extends Controller
 
                     array(
                         'to' => array('C'), 'do' => function($current_state) {
-                            $this->changeState($this->call_Sid, $current_state);
-                        }
-                     ),// validation return input then what to do next???
+                        $this->changeState($this->call_Sid, $current_state);
+                    }
+                    ),// validation return input then what to do next???
                     array(
                         'to' => array('D'), 'do' => function($current_state) {
                         $this->changeState($this->call_Sid, $current_state);
@@ -347,13 +359,22 @@ class StateMachineCnt extends Controller
                     ),
                     array(
                         'to' => array('E0'), 'do' => function($current_state) {
-                             $this->changeState($this->call_Sid, $current_state);
-                        }
+                        $this->changeState($this->call_Sid, $current_state);
+                    }
                     ),
+//                    array(
+//                        'from' => 'E0',
+//                        'to' => 'B',
+//                        'do' => function($current_state) {
+////                            Log::info($current_state);
+//                            $this->changeState($this->call_Sid, $current_state);
+//
+//                        }
+//                    ),
                     array(
                         'to' => array('E1'), 'do' => function($current_state) {
-                            $this->changeState($this->call_Sid, $current_state);
-                        }
+                        $this->changeState($this->call_Sid, $current_state);
+                    }
                     ),
                     array(
                         'to' => array('F'), 'do' => function($current_state) {
@@ -386,12 +407,12 @@ class StateMachineCnt extends Controller
             if($this->return_input != 0)
             {
                 $stateMachine->apply($transition[1]);
-//                Log::debug($transition[1]);
+                Log::debug($transition[1]);
             }
             else // when $return_input = 0 || null
             {
-//                Log::debug($transition[0]);
                 $stateMachine->apply($transition[0]);
+                Log::debug($transition[0]);
             }
 
         }
@@ -540,14 +561,14 @@ class StateMachineCnt extends Controller
             // FILE DOES NOT EXIST
             //return 0;
 //            $this->sm_callflow()
-            Log::debug(route('sm_callflow',['return_input' => 0]));
+            //Log::debug(route('sm_callflow',['return_input' => 0]));
             $this->response->redirect(route('sm_callflow',['return_input' => 0]));
         }
         else
         {
             // FILE EXISTS
 //            return $sound_file_name;
-            Log::debug(route('sm_callflow',['return_input' => $sound_file_name]));
+            //Log::debug(route('sm_callflow',['return_input' => $sound_file_name]));
             $this->response->redirect(route('sm_callflow',['return_input' => $sound_file_name]));
         }
         return $this->response;
@@ -557,7 +578,9 @@ class StateMachineCnt extends Controller
     {
 //        echo "<br> display incorrect input <br>";
         $this->response->say('input is incorrect, please try again');
-        $this->response->redirect(route('gatherInput'));
+//        $this->response->redirect(route('gatherInput'));
+        $this->response->redirect(route('sm_callflow'));
+        Log::debug(route('sm_callflow'));
         return $this->response;
     }
 
@@ -565,6 +588,7 @@ class StateMachineCnt extends Controller
     {
 //        echo "<br> play sound file <br>";
         $this->response->play('http://itenure.net/sounds/' . $sound_file_name);
+        $this->response->redirect(route('sm_callflow'));
 //        $this->response->play('http://itenure.net/sounds/357.mp3');
         return $this->response;
     }
@@ -583,9 +607,9 @@ class StateMachineCnt extends Controller
         //echo "makeCall function<br>";
 //         $test_phone_number = "+85589555127";
         $test_phone_number = "+85517696365";
-        $twilio_sid = env('TWILIO_ACCOUNT_SID');
-        $twilio_token = env('TWILIO_AUTH_TOKEN');
-        $twilio_phone_number = env('TWILIO_NUMBER');
+        $twilio_sid = env('SOMLENG_ACCOUNT_SID');
+        $twilio_token = env('SOMLENG_AUTH_TOKEN');
+        $twilio_phone_number = env('SOMLENG_NUMBER');
 
         $client = new Client($twilio_sid, $twilio_token);
         try
