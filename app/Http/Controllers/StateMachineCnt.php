@@ -572,6 +572,7 @@ class StateMachineCnt extends Controller
     {
 //        echo "<br>hangup<br>";
         $this->response->hangup();
+        $this->response->redirect(route('sm_callflow'));
         return $this->response;
     }
 
