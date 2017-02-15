@@ -321,7 +321,7 @@ class StateMachineCnt extends Controller
                         }
                     ),
                     array(
-                        'from' => 'F',
+                        'from' => 'E1',
                         'do' => function() {
                             echo $this->hangup();
                         }
