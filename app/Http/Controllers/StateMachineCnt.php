@@ -52,8 +52,8 @@ class StateMachineCnt extends Controller
     {
 
         //echo '<br> Play TwilML ', $this->state, ' state.', "\n";
-        $sid = env('TWILIO_ACCOUNT_SID'); // Your Account SID from www.twilio.com/console
-        $token = env('TWILIO_AUTH_TOKEN'); // Your Auth Token from www.twilio.com/console
+        $sid = env('SOMLENG_ACCOUNT_SID'); // Your Account SID from www.twilio.com/console
+        $token = env('SOMLENG_AUTH_TOKEN'); // Your Auth Token from www.twilio.com/console
 
         /*
             <Response>
@@ -64,7 +64,7 @@ class StateMachineCnt extends Controller
         // Read TwiML at this URL when a call connects (hold music)
         $call = $client->calls->create(
             '+85517696365', // Call this number
-            env('TWILIO_NUMBER'), // From a valid Twilio number
+            env('SOMLENG_NUMBER'), // From a valid Twilio number
             array(
                 'url' => 'https://ee198af6.ngrok.io/welcomTwiMLCode'
             )
@@ -85,7 +85,7 @@ class StateMachineCnt extends Controller
 // Read TwiML at this URL when a call connects (hold music)
         $call = $client->calls->create(
             '+85517696365', // Call this number
-            env('TWILIO_NUMBER'), // From a valid Twilio number
+            env('SOMLENG_NUMBER'), // From a valid Twilio number
             array(
                 'url' => route('call.flow')
             )
@@ -606,9 +606,9 @@ class StateMachineCnt extends Controller
         //echo "makeCall function<br>";
 //         $test_phone_number = "+85589555127";
         $test_phone_number = "+85517696365";
-        $twilio_sid = env('TWILIO_ACCOUNT_SID');
-        $twilio_token = env('TWILIO_AUTH_TOKEN');
-        $twilio_phone_number = env('TWILIO_NUMBER');
+        $twilio_sid = env('SOMLENG_ACCOUNT_SID');
+        $twilio_token = env('SOMLENG_AUTH_TOKEN');
+        $twilio_phone_number = env('SOMLENG_NUMBER');
 
         $client = new Client($twilio_sid, $twilio_token);
         try
