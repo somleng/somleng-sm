@@ -381,15 +381,15 @@ class StateMachineCnt extends Controller
             $stateMachine->initialize();
 
             $transition = $stateMachine->getCurrentState()->getTransitions();
-            Log::debug("transition = " . $transition);
+            Log::debug($transition);
             if($this->return_input != 0)
             {
                 $stateMachine->apply($transition[1]);
-                Log::debug("transition[1] = " . $transition[1]);
+                Log::debug($transition[1]);
             }
             else // when $return_input = 0 || null
             {
-                Log::debug("transition[0] = " . $transition[0]);
+                Log::debug($transition[0]);
                 $stateMachine->apply($transition[0]);
             }
 
