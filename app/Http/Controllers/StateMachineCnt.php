@@ -579,6 +579,7 @@ class StateMachineCnt extends Controller
         $this->response->say('input is incorrect, please try again');
 //        $this->response->redirect(route('gatherInput'));
         $this->response->redirect(route('sm_callflow'));
+        Log::debug(route('sm_callflow'));
         return $this->response;
     }
 
