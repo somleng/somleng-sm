@@ -287,6 +287,7 @@ class StateMachineCnt extends Controller
                     array(
                         'from' => 'A',
                         'do' => function() {
+                            Log::info($this->call_Sid);
                             echo $this->playWelcome();
                         }
                     ),
@@ -414,7 +415,7 @@ class StateMachineCnt extends Controller
             else // when $return_input = 0 || null
             {
                 $stateMachine->apply($transition[0]);
-                Log::info('applying E0?');
+//                Log::info('applying E0?');
             }
 
         }
