@@ -176,7 +176,7 @@ class StateMachineCnt extends Controller
 
         $this->call_Sid = $request->CallSid;
         $this->digits = $request->Digits;
-//        $return_input = $request->return_input;
+        $return_input = $request->return_input;
 
 //        dd($this->call_Sid);
         /*if(!empty($request->return_input))
@@ -351,6 +351,13 @@ class StateMachineCnt extends Controller
             $stateMachine = new StateMachine($document);
             $loader->load($stateMachine);
             $stateMachine->initialize();
+
+            $transition = $stateMachine->getCurrentState()->getTransitions();
+            if($return_input != 0)
+                $stateMachine->apply($transition[1]);
+            else // when $return_input = 0 || null
+                $stateMachine->apply($transition[0]);
+
         }
         else
         {
@@ -360,9 +367,12 @@ class StateMachineCnt extends Controller
 
             $current_state = $stateMachine->getCurrentState()->getName();
             $this->tbl_call->insertNewCallData($this->call_Sid, $current_state);
+
+            $transition = $stateMachine->getCurrentState()->getTransitions();
+            $stateMachine->apply($transition[0]);
         }
-        $transition = $stateMachine->getCurrentState()->getTransitions();
-        $stateMachine->apply($transition[0]);
+        /*$transition = $stateMachine->getCurrentState()->getTransitions();
+        $stateMachine->apply($transition[0]);*/
 
 
         // Working with workflow
@@ -451,7 +461,7 @@ class StateMachineCnt extends Controller
 //        echo "<br> show welcome <br>";
 //        echo "call sid = ".$callSID;
         try{
-            $this->response->say('Please Enter 3 digits of input');
+            $this->response->say('Please Enter 5 digits of input');
             $this->response->redirect(route('sm_callflow'));
         }
         catch (Exception $e) {
@@ -471,7 +481,7 @@ class StateMachineCnt extends Controller
 //        $response = new Twiml();
         $this->response->gather(
             [
-                'numDigits' => 3,
+                'numDigits' => 5,
                 'action' => route('sm_callflow')
             ]
         );
