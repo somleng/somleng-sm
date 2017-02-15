@@ -347,7 +347,7 @@ class StateMachineCnt extends Controller
                     ),
                     array(
                         'to' => array('E0'), 'do' => function($current_state) {
-                        Log::debug($current_state);
+//                        Log::debug($current_state);
                         $this->changeState($this->call_Sid, $current_state);
                     }
                     ),
