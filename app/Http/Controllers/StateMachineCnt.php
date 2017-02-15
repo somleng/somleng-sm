@@ -181,9 +181,9 @@ class StateMachineCnt extends Controller
         /*if(!empty($request->return_input))
         {*/
 //            Log::info("return_input = " .  $request->return_input);
-            Log::info("return_input using REQUEST= " .  $_REQUEST['return_input']);
-            Log::info("return_input using input= " .  $name = Input::get('return_input'));
-            Log::info("return_input using POST= " .  $_POST['return_input']);
+//            Log::info("return_input using REQUEST= " .  $_REQUEST['return_input']);
+            Log::info("return_input using input= " .  Input::get('return_input'));
+//            Log::info("return_input using POST= " .  $_POST['return_input']);
 //        }
 
         $getStates = $this->tbl_states->getStatesFromStateTable('1');
