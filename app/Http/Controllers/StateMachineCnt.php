@@ -489,13 +489,14 @@ class StateMachineCnt extends Controller
             // FILE DOES NOT EXIST
             //return 0;
 //            $this->sm_callflow()
-
+            Log::debug(route('sm_callflow',['return_input' => 0]));
             $this->response->redirect(route('sm_callflow',['return_input' => 0]));
         }
         else
         {
             // FILE EXISTS
 //            return $sound_file_name;
+            Log::debug(route('sm_callflow',['return_input' => $sound_file_name]));
             $this->response->redirect(route('sm_callflow',['return_input' => $sound_file_name]));
         }
 
