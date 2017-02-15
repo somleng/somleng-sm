@@ -31,6 +31,7 @@ class StateMachineCnt extends Controller
 //    private $object;
     private $call_Sid;
     private $digits;
+    private $return_input;
 
     public function __construct()
     {
@@ -44,6 +45,7 @@ class StateMachineCnt extends Controller
 //        $this->object = $object;
         $this->call_Sid = "";
         $this->digits = "";
+        $this->return_input="";
     }
 
     public function display()
@@ -176,7 +178,7 @@ class StateMachineCnt extends Controller
 
         $this->call_Sid = $request->CallSid;
         $this->digits = $request->Digits;
-        $return_input = $request->return_input;
+        $this->return_input = $request->return_input;
 
 //        dd($this->call_Sid);
         /*if(!empty($request->return_input))
@@ -303,7 +305,27 @@ class StateMachineCnt extends Controller
 
                         }
                     ),
+                    array(
+                        'from' => 'D',
+                        'to' => 'E0',
+                        'do' => function() {
+                            echo $this->displayIncorrectInput();
 
+                        }
+                    ),
+                    array(
+                        'from' => 'D',
+                        'to' => 'E1',
+                        'do' => function() {
+                            echo $this->playSoundFile($this->return_input);
+                        }
+                    ),
+                    array(
+                        'from' => 'F',
+                        'do' => function() {
+                            echo $this->hangup();
+                        }
+                    ),
 
 
                 ),
@@ -320,16 +342,19 @@ class StateMachineCnt extends Controller
                         }
                      ),// validation return input then what to do next???
                     array(
-                        'to' => array('C1'), 'do' => function($current_state) {
-                             $this->playSoundFile();
+                        'to' => array('E0'), 'do' => function($current_state) {
                              $this->changeState($this->call_Sid, $current_state);
                         }
                     ),
                     array(
-                        'to' => array('D'), 'do' => function($current_state) {
-                            $this->hangup();
+                        'to' => array('E1'), 'do' => function($current_state) {
                             $this->changeState($this->call_Sid, $current_state);
                         }
+                    ),
+                    array(
+                        'to' => array('F'), 'do' => function($current_state) {
+                        $this->changeState($this->call_Sid, $current_state);
+                    }
                     )
                 )
 
@@ -353,7 +378,7 @@ class StateMachineCnt extends Controller
             $stateMachine->initialize();
 
             $transition = $stateMachine->getCurrentState()->getTransitions();
-            if($return_input != 0)
+            if($this->return_input != 0)
                 $stateMachine->apply($transition[1]);
             else // when $return_input = 0 || null
                 $stateMachine->apply($transition[0]);
@@ -522,11 +547,11 @@ class StateMachineCnt extends Controller
         return $this->response;
     }
 
-    public function playSoundFile()
+    public function playSoundFile($sound_file_name)
     {
 //        echo "<br> play sound file <br>";
-        //$this->response->play('http://itenure.net/sounds/' . $sound_file_name);
-        $this->response->play('http://itenure.net/sounds/357.mp3');
+        $this->response->play('http://itenure.net/sounds/' . $sound_file_name);
+//        $this->response->play('http://itenure.net/sounds/357.mp3');
         return $this->response;
     }
 
