@@ -347,18 +347,19 @@ class StateMachineCnt extends Controller
                     ),
                     array(
                         'to' => array('E0'), 'do' => function($current_state) {
+                        Log::info($current_state);
                         $this->changeState($this->call_Sid, $current_state);
                     }
                     ),
-                    array(
-                        'from' => 'E0',
-                        'to' => 'B',
-                        'do' => function($current_state) {
-                            Log::info($current_state);
-                            $this->changeState($this->call_Sid, $current_state);
-
-                        }
-                    ),
+//                    array(
+//                        'from' => 'E0',
+//                        'to' => 'B',
+//                        'do' => function($current_state) {
+//                            Log::info($current_state);
+//                            $this->changeState($this->call_Sid, $current_state);
+//
+//                        }
+//                    ),
                     array(
                         'to' => array('E1'), 'do' => function($current_state) {
                         $this->changeState($this->call_Sid, $current_state);
@@ -395,12 +396,12 @@ class StateMachineCnt extends Controller
             if($this->return_input != 0)
             {
                 $stateMachine->apply($transition[1]);
-                Log::debug($transition[1]);
+//                Log::debug($transition[1]);
             }
             else // when $return_input = 0 || null
             {
                 $stateMachine->apply($transition[0]);
-                Log::debug($transition[0]);
+//                Log::debug($transition[0]);
             }
 
         }
