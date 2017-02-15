@@ -176,7 +176,14 @@ class StateMachineCnt extends Controller
         $this->call_Sid = $request->CallSid;
         $this->digits = $request->Digits;
 //        $return_input = $request->return_input;
-        Log::info("return_input = " .  $request->return_input);
+        if(!empty($request->return_input))
+        {
+//            Log::info("return_input = " .  $request->return_input);
+            Log::info("return_input using REQUEST= " .  $_REQUEST('return_input'));
+            Log::info("return_input using input= " .  $request->input['return_input']);
+            Log::info("return_input using POST= " .  $_POST('return_input'));
+        }
+
 //        dd($this->call_Sid);
 
         $getStates = $this->tbl_states->getStatesFromStateTable('1');
