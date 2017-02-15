@@ -340,6 +340,11 @@ class StateMachineCnt extends Controller
                         }
                      ),// validation return input then what to do next???
                     array(
+                        'to' => array('D'), 'do' => function($current_state) {
+                        $this->changeState($this->call_Sid, $current_state);
+                    }
+                    ),
+                    array(
                         'to' => array('E0'), 'do' => function($current_state) {
                              $this->changeState($this->call_Sid, $current_state);
                         }
@@ -376,11 +381,17 @@ class StateMachineCnt extends Controller
             $stateMachine->initialize();
 
             $transition = $stateMachine->getCurrentState()->getTransitions();
-            Log::debug($transition);
+            Log::debug("transition = " . $transition);
             if($this->return_input != 0)
+            {
                 $stateMachine->apply($transition[1]);
+                Log::debug("transition[1] = " . $transition[1]);
+            }
             else // when $return_input = 0 || null
+            {
+                Log::debug("transition[0] = " . $transition[0]);
                 $stateMachine->apply($transition[0]);
+            }
 
         }
         else
