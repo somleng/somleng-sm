@@ -294,6 +294,7 @@ class StateMachineCnt extends Controller
                         'from' => 'B',
                         'do' => function() {
 //                            $this->changeState($this->call_Sid, $current_state);
+                            Log::info('gatherInput 1');
                             echo $this->gatherInput();
 
                         }
@@ -324,6 +325,7 @@ class StateMachineCnt extends Controller
                         'from' => 'E0',
                         'to' => 'B',
                         'do' => function(){
+                            Log::info('gatherInput 2');
                             echo $this->gatherInput();
                         }
 //                        'do' => function($current_state) {
@@ -362,15 +364,15 @@ class StateMachineCnt extends Controller
                         $this->changeState($this->call_Sid, $current_state);
                     }
                     ),
-//                    array(
-//                        'from' => 'E0',
-//                        'to' => 'B',
-//                        'do' => function($current_state) {
-////                            Log::info($current_state);
-//                            $this->changeState($this->call_Sid, $current_state);
-//
-//                        }
-//                    ),
+                    /*array(
+                        'from' => 'E0',
+                        'to' => 'B',
+                        'do' => function($current_state) {
+//                            Log::info($current_state);
+                            $this->changeState($this->call_Sid, $current_state);
+
+                        }
+                    ),*/
                     array(
                         'to' => array('E1'), 'do' => function($current_state) {
                         $this->changeState($this->call_Sid, $current_state);
