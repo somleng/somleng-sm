@@ -414,7 +414,7 @@ class StateMachineCnt extends Controller
             else // when $return_input = 0 || null
             {
                 $stateMachine->apply($transition[0]);
-//                Log::debug($transition[0]);
+                Log::info('applying E0?');
             }
 
         }
