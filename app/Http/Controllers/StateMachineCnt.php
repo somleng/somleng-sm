@@ -324,7 +324,7 @@ class StateMachineCnt extends Controller
                         'from' => 'E0',
                         'to' => 'B',
                         'do' => function(){
-
+                            echo $this->gatherInput();
                         }
 //                        'do' => function($current_state) {
 ////                            Log::info($current_state);
