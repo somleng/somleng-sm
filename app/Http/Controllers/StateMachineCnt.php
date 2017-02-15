@@ -516,10 +516,12 @@ class StateMachineCnt extends Controller
 //        $response = new Twiml();
         $this->response->gather(
             [
+                'timeout' => 10,
                 'numDigits' => 5,
                 'action' => route('sm_callflow')
             ]
         );
+
         return $this->response;
     }
 
@@ -528,6 +530,7 @@ class StateMachineCnt extends Controller
 //        $CallSid = $request->input('CallSid');
 //        echo "<br> validation sound file <br>";
         //$sound_file_name = $request->input('Digits').".mp3";
+        $this->say("Your Claim number is " . $digits);
         $sound_file_name = $digits.".mp3";
         $url = "http://itenure.net/sounds/";
         $header_response = get_headers($url.$sound_file_name, 1);
