@@ -536,7 +536,7 @@ class StateMachineCnt extends Controller
 //        $response = new Twiml();
         $this->response->gather(
             [
-                'timeout' => 10,
+                'timeout' => 20,
                 'numDigits' => 5,
                 'action' => route('sm_callflow')
             ]
