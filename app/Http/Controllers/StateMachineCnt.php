@@ -321,19 +321,19 @@ class StateMachineCnt extends Controller
                             echo $this->playSoundFile($this->return_input);
                         }
                     ),
-                    array(
-                        'from' => 'E0',
-                        'to' => 'B',
-                        'do' => function(){
-                            /*Log::info('gatherInput 2');
-                            echo $this->gatherInput();*/
-                        }
-//                        'do' => function($current_state) {
-////                            Log::info($current_state);
-//                            $this->changeState($this->call_Sid, $current_state);
-
+//                    array(
+//                        'from' => 'E0',
+//                        'to' => 'B',
+//                        'do' => function(){
+//                            /*Log::info('gatherInput 2');
+//                            echo $this->gatherInput();*/
 //                        }
-                    ),
+////                        'do' => function($current_state) {
+//////                            Log::info($current_state);
+////                            $this->changeState($this->call_Sid, $current_state);
+//
+////                        }
+//                    ),
                     array(
                         'from' => 'E1',
                         'do' => function() {
@@ -364,7 +364,7 @@ class StateMachineCnt extends Controller
                         $this->changeState($this->call_Sid, $current_state);
                     }
                     ),
-                    /*array(
+                    array(
                         'from' => 'E0',
                         'to' => 'B',
                         'do' => function($current_state) {
@@ -372,7 +372,7 @@ class StateMachineCnt extends Controller
                             $this->changeState($this->call_Sid, $current_state);
 
                         }
-                    ),*/
+                    ),
                     array(
                         'to' => array('E1'), 'do' => function($current_state) {
                         $this->changeState($this->call_Sid, $current_state);
