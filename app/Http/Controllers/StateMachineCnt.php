@@ -181,9 +181,10 @@ class StateMachineCnt extends Controller
 //        dd($this->call_Sid);
         /*if(!empty($request->return_input))
         {*/
+            Log::info("return_input using request input= " .  $request->input('return_input'));
 //            Log::info("return_input = " .  $request->return_input);
 //            Log::info("return_input using REQUEST= " .  $_REQUEST['return_input']);
-            Log::info("return_input using input= " .  Input::get('return_input'));
+//            Log::info("return_input using input= " .  Input::post('return_input'));
 //            Log::info("return_input using POST= " .  $_POST['return_input']);
 //        }
 
