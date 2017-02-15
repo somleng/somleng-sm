@@ -179,11 +179,10 @@ class StateMachineCnt extends Controller
     {
 
         $this->call_Sid = $request->CallSid;
+        echo "<br> this->call_sid= " . $this->call_Sid . "<br>";
         Log::info("callSid= " .  $this->call_Sid);
-//        dd($this->call_Sid);
 
         $getStates = $this->tbl_states->getStatesFromStateTable('1');
-//        dd($getStates);
         $arrayStringStates = array();
         $arrayStringTransitions = array();
         foreach ($getStates as $getState){
@@ -196,11 +195,9 @@ class StateMachineCnt extends Controller
                 case 0:
                     $state_type_str = StateInterface::TYPE_NORMAL;
                     break;
-
                 case 1:
                     $state_type_str = StateInterface::TYPE_INITIAL;
                     break;
-
                 case 2:
                     $state_type_str = StateInterface::TYPE_FINAL;
                     break;
@@ -216,29 +213,7 @@ class StateMachineCnt extends Controller
                 'type' => $state_type_str,
                 'properties' => array()
             );
-
-//            $test = array_push($arrayStringStates,$eachState);
-            //var_dump(json_decode($eachState));die;
-            //$arrayStringStates[] =  $eachState;
-
-            /*$arrayStringStates[] = array(
-                $state_name => array(
-                    'type' => $state_type_str,
-                    'properties' => array(),
-                ),
-
-            );*/
-
-            /* $arrayStringStates[] =
-                 $state_name => array(
-                 'type' => $state_type_str,
-                 'properties' => array(),
-             );*/
-
-
             $Transitions = $getState->transition;
-            //dd($Transitions);
-
             foreach ($Transitions as $Transition){
                 //dd($getTransition);
                 $transition_name = $getState['state'];
@@ -252,16 +227,9 @@ class StateMachineCnt extends Controller
                     'from' => $fromStates,'to' => $toStates,
                 );
             }
-
         }
-        //
         //var_dump($arrayStringTransitions);
-
         // Create Transitions for Graph
-
-        // Configure your graph
-        // $document1 = new Stateful();
-        //$document1->display();
         $loader = new ArrayLoader(array(
             'class'  => 'Document',
             'states'  => $arrayStringStates,
@@ -281,9 +249,11 @@ class StateMachineCnt extends Controller
 //                         dd($tran);
                            //dd($tran->getStateMachine());
 //                         dd($tran->getTransition()->getName());
-                          $this->makeCall();
-                          // $this->playWelcome();
-                          $this->changeState($this->call_Sid, $current_state);
+//                          $this->makeCall();
+
+                            $this->playWelcome();
+                            $this->changeState($this->call_Sid, $current_state);
+
 //                           $this->transit($tran->getTransition()->getName());
                           // $this->transit($tran->getStateMachine(), $tran->getTransition()->getName());
 //                           $tran->getStateMachine()->apply($tran->getTransition()->getName());
@@ -321,7 +291,6 @@ class StateMachineCnt extends Controller
                         }
                     )
                 )
-
             )
         ));
 
@@ -329,7 +298,6 @@ class StateMachineCnt extends Controller
         /** find CallSid in TblCall
          * if it exists get the state and apply that state
          * if the CallSid is not exist insert this data into TblCall with the default inital state
-         *
          */
         $find_call_sid = $this->tbl_call->searchForCallID($this->call_Sid);
 
@@ -341,10 +309,15 @@ class StateMachineCnt extends Controller
             $loader->load($stateMachine);
             $stateMachine->initialize();
 
-//            echo "<br> current state of SM new = "; var_dump($stateMachine->getCurrentState()->getName());
-//            echo "<br> current transitions = "; var_dump($stateMachine->getCurrentState()->getTransitions());
-            $transition = $stateMachine->getCurrentState()->getTransitions();
-            $stateMachine->apply($transition[0]);
+            echo "<br> ----- if ------ <br>";
+                echo "<br> current state of SM new = ";
+                var_dump($stateMachine->getCurrentState()->getName());
+                echo "<br> current transitions = ";
+                var_dump($stateMachine->getCurrentState()->getTransitions());
+            echo "<br> ----- x ------ <br>";
+
+//            $transition = $stateMachine->getCurrentState()->getTransitions();
+//            $stateMachine->apply($transition[0]);
         }
         else
         {
@@ -354,8 +327,12 @@ class StateMachineCnt extends Controller
 
             $current_state = $stateMachine->getCurrentState()->getName();
             $this->tbl_call->insertNewCallData($this->call_Sid, $current_state);
+
+
         }
 
+        $transition = $stateMachine->getCurrentState()->getTransitions();
+        $stateMachine->apply($transition[0]);
 
         // Working with workflow
         // Current state
@@ -414,21 +391,7 @@ class StateMachineCnt extends Controller
 
     public function changeState($call_sid, $current_state)
     {
-        //dd($sm);
-        //echo "<br>change state<br>";
-        //echo "<br> B4 Apply transition: ";
-
-        //var_dump($stateMachine->getCurrentState()->getName());
-//        $tran = $this->stateMachine->getCurrentState()->getTransitions(); // error because $stateMachine == null
-//        dd($stateMachine);
-//        $this->stateMachine->apply($tran[$indexOfTrans]);
-//        $new_state = $this->stateMachine->getCurrentState()->getName();
-        //dd($new_state);
-//        $this->tbl_call->updateCallData($this->callID,$new_state);
-//        dd($indexOfTrans->state);
-//        $this->tbl_call->updateCallData('CA000d44bb9266cf88d59d7b0b3f9d7fbe',$current_state->state);
         $this->tbl_call->updateCallData($call_sid,$current_state->state);
-
         return $current_state;
 
     }
@@ -444,7 +407,8 @@ class StateMachineCnt extends Controller
 //        echo "call sid = ".$callSID;
         try{
             $this->response->say('Please Enter 3 digits of input');
-            // $this->response->redirect(route('sm_callflow'));
+//            $this->response->redirect(route('sm_callflow'));
+            $this->response->redirect($this->ngrok_address . "/ivr/gatherInput");
         }
         catch (Exception $e) {
             echo 'Error: ' . $e->getMessage();
@@ -461,7 +425,8 @@ class StateMachineCnt extends Controller
         $this->response->gather(
             [
                 'numDigits' => 3,
-                'action' => route('validation_sound_file')
+//                'action' => route('validation_sound_file')
+                 'action' => $this->ngrok_address . "/ivr/validation_sound_file"
             ]
         );
         return $this->response;
@@ -490,7 +455,8 @@ class StateMachineCnt extends Controller
     {
 //        echo "<br> display incorrect input <br>";
         $this->response->say('input is incorrect, please try again');
-        $this->response->redirect(route('gatherInput'));
+        $this->response->redirect($this->ngrok_address . "/ivr/gatherInput");
+//        $this->response->redirect(route('gatherInput'));
         return $this->response;
     }
 
@@ -514,8 +480,8 @@ class StateMachineCnt extends Controller
         // array("url" => "http://demo.twilio.com/docs/voice.xml")
 
         //echo "makeCall function<br>";
-//         $test_phone_number = "+85589555127";
-        $test_phone_number = "+85517696365";
+         $test_phone_number = "+85589555127";
+//        $test_phone_number = "+85517696365";
         $twilio_sid = env('TWILIO_ACCOUNT_SID');
         $twilio_token = env('TWILIO_AUTH_TOKEN');
         $twilio_phone_number = env('TWILIO_NUMBER');
@@ -526,7 +492,8 @@ class StateMachineCnt extends Controller
             $call = $client->calls->create(
                 $test_phone_number,
                 $twilio_phone_number,
-                array("url" => route('playWelcome'))
+//                array("url" => route('playWelcome'))
+                array("url" => $this->ngrok_address . "/ivr/playWelcome")
             );
             echo "<br>" . $call->sid;
         }
