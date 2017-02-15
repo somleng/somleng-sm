@@ -325,8 +325,8 @@ class StateMachineCnt extends Controller
                         'from' => 'E0',
                         'to' => 'B',
                         'do' => function(){
-                            Log::info('gatherInput 2');
-                            echo $this->gatherInput();
+                            /*Log::info('gatherInput 2');
+                            echo $this->gatherInput();*/
                         }
 //                        'do' => function($current_state) {
 ////                            Log::info($current_state);
@@ -409,12 +409,12 @@ class StateMachineCnt extends Controller
             if($this->return_input != 0)
             {
                 $stateMachine->apply($transition[1]);
-                Log::debug($transition[1]);
+//                Log::debug($transition[1]);
             }
             else // when $return_input = 0 || null
             {
                 $stateMachine->apply($transition[0]);
-                Log::debug($transition[0]);
+//                Log::debug($transition[0]);
             }
 
         }
@@ -430,6 +430,7 @@ class StateMachineCnt extends Controller
             $transition = $stateMachine->getCurrentState()->getTransitions();
             $stateMachine->apply($transition[0]);
         }
+        Log::debug($stateMachine->getCurrentState()->getName());
         /*$transition = $stateMachine->getCurrentState()->getTransitions();
         $stateMachine->apply($transition[0]);*/
 
