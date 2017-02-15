@@ -326,6 +326,7 @@ class StateMachineCnt extends Controller
                             echo $this->hangup();
                         }
                     ),
+
                 ),
                 'after' => array(
                     array(
@@ -357,7 +358,7 @@ class StateMachineCnt extends Controller
                     array(
                         'to' => array('F'), 'do' => function($current_state) {
                         $this->changeState($this->call_Sid, $current_state);
-                    }
+                        }
                     )
                 )
 
