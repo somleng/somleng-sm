@@ -385,11 +385,11 @@ class StateMachineCnt extends Controller
             if($this->return_input != 0)
             {
                 $stateMachine->apply($transition[1]);
-//                Log::debug($transition[1]);
+                Log::debug($transition[1]);
             }
             else // when $return_input = 0 || null
             {
-//                Log::debug($transition[0]);
+                Log::debug($transition[0]);
                 $stateMachine->apply($transition[0]);
             }
 
@@ -539,14 +539,14 @@ class StateMachineCnt extends Controller
             // FILE DOES NOT EXIST
             //return 0;
 //            $this->sm_callflow()
-            Log::debug(route('sm_callflow',['return_input' => 0]));
+            //Log::debug(route('sm_callflow',['return_input' => 0]));
             $this->response->redirect(route('sm_callflow',['return_input' => 0]));
         }
         else
         {
             // FILE EXISTS
 //            return $sound_file_name;
-            Log::debug(route('sm_callflow',['return_input' => $sound_file_name]));
+            //Log::debug(route('sm_callflow',['return_input' => $sound_file_name]));
             $this->response->redirect(route('sm_callflow',['return_input' => $sound_file_name]));
         }
         return $this->response;
@@ -564,6 +564,7 @@ class StateMachineCnt extends Controller
     {
 //        echo "<br> play sound file <br>";
         $this->response->play('http://itenure.net/sounds/' . $sound_file_name);
+        $this->response->redirect(route('sm_callflow'));
 //        $this->response->play('http://itenure.net/sounds/357.mp3');
         return $this->response;
     }
@@ -572,7 +573,7 @@ class StateMachineCnt extends Controller
     {
 //        echo "<br>hangup<br>";
         $this->response->hangup();
-        $this->response->redirect(route('sm_callflow'));
+//        $this->response->redirect(route('sm_callflow'));
         return $this->response;
     }
 
