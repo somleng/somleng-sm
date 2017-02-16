@@ -287,6 +287,7 @@ class StateMachineCnt extends Controller
                     array(
                         'from' => 'A',
                         'do' => function() {
+                            Log::info($this->call_Sid);
                             echo $this->playWelcome();
                         }
                     ),
@@ -294,6 +295,7 @@ class StateMachineCnt extends Controller
                         'from' => 'B',
                         'do' => function() {
 //                            $this->changeState($this->call_Sid, $current_state);
+                            Log::info('gatherInput 1');
                             echo $this->gatherInput();
 
                         }
@@ -324,13 +326,8 @@ class StateMachineCnt extends Controller
                         'from' => 'E0',
                         'to' => 'B',
                         'do' => function(){
-                            echo $this->gatherInput();
+                            echo $this->redirectToSM_Callflow();
                         }
-//                        'do' => function($current_state) {
-////                            Log::info($current_state);
-//                            $this->changeState($this->call_Sid, $current_state);
-
-//                        }
                     ),
                     array(
                         'from' => 'E1',
@@ -338,6 +335,7 @@ class StateMachineCnt extends Controller
                             echo $this->hangup();
                         }
                     ),
+
                 ),
                 'after' => array(
                     array(
@@ -378,7 +376,7 @@ class StateMachineCnt extends Controller
                     array(
                         'to' => array('F'), 'do' => function($current_state) {
                         $this->changeState($this->call_Sid, $current_state);
-                    }
+                        }
                     )
                 )
 
@@ -406,12 +404,12 @@ class StateMachineCnt extends Controller
             if($this->return_input != 0)
             {
                 $stateMachine->apply($transition[1]);
-                Log::debug($transition[1]);
+//                Log::debug($transition[1]);
             }
             else // when $return_input = 0 || null
             {
                 $stateMachine->apply($transition[0]);
-                Log::debug($transition[0]);
+//                Log::info('applying E0?');
             }
 
         }
@@ -427,6 +425,7 @@ class StateMachineCnt extends Controller
             $transition = $stateMachine->getCurrentState()->getTransitions();
             $stateMachine->apply($transition[0]);
         }
+        Log::debug($stateMachine->getCurrentState()->getName());
         /*$transition = $stateMachine->getCurrentState()->getTransitions();
         $stateMachine->apply($transition[0]);*/
 
@@ -537,7 +536,7 @@ class StateMachineCnt extends Controller
 //        $response = new Twiml();
         $this->response->gather(
             [
-                'timeout' => 10,
+                'timeout' => 20,
                 'numDigits' => 5,
                 'action' => route('sm_callflow')
             ]
@@ -579,7 +578,13 @@ class StateMachineCnt extends Controller
         $this->response->say('input is incorrect, please try again');
 //        $this->response->redirect(route('gatherInput'));
         $this->response->redirect(route('sm_callflow'));
-        Log::debug(route('sm_callflow'));
+//        Log::debug(route('sm_callflow'));
+        return $this->response;
+    }
+    public function redirectToSM_Callflow()
+    {
+        $this->response->redirect(route('sm_callflow'));
+//        Log::debug(route('sm_callflow'));
         return $this->response;
     }
 
