@@ -39,7 +39,6 @@ class StateMachineCnt extends Controller
         $this->url_sound = "";
         $this->callID = "";
         $this->response = new Twiml();
-//        $this->object = $object;
         $this->call_Sid = "";
         $this->digits = "";
         $this->return_input="";

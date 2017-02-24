@@ -14,6 +14,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Http\Request;
 use Twilio\Twiml;
+use Illuminate\Support\Facades\Log;
 
 class SendRequestToSomleng extends Job implements ShouldQueue
 {
@@ -27,6 +28,7 @@ class SendRequestToSomleng extends Job implements ShouldQueue
     private $call_Sid;
     private $digits;
     private $return_input;
+    public $request;
     /**
      * Create a new job instance.
      *
