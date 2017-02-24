@@ -56,9 +56,9 @@ class SendRequestToSomleng extends Job implements ShouldQueue
     public function handle()
     {
         // send request to Somleng
-        Log:info($this->request);
+//        Log:info($this->request);
         $req = simplexml_load_string($this->request);
-//        Log:info($req);
+        Log:info($req);
         $this->call_Sid = $req->CallSid;
         $this->digits = $req->Digits;
         $this->return_input = $req->return_input;
