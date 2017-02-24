@@ -56,6 +56,16 @@ return [
             'queue' => 'your-queue-name',
             'region' => 'us-east-1',
         ],
+//
+//        'sqs' => [
+//            'driver' => 'sqs',
+//            'key' => env('SQS_KEY'),
+//            'secret' => env('SQS_SECRET_KEY'),
+//            'prefix' => env('SQS_PREFIX'),
+//            'queue' => env('SQS_QUEUE_NAME'),
+//            'region' => env('SQS_REGION'),
+//        ],
+
 
         'redis' => [
             'driver' => 'redis',

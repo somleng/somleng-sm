@@ -9,7 +9,8 @@
         "laravel/framework": "5.2.*",
         "yohang/finite": "~1.1",
         "monolog/monolog": "^1.21",
-        "twilio/sdk": "^5.4"
+        "twilio/sdk": "^5.4",
+        "aws/aws-sdk-php": "^3.22"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
