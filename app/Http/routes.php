@@ -147,3 +147,5 @@ Route::any('choose', ['as' => 'choose', 'uses' => function (){
 
 Route::any('sm_callflow', ['as' => 'sm_callflow', 'uses' => 'StateMachineCnt@sm_callflow']);
 
+Route::any('testsqs', ['as' => 'testsqs', 'uses' => 'AWSQueue@testSqs']);
+

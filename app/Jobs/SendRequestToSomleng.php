@@ -8,6 +8,7 @@ use App\Models\tblstate;
 use App\Models\tbltransition;
 use App\MyStateMachine\Stateful;
 use Finite\Loader\ArrayLoader;
+use Finite\State\StateInterface;
 use Finite\StateMachine\StateMachine;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
@@ -36,15 +37,20 @@ class SendRequestToSomleng extends Job implements ShouldQueue
      */
     public function __construct(Request $request)
     {
-
-
+//        dd($request);
+//        $this->tbl_transition = new tbltransition;
+//        $this->tbl_call = new tblcall;
+//        $this->tbl_states = new tblstate;
+        $this->tbl_transition ="";
+        $this->tbl_call ="";
+        $this->tbl_states ="";
         $this->url_sound = "";
         $this->callID = "";
-
-        $this->call_Sid = "";
-        $this->digits = "";
-        $this->return_input = "";
-        $this->request = $request;
+        $this->response="";
+//        $this->response = new Twiml();
+        $this->call_Sid = $request->CallSid;
+        $this->digits = $request->Digits;
+        $this->return_input = $request->return_input;
     }
 
     /**
@@ -54,17 +60,14 @@ class SendRequestToSomleng extends Job implements ShouldQueue
      */
     public function handle()
     {
-        // send request to Somleng
-//        Log:info($this->request);
         $this->tbl_transition = new tbltransition;
         $this->tbl_call = new tblcall;
         $this->tbl_states = new tblstate;
         $this->response = new Twiml();
-        $req = simplexml_load_string($this->request);
-        Log:info($req);
-        $this->call_Sid = $req->CallSid;
-        $this->digits = $req->Digits;
-        $this->return_input = $req->return_input;
+        // send request to Somleng
+//        $this->call_Sid = $request->CallSid;
+//        $this->digits = $request->Digits;
+//        $this->return_input = $request->return_input;
 
 //        dd($this->call_Sid);
         /*if(!empty($request->return_input))
