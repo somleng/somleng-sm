@@ -30,8 +30,9 @@ class StateMachineCnt extends Controller
     private $call_Sid;
     private $digits;
     private $return_input;
+    public $request;
 
-    public function __construct()
+    public function __construct(Request $request)
     {
         $this->tbl_transition = new tbltransition;
         $this->tbl_call = new tblcall;
@@ -43,6 +44,7 @@ class StateMachineCnt extends Controller
         $this->call_Sid = "";
         $this->digits = "";
         $this->return_input="";
+        $this->request = $request;
     }
 
     public function display()
