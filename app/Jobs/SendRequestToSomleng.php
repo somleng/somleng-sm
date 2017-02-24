@@ -37,9 +37,12 @@ class SendRequestToSomleng extends Job implements ShouldQueue
     public function __construct(Request $request)
     {
 //        dd($request);
-        $this->tbl_transition = new tbltransition;
-        $this->tbl_call = new tblcall;
-        $this->tbl_states = new tblstate;
+//        $this->tbl_transition = new tbltransition;
+//        $this->tbl_call = new tblcall;
+//        $this->tbl_states = new tblstate;
+        $this->tbl_transition ="";
+        $this->tbl_call ="";
+        $this->tbl_states ="";
         $this->url_sound = "";
         $this->callID = "";
         $this->response="";
@@ -59,6 +62,9 @@ class SendRequestToSomleng extends Job implements ShouldQueue
      */
     public function handle()
     {
+        $this->tbl_transition = new tbltransition;
+        $this->tbl_call = new tblcall;
+        $this->tbl_states = new tblstate;
         $this->response = new Twiml();
         // send request to Somleng
 //        $this->call_Sid = $request->CallSid;
