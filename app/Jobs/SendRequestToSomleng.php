@@ -8,6 +8,7 @@ use App\Models\tblstate;
 use App\Models\tbltransition;
 use App\MyStateMachine\Stateful;
 use Finite\Loader\ArrayLoader;
+use Finite\State\StateInterface;
 use Finite\StateMachine\StateMachine;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
