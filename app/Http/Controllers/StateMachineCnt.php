@@ -172,7 +172,7 @@ class StateMachineCnt extends Controller
     public function sm_callflow(Request $request)
     {
         Log:info($request);
-        $this->dispatch(new SendRequestToSomleng($request));
+        $this->dispatch(new SendRequestToSomleng($request->asXML()));
     }
 
 
