@@ -48,9 +48,6 @@ class SendRequestToSomleng extends Job implements ShouldQueue
         $this->callID = "";
         $this->response="";
 //        $this->response = new Twiml();
-        $this->call_Sid = "";
-        $this->digits = "";
-        $this->return_input = "";
         $this->call_Sid = $request->CallSid;
         $this->digits = $request->Digits;
         $this->return_input = $request->return_input;
