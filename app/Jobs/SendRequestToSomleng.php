@@ -271,7 +271,7 @@ class SendRequestToSomleng extends Job implements ShouldQueue
             $stateMachine->apply($transition[0]);
         }
         Log::debug($stateMachine->getCurrentState()->getName());
-        return $this->request;
+        return $this->response;
     }
 
     public function transit($sm,$tran_name)
