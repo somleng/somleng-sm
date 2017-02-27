@@ -176,6 +176,7 @@ class StateMachineCnt extends Controller
         $test = $this->dispatch(new SendRequestToSomleng($request));
 //        Log:info($request);
         Log:info($test);
+        return $this->response;
     }
 
 
