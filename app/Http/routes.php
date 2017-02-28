@@ -149,3 +149,5 @@ Route::any('sm_callflow', ['as' => 'sm_callflow', 'uses' => 'StateMachineCnt@sm_
 
 Route::any('testsqs', ['as' => 'testsqs', 'uses' => 'AWSQueue@testSqs']);
 
+//Route::any('sm_callflow_new', ['as' => 'sm_callflow_new', 'uses' => 'SendRequestToSomleng@sm_callflow_new']);
+

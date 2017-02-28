@@ -26,7 +26,7 @@ class StateMachineCnt extends Controller
     private $tbl_states;
     private $url_sound;
     private $callID;
-    private $response;
+//    private $response;
     private $call_Sid;
     private $digits;
     private $return_input;
@@ -38,7 +38,7 @@ class StateMachineCnt extends Controller
         $this->tbl_states = new tblstate;
         $this->url_sound = "";
         $this->callID = "";
-        $this->response = new Twiml();
+//        $this->response = new Twiml();
         $this->call_Sid = "";
         $this->digits = "";
         $this->return_input="";
@@ -173,10 +173,17 @@ class StateMachineCnt extends Controller
     {
 
 //        $this->dispatch(serialize(new SendRequestToSomleng($request)));
-        $this->dispatch(new SendRequestToSomleng($request));
+        $job_request = new SendRequestToSomleng($request); // => execute constructor
+
+        $this->dispatch($job_request); // => execute handle
+        var_dump($job_request);
+        //return $job_request->getResponse();
+        //$job_request
+//        return $job_request;
 //        Log:info($request);
 //        Log:info($test);
-//        return $this->response;
+
+        //return $job_request->getResponse();
     }
 
 
