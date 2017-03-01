@@ -350,7 +350,9 @@ class SendRequestToSomleng extends Job implements ShouldQueue
     {
         try{
             $this->response->say('Please Enter 5 digits of input');
-            $this->response->redirect(route('sm_callflow'));
+//            $this->response->redirect(route('sm_callflow'));
+            $this->response->redirect(url('sm_callflow'));
+
         }
         catch (Exception $e) {
             echo 'Error: ' . $e->getMessage();
@@ -365,7 +367,8 @@ class SendRequestToSomleng extends Job implements ShouldQueue
             [
                 'timeout' => 20,
                 'numDigits' => 5,
-                'action' => route('sm_callflow')
+//                'action' => route('sm_callflow')
+                'action' => url('sm_callflow')
             ]
         );
 
