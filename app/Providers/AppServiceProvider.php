@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use Illuminate\Queue\Events\JobProcessed;
+use Illuminate\Queue\Queue;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
