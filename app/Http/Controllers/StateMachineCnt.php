@@ -174,8 +174,8 @@ class StateMachineCnt extends Controller
 //        $this->dispatch(serialize(new SendRequestToSomleng($request)));
         $job_request = new SendRequestToSomleng($request); // => execute constructor
 
-        $this->dispatch($job_request); // => execute handle
-//        var_dump($job_request);
+        $test = $this->dispatch($job_request); // => execute handle
+        var_dump($test);
 
         //return $job_request->getResponse();
         //$job_request

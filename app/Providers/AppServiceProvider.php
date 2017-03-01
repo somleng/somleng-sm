@@ -2,9 +2,10 @@
 
 namespace App\Providers;
 
+
 use Illuminate\Queue\Events\JobProcessed;
-use Illuminate\Queue\Queue;
 use Illuminate\Support\ServiceProvider;
+use Queue;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -17,10 +18,12 @@ class AppServiceProvider extends ServiceProvider
     {
         //
         Queue::after(function (JobProcessed $event) {
-            dd($event);
+//            dd($event->data);
             // $event->connectionName
             // $event->job
             // $event->data
+//            dd($event);
+            return $event;
         });
 
 

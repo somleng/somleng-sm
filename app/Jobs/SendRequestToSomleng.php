@@ -289,11 +289,11 @@ class SendRequestToSomleng extends Job implements ShouldQueue
 
         /*Log:info($this->response);*/
 //        print $this->response;
-        print "response in handle = ".$this->response;
+//        print "response in handle = ".$this->response;
+//
+//        print "response in handle new = ".$this->response = "new";
 
-        print "response in handle new = ".$this->response = "new";
-
-        return $this->response = "t";
+        return $this->response;
 //        $this->rq = $this->response;
     }
 
