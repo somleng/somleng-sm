@@ -4,6 +4,7 @@ namespace App\Jobs;
 
 use App\Jobs\Job;
 use App\Models\tblcall;
+use App\Models\tblqueuedone;
 use App\Models\tblstate;
 use App\Models\tbltransition;
 use App\MyStateMachine\Stateful;
@@ -14,6 +15,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Twilio\Twiml;
 use Illuminate\Support\Facades\Log;
 
@@ -29,7 +31,7 @@ class SendRequestToSomleng extends Job implements ShouldQueue
     private $call_Sid;
     private $digits;
     private $return_input;
-    public $rq;
+    public $tbl_queue_result;
 //    public $request;
     /**
      * Create a new job instance.
@@ -52,6 +54,7 @@ class SendRequestToSomleng extends Job implements ShouldQueue
         $this->call_Sid = $request->CallSid;
         $this->digits = $request->Digits;
         $this->return_input = $request->return_input;
+        $this->tbl_queue_result = "";
 //        $this->rq = $request;
     }
 
@@ -66,6 +69,7 @@ class SendRequestToSomleng extends Job implements ShouldQueue
         $this->tbl_call = new tblcall;
         $this->tbl_states = new tblstate;
         $this->response = new Twiml();
+        $this->tbl_queue_result = new tblqueuedone;
 //        $this->response ="here";
         // send request to Somleng
 //        $this->call_Sid = $request->CallSid;
@@ -155,7 +159,7 @@ class SendRequestToSomleng extends Job implements ShouldQueue
 //                            echo $this->gatherInput();
 //                            return $this->gatherInput();
                             $this->response = $this->gatherInput();
-                            //echo $this->response; // has twiml value
+                            echo $this->response; // has twiml value
                         }
                     ),
                     array(
@@ -283,14 +287,22 @@ class SendRequestToSomleng extends Job implements ShouldQueue
             $transition = $stateMachine->getCurrentState()->getTransitions();
             $stateMachine->apply($transition[0]);
         }
+
+        //echo "test";
 //        Log::debug($stateMachine->getCurrentState()->getName());
-        /*Log:info($this->response);*/
-//        print $this->response;
-        print "response in handle = ".$this->response;
+        //Log:info($this->response);
+        $storage = Storage::disk('local')->put('twiml_result.xml',$this->response);
+        $content = Storage::disk('local')->get('twiml_result.xml');
+//        print "content of file = ". $content;
+//        var_dump($content);
+//        $content_twiml = Storage::get('twiml_result.xml');
+//        print "twiml content from file = ". $content_twiml;
+        return $this->response;
+//        print "response in handle here = ".$this->response;
+//        var_dump($this->response);
+//        print "insert = ". $this->tbl_queue_result->insertNew(serialize($this->response));
 
-        print "response in handle new = ".$this->response = "new";
-
-        return $this->response = "t";
+        //return $this->response = "t";
 //        $this->rq = $this->response;
     }
 

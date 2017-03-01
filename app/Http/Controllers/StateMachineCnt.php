@@ -16,6 +16,7 @@ use Finite\StateMachine\StateMachine;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Twilio\Rest\Client;
 use Twilio\Twiml;
 
@@ -175,8 +176,13 @@ class StateMachineCnt extends Controller
 //        $this->dispatch(serialize(new SendRequestToSomleng($request)));
         $job_request = new SendRequestToSomleng($request); // => execute constructor
 
-        $this->dispatch($job_request); // => execute handle
-        var_dump($job_request);
+        $qId = $this->dispatch($job_request); // => execute handle
+//        return $qId;
+        $content = Storage::disk('local')->get('twiml_result.xml');
+//        $content1 = "test ";
+//        return  $content1;
+        return $content;
+//        var_dump($job_request);
         //return $job_request->getResponse();
         //$job_request
 //        return $job_request;

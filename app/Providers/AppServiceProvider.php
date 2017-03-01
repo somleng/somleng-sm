@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use Illuminate\Queue\Events\JobProcessed;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -14,6 +15,10 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         //
+        /* Queue::after(function (JobProcessed $event) {
+            $content = Storage::disk('public')->get('twiml_result.xml');
+            var_dump($content);
+        }); */
     }
 
     /**
