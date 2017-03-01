@@ -178,7 +178,7 @@ class StateMachineCnt extends Controller
 
         $qId = $this->dispatch($job_request); // => execute handle
 //        return $qId;
-        $content = Storage::disk('local')->get('twiml_result.xml');
+        $content = Storage::disk('public')->get('twiml_result.xml');
 //        $content1 = "test ";
 //        return  $content1;
         return $content;

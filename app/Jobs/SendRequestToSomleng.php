@@ -4,7 +4,6 @@ namespace App\Jobs;
 
 use App\Jobs\Job;
 use App\Models\tblcall;
-use App\Models\tblqueuedone;
 use App\Models\tblstate;
 use App\Models\tbltransition;
 use App\MyStateMachine\Stateful;
@@ -69,7 +68,6 @@ class SendRequestToSomleng extends Job implements ShouldQueue
         $this->tbl_call = new tblcall;
         $this->tbl_states = new tblstate;
         $this->response = new Twiml();
-        $this->tbl_queue_result = new tblqueuedone;
 //        $this->response ="here";
         // send request to Somleng
 //        $this->call_Sid = $request->CallSid;
@@ -291,8 +289,8 @@ class SendRequestToSomleng extends Job implements ShouldQueue
         //echo "test";
 //        Log::debug($stateMachine->getCurrentState()->getName());
         //Log:info($this->response);
-        $storage = Storage::disk('local')->put('twiml_result.xml',$this->response);
-        $content = Storage::disk('local')->get('twiml_result.xml');
+        $storage = Storage::disk('public')->put('twiml_result.xml',$this->response);
+        $content = Storage::disk('public')->get('twiml_result.xml');
 //        print "content of file = ". $content;
 //        var_dump($content);
 //        $content_twiml = Storage::get('twiml_result.xml');
