@@ -2,7 +2,6 @@
 
 namespace App\Jobs;
 
-use App\Jobs\Job;
 use App\Models\tblcall;
 use App\Models\tblstate;
 use App\Models\tbltransition;
@@ -10,6 +9,7 @@ use App\MyStateMachine\Stateful;
 use Finite\Loader\ArrayLoader;
 use Finite\State\StateInterface;
 use Finite\StateMachine\StateMachine;
+use Illuminate\Queue\Events\JobProcessed;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -30,6 +30,30 @@ class SendRequestToSomleng extends Job implements ShouldQueue
     private $digits;
     private $return_input;
     public $request;
+
+    /**
+     * Bootstrap any application services.
+     *
+     * @return void
+     */
+    public function boot()
+    {
+//        Queue::before(function (JobProcessing $event) {
+//            // $event->connectionName
+//            // $event->job
+//            // $event->job->payload()
+//        });
+
+        Queue::after(function (JobProcessed $event) {
+            echo "after queue";
+            echo var_dump($event->data);
+            $this->response;
+            // $event->connectionName
+            // $event->job
+            // $event->job->payload()
+        });
+    }
+
     /**
      * Create a new job instance.
      *
@@ -53,6 +77,9 @@ class SendRequestToSomleng extends Job implements ShouldQueue
         $this->return_input = $request->return_input;
     }
 
+
+
+
     /**
      * Execute the job.
      *
@@ -60,6 +87,7 @@ class SendRequestToSomleng extends Job implements ShouldQueue
      */
     public function handle()
     {
+//        echo "handle";
         $this->tbl_transition = new tbltransition;
         $this->tbl_call = new tblcall;
         $this->tbl_states = new tblstate;
@@ -268,7 +296,9 @@ class SendRequestToSomleng extends Job implements ShouldQueue
             $stateMachine->apply($transition[0]);
         }
 //        Log::debug($stateMachine->getCurrentState()->getName());
+
 //        return $this->response;
+        event($this->response);
     }
 
     public function transit($sm,$tran_name)

@@ -171,15 +171,13 @@ class StateMachineCnt extends Controller
      */
     public function sm_callflow(Request $request)
     {
-
 //        $this->dispatch(serialize(new SendRequestToSomleng($request)));
         $this->dispatch(new SendRequestToSomleng($request));
+        $this->response->redirect(route('sm_callflow'));
 //        Log:info($request);
 //        Log:info($test);
 //        return $this->response;
     }
-
-
 
     public function makeCall()
     {
