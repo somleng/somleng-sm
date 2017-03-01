@@ -290,7 +290,8 @@ class SendRequestToSomleng extends Job implements ShouldQueue
 //        Log::debug($stateMachine->getCurrentState()->getName());
         //Log:info($this->response);
         $storage = Storage::disk('public')->put('twiml_result.xml',$this->response);
-        $content = Storage::disk('public')->get('twiml_result.xml');
+        print $storage;
+        //$content = Storage::disk('public')->get('twiml_result.xml');
 //        print "content of file = ". $content;
 //        var_dump($content);
 //        $content_twiml = Storage::get('twiml_result.xml');
