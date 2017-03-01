@@ -14,6 +14,14 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         //
+        Queue::after(function (JobProcessed $event) {
+            dd($event);
+            // $event->connectionName
+            // $event->job
+            // $event->data
+        });
+
+
     }
 
     /**
