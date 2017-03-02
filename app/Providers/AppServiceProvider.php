@@ -26,9 +26,10 @@ class AppServiceProvider extends ServiceProvider
 //                var_dump($event->job->getJobId());
             // $event->data
             $tbl_twiml_after_queue = new tbltwimlafterqueue;
-            $event = $tbl_twiml_after_queue->getTwilmlText($event->job->getJobId());
-            echo "event= " . $event;
-            Redirect::to('sm_callflow', ['event' => $event]);
+            $event1 = $tbl_twiml_after_queue->getTwilmlText($event->job->getJobId());
+            //echo "event= " . $event;
+//            Redirect::to('sm_callflow', ['event' => $event]);
+            return redirect()->route('sm_callflow', ['event' => $event1]);
 //            dd($event);
 //            return $event;
         });

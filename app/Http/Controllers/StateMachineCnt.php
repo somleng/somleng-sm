@@ -179,7 +179,8 @@ class StateMachineCnt extends Controller
         $qId = $this->dispatch($job_request); // => execute handle
         Log::info($qId);
 //        return $qId;
-        echo $request->event;
+        echo "event_reques = " . $request->event;
+        echo "event_input = " . Input::get('event');
         if(!empty($request->event))
         {
             echo $request->event;
