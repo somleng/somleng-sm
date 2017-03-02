@@ -176,7 +176,7 @@ class StateMachineCnt extends Controller
 //        $this->dispatch(serialize(new SendRequestToSomleng($request)));
         $job_request = new SendRequestToSomleng($request); // => execute constructor
 
-        $qId = $this->dispatch($job_request); // => execute handle
+        $qId = $this->dispatch($job_request)->delay(60); // => execute handle
 //        return $qId;
 
         // samak: write xml to file
