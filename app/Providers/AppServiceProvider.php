@@ -21,7 +21,7 @@ class AppServiceProvider extends ServiceProvider
 //            dd($event->data);
             // $event->connectionName
             echo "job id in after queue = ".
-                var_dump($event->job);
+                var_dump($event->job->getJobId());
             // $event->data
 //            dd($event);
             return $event;
