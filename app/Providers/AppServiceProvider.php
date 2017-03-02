@@ -20,9 +20,11 @@ class AppServiceProvider extends ServiceProvider
         Queue::after(function (JobProcessed $event) {
 //            dd($event->data);
             // $event->connectionName
-            echo "job id in after queue = ".
-                var_dump($event->job->getJobId());
+//            echo "job id in after queue = ".
+//                var_dump($event->job->getJobId());
             // $event->data
+            $tbl_twiml_after_queue = new tbltwimlafterqueue;
+            $event = $tbl_twiml_after_queue->getTwilmlText($event->job->getJobId());
 //            dd($event);
             return $event;
         });
