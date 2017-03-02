@@ -14,6 +14,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Twilio\Twiml;
 use Illuminate\Support\Facades\Log;
 
@@ -29,8 +30,7 @@ class SendRequestToSomleng extends Job implements ShouldQueue
     private $call_Sid;
     private $digits;
     private $return_input;
-
-    public $rq;
+    public $tbl_queue_result;
 //    public $request;
     /**
      * Create a new job instance.
@@ -53,6 +53,7 @@ class SendRequestToSomleng extends Job implements ShouldQueue
         $this->call_Sid = $request->CallSid;
         $this->digits = $request->Digits;
         $this->return_input = $request->return_input;
+        $this->tbl_queue_result = "";
 //        $this->rq = $request;
     }
 
@@ -157,7 +158,7 @@ class SendRequestToSomleng extends Job implements ShouldQueue
 //                            echo $this->gatherInput();
 //                            return $this->gatherInput();
                             $this->response = $this->gatherInput();
-                            //echo $this->response; // has twiml value
+                            echo $this->response; // has twiml value
                         }
                     ),
                     array(
@@ -285,15 +286,22 @@ class SendRequestToSomleng extends Job implements ShouldQueue
             $transition = $stateMachine->getCurrentState()->getTransitions();
             $stateMachine->apply($transition[0]);
         }
+        //echo "test";
 //        Log::debug($stateMachine->getCurrentState()->getName());
-
-        /*Log:info($this->response);*/
-//        print $this->response;
-//        print "response in handle = ".$this->response;
-//
-//        print "response in handle new = ".$this->response = "new";
-
+        //Log:info($this->response);
+        $storage = Storage::disk('public')->put('twiml_result.xml',$this->response);
+//        print $storage;
+        $content = Storage::disk('public')->get('twiml_result.xml');
+        print "content of file = ". $content;
+//        var_dump($content);
+//        $content_twiml = Storage::get('twiml_result.xml');
+//        print "twiml content from file = ". $content_twiml;
         return $this->response;
+//        print "response in handle here = ".$this->response;
+//        var_dump($this->response);
+//        print "insert = ". $this->tbl_queue_result->insertNew(serialize($this->response));
+
+        //return $this->response = "t";
 //        $this->rq = $this->response;
     }
 
@@ -342,7 +350,9 @@ class SendRequestToSomleng extends Job implements ShouldQueue
     {
         try{
             $this->response->say('Please Enter 5 digits of input');
-            $this->response->redirect(route('sm_callflow'));
+//            $this->response->redirect(route('sm_callflow'));
+            $this->response->redirect(url('sm_callflow'));
+
         }
         catch (Exception $e) {
             echo 'Error: ' . $e->getMessage();
@@ -357,7 +367,8 @@ class SendRequestToSomleng extends Job implements ShouldQueue
             [
                 'timeout' => 20,
                 'numDigits' => 5,
-                'action' => route('sm_callflow')
+//                'action' => route('sm_callflow')
+                'action' => url('sm_callflow')
             ]
         );
 
