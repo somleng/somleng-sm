@@ -30,4 +30,11 @@ class tbltwimlafterqueue extends Model
         if(!empty($twiml_txt))
             return $twiml_txt->twiml_text;
     }
+
+    public function deleteJob($queue_id)
+    {
+        $job = $this::where('call_id', $queue_id)->first();
+        if(!empty($job)) $job->delete();
+
+    }
 }

@@ -255,6 +255,7 @@ class SendRequestToSomleng extends Job implements ShouldQueue
         $find_call_sid = $this->tbl_call->searchForCallID($this->call_Sid);
         print "<br> callSID = ".$this->call_Sid . " ";
         print "<br> Digits = ".$this->digits  . " ";
+        echo 'Queued Id:'. $this->job->getJobId() . " ";
         if(!empty($find_call_sid))
         {
             $state_name = $this->tbl_states->getStateName($find_call_sid);
@@ -297,12 +298,12 @@ class SendRequestToSomleng extends Job implements ShouldQueue
         */
 
         // phyrum: write into tbltwimlafterqueue
-        Log::info('1=' . $this->call_Sid);
+//        Log::info('1=' . $this->call_Sid);
         $tbl_twiml_after_queue = new tbltwimlafterqueue;
-//        echo 'Queued Job Id:'. $this->job->getJobId();
+//        echo 'Queued Id:'. $this->job->getJobId();
 //        $tbl_twiml_after_queue->insertNewTwimlText($this->call_Sid, $this->response);
         $tbl_twiml_after_queue->insertNewTwimlText($this->job->getJobId(), $this->response);
-        echo $tbl_twiml_after_queue->getTwilmlText($this->job->getJobId());
+//        echo $tbl_twiml_after_queue->getTwilmlText($this->job->getJobId());
 
 
 

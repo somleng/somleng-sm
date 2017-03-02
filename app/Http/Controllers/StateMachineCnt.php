@@ -188,15 +188,16 @@ class StateMachineCnt extends Controller
         /* error note: dispatch job execute very late, but the above code is execute ahead*/
 
         $qId = $this->dispatch($job_request); // => execute handle
-
         $tbl_twiml_after_queue = new tbltwimlafterqueue;
         $result = $tbl_twiml_after_queue->getTwilmlText($qId);
         while(empty($result))
         {
             $result = $tbl_twiml_after_queue->getTwilmlText($qId);
+
 //            echo "return result in while : ".$result;
 //            return $result;
         }
+        $tbl_twiml_after_queue->deleteJob($qId);
         return $result;
 //        Log::info($qId);
 ////        return $qId;
