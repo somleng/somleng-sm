@@ -299,8 +299,10 @@ class SendRequestToSomleng extends Job implements ShouldQueue
         // phyrum: write into tbltwimlafterqueue
         Log::info('1=' . $this->call_Sid);
         $tbl_twiml_after_queue = new tbltwimlafterqueue;
-        $tbl_twiml_after_queue->insertNewTwimlText($this->call_Sid, $this->response);
-        echo $tbl_twiml_after_queue->getTwilmlText($this->call_Sid);
+        echo 'Queued Job Id:'. $this->job->getJobId();
+//        $tbl_twiml_after_queue->insertNewTwimlText($this->call_Sid, $this->response);
+        $tbl_twiml_after_queue->insertNewTwimlText($this->job->getJobId(), $this->response);
+        echo $tbl_twiml_after_queue->getTwilmlText($this->job->getJobId());
 
 
 

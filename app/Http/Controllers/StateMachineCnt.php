@@ -174,7 +174,7 @@ class StateMachineCnt extends Controller
     public function sm_callflow(Request $request)
     {
 //        $this->dispatch(serialize(new SendRequestToSomleng($request)));
-        $job_request = (new SendRequestToSomleng($request))->delay(30); // => execute constructor
+        $job_request = (new SendRequestToSomleng($request)); // => execute constructor
 
         $qId = $this->dispatch($job_request); // => execute handle
         Log::info($qId);
