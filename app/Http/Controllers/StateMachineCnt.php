@@ -188,7 +188,7 @@ class StateMachineCnt extends Controller
         $tbl_twiml_after_queue = new tbltwimlafterqueue;
         $result = $tbl_twiml_after_queue->getTwilmlText($request->CallSid);
         Log::info('result=' . $result->twiml_text);
-        return $result;
+        return $result->twiml_text;
 
 //        $content1 = "test ";
 //        return  $content1;
