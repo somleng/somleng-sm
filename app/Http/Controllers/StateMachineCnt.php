@@ -7,6 +7,7 @@ use App\Models\tblcall;
 use App\Models\tblcallflow;
 use App\Models\tblstate;
 use App\Models\tbltransition;
+use App\Models\tbltwimlafterqueue;
 use App\MyStateMachine\Stateful;
 use Finite\Event\TransitionEvent;
 use Finite\Loader\ArrayLoader;
@@ -177,10 +178,18 @@ class StateMachineCnt extends Controller
 
         $qId = $this->dispatch($job_request); // => execute handle
 //        return $qId;
-        $content = Storage::disk('public')->get('twiml_result.xml');
+
+        // samak: write xml to file
+        /*$content = Storage::disk('public')->get('twiml_result.xml');
+        return $content;*/
+
+        //phyrum: get data from tbltwimlafterqueue
+        $tbl_twiml_after_queue = new tbltwimlafterqueue;
+        echo $tbl_twiml_after_queue->getTwilmlText($request->CallSid);
+
 //        $content1 = "test ";
 //        return  $content1;
-        return $content;
+
 //        var_dump($job_request);
         //return $job_request->getResponse();
         //$job_request

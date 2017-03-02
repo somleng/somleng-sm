@@ -5,6 +5,7 @@ namespace App\Jobs;
 use App\Models\tblcall;
 use App\Models\tblstate;
 use App\Models\tbltransition;
+use App\Models\tbltwimlafterqueue;
 use App\MyStateMachine\Stateful;
 use Finite\Loader\ArrayLoader;
 use Finite\State\StateInterface;
@@ -286,21 +287,30 @@ class SendRequestToSomleng extends Job implements ShouldQueue
             $transition = $stateMachine->getCurrentState()->getTransitions();
             $stateMachine->apply($transition[0]);
         }
+        // samak: write into file
+        /*  $storage = Storage::disk('public')->put('twiml_result.xml',$this->response);
+            $content = Storage::disk('public')->get('twiml_result.xml');
+            print "content of file = ". $content;
+            return $this->response;
+        */
+
+        // phyrum: write into tbltwimlafterqueue
+        $tbl_twiml_after_queue = new tbltwimlafterqueue;
+        $tbl_twiml_after_queue->insertNewTwimlText($this->call_Sid, $this->response);
+//        echo $tbl_twiml_after_queue->getTwilmlText($this->call_Sid);
+
+
+
         //echo "test";
 //        Log::debug($stateMachine->getCurrentState()->getName());
         //Log:info($this->response);
-        $storage = Storage::disk('public')->put('twiml_result.xml',$this->response);
 //        print $storage;
-        $content = Storage::disk('public')->get('twiml_result.xml');
-        print "content of file = ". $content;
 //        var_dump($content);
 //        $content_twiml = Storage::get('twiml_result.xml');
 //        print "twiml content from file = ". $content_twiml;
-        return $this->response;
 //        print "response in handle here = ".$this->response;
 //        var_dump($this->response);
 //        print "insert = ". $this->tbl_queue_result->insertNew(serialize($this->response));
-
         //return $this->response = "t";
 //        $this->rq = $this->response;
     }
