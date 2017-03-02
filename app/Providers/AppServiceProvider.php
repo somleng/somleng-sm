@@ -26,6 +26,7 @@ class AppServiceProvider extends ServiceProvider
             // $event->data
             $tbl_twiml_after_queue = new tbltwimlafterqueue;
             $event = $tbl_twiml_after_queue->getTwilmlText($event->job->getJobId());
+            echo "event= " . $event;
 //            dd($event);
             return $event;
         });
