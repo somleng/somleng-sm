@@ -20,7 +20,7 @@ class AppServiceProvider extends ServiceProvider
         Queue::after(function (JobProcessed $event) {
 //            dd($event->data);
             // $event->connectionName
-            echo "job id in after queue = ". $event->job->id;
+            echo "job id in after queue = ". $event->job['id'];
             // $event->data
 //            dd($event);
             return $event;
