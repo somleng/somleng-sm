@@ -4,7 +4,8 @@ namespace App\Providers;
 
 use Illuminate\Queue\Events\JobProcessed;
 use Illuminate\Support\ServiceProvider;
-use Queue;
+//use Queue;
+use Illuminate\Support\Facades\Queue;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -16,19 +17,22 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         //
-//        Queue::after(function (JobProcessed $event) {
-////            dd($event->data);
-//            // $event->connectionName
-//            // $event->job
-//            // $event->data
-////            dd($event);
-//            return $event;
-//        });
+        Queue::after(function (JobProcessed $event) {
+//            dd($event->data);
+            // $event->connectionName
+            // $event->job
+            // $event->data
+            dd($event);
+            return $event;
+        });
 
-        /* Queue::after(function (JobProcessed $event) {
-            $content = Storage::disk('public')->get('twiml_result.xml');
+
+         /*Queue::after(function (JobProcessed $event) {
+//            $content = Storage::disk('public')->get('twiml_result.xml');
+             $tbl_twiml_after_queue = new tbltwimlafterqueue;
+             $content = $tbl_twiml_after_queue->getTwilmlText($request->CallSid);
             var_dump($content);
-        }); */
+        });*/
     }
 
     /**

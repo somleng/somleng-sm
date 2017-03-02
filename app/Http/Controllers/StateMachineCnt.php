@@ -177,6 +177,7 @@ class StateMachineCnt extends Controller
         $job_request = (new SendRequestToSomleng($request))->delay(30); // => execute constructor
 
         $qId = $this->dispatch($job_request); // => execute handle
+        Log::info($qId);
 //        return $qId;
 
         // samak: write xml to file
@@ -184,7 +185,7 @@ class StateMachineCnt extends Controller
         return $content;*/
 
         //phyrum: get data from tbltwimlafterqueue
-        if(!empty($qId))
+       /* if(!empty($qId))
         {
             Log::info('2=' . $request->CallSid);
             $tbl_twiml_after_queue = new tbltwimlafterqueue;
@@ -196,7 +197,7 @@ class StateMachineCnt extends Controller
 //            var_dump($result);
             return $result;
 //        }
-        }
+        }*/
 
 
 
