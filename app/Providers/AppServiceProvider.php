@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Models\tbltwimlafterqueue;
 use Illuminate\Queue\Events\JobProcessed;
+use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\ServiceProvider;
 //use Queue;
 use Illuminate\Support\Facades\Queue;
