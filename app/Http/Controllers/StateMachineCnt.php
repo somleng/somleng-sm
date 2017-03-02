@@ -15,8 +15,10 @@ use Finite\State\StateInterface;
 use Finite\StatefulInterface;
 use Finite\StateMachine\StateMachine;
 use Illuminate\Http\Request;
+use Illuminate\Queue\Events\JobProcessed;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\Storage;
 use Twilio\Rest\Client;
 use Twilio\Twiml;
@@ -168,6 +170,14 @@ class StateMachineCnt extends Controller
         //dd($transition_id);
     }
 
+    public function afterQueue($qid)
+    {
+        echo "after queue <br>";
+        $tbl_twiml_after_queue = new tbltwimlafterqueue;
+        $result = $tbl_twiml_after_queue->getTwilmlText($qid);
+        var_dump($result);
+        return $result;
+    }
     /**
      * @param Request $request
      */
@@ -175,18 +185,29 @@ class StateMachineCnt extends Controller
     {
 //        $this->dispatch(serialize(new SendRequestToSomleng($request)));
         $job_request = (new SendRequestToSomleng($request)); // => execute constructor
+        /* error note: dispatch job execute very late, but the above code is execute ahead*/
 
         $qId = $this->dispatch($job_request); // => execute handle
-        Log::info($qId);
-//        return $qId;
-        echo "event_reques = " . $request->event;
-        echo "event_input = " . Input::get('event');
-        if(!empty($request->event))
-        {
-            echo $request->event;
-        }
 
-        // samak: write xml to file
+        $tbl_twiml_after_queue = new tbltwimlafterqueue;
+        $result = $tbl_twiml_after_queue->getTwilmlText($qId);
+        while(empty($result))
+        {
+            $result = $tbl_twiml_after_queue->getTwilmlText($qId);
+//            echo "return result in while : ".$result;
+//            return $result;
+        }
+        return $result;
+//        Log::info($qId);
+////        return $qId;
+//        echo "event_reques = " . $request->event;
+//        echo "event_input = " . Input::get('event');
+//        if(!empty($request->event))
+//        {
+//            echo $request->event;
+//        }
+
+         // samak: write xml to file
         /*$content = Storage::disk('public')->get('twiml_result.xml');
         return $content;*/
 
