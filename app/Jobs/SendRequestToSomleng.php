@@ -55,6 +55,7 @@ class SendRequestToSomleng extends Job implements ShouldQueue
         $this->digits = $request->Digits;
         $this->return_input = $request->return_input;
         $this->tbl_queue_result = "";
+//        Log:info($request);
 //        $this->rq = $request;
     }
 
@@ -159,7 +160,7 @@ class SendRequestToSomleng extends Job implements ShouldQueue
 //                            echo $this->gatherInput();
 //                            return $this->gatherInput();
                             $this->response = $this->gatherInput();
-                            echo $this->response; // has twiml value
+                            //echo $this->response; // has twiml value
                         }
                     ),
                     array(
@@ -252,7 +253,8 @@ class SendRequestToSomleng extends Job implements ShouldQueue
          *
          */
         $find_call_sid = $this->tbl_call->searchForCallID($this->call_Sid);
-
+        print "callSID = ".$this->call_Sid;
+        print "Digits = ".$this->digits;
         if(!empty($find_call_sid))
         {
             $state_name = $this->tbl_states->getStateName($find_call_sid);
