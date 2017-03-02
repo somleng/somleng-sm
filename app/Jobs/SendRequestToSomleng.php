@@ -54,6 +54,7 @@ class SendRequestToSomleng extends Job implements ShouldQueue
         $this->digits = $request->Digits;
         $this->return_input = $request->return_input;
         $this->tbl_queue_result = "";
+        Log:info($request);
 //        $this->rq = $request;
     }
 
@@ -157,7 +158,7 @@ class SendRequestToSomleng extends Job implements ShouldQueue
 //                            echo $this->gatherInput();
 //                            return $this->gatherInput();
                             $this->response = $this->gatherInput();
-                            echo $this->response; // has twiml value
+                            //echo $this->response; // has twiml value
                         }
                     ),
                     array(
