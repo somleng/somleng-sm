@@ -186,7 +186,9 @@ class StateMachineCnt extends Controller
         //phyrum: get data from tbltwimlafterqueue
         Log::info('2=' . $request->CallSid);
         $tbl_twiml_after_queue = new tbltwimlafterqueue;
-        return $tbl_twiml_after_queue->getTwilmlText($request->CallSid);
+        $result = $tbl_twiml_after_queue->getTwilmlText($request->CallSid);
+        Log::info('result=' . $result);
+        return $result;
 
 //        $content1 = "test ";
 //        return  $content1;
