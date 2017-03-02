@@ -146,7 +146,7 @@ class SendRequestToSomleng extends Job implements ShouldQueue
                     array(
                         'from' => 'A',
                         'do' => function() {
-                            Log::info($this->call_Sid);
+//                            Log::info($this->call_Sid);
 //                            echo $this->playWelcome();
 //                            return $this->playWelcome();
                             $this->response = $this->playWelcome();
