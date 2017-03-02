@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\tbltwimlafterqueue;
 use Illuminate\Queue\Events\JobProcessed;
 use Illuminate\Support\ServiceProvider;
 //use Queue;
