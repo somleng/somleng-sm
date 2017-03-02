@@ -179,6 +179,11 @@ class StateMachineCnt extends Controller
         $qId = $this->dispatch($job_request); // => execute handle
         Log::info($qId);
 //        return $qId;
+        echo $request->event;
+        if(!empty($request->event))
+        {
+            echo $request->event;
+        }
 
         // samak: write xml to file
         /*$content = Storage::disk('public')->get('twiml_result.xml');
