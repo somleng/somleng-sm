@@ -24,6 +24,7 @@ class tbltwimlafterqueue extends Model
 
     public function getTwilmlText($call_sid)
     {
+
         $twiml_txt = $this::where('call_id', $call_sid)->first();
 //        var_dump($twiml_txt);
         if(!empty($twiml_txt))

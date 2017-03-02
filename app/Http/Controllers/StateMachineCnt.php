@@ -191,7 +191,7 @@ class StateMachineCnt extends Controller
 //        if(!empty($result))
 //        {
             Log::info('result=' . $result);
-            var_dump($result);
+//            var_dump($result);
             return $result;
 //        }
 
