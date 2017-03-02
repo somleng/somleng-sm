@@ -184,6 +184,9 @@ class StateMachineCnt extends Controller
         return $content;*/
 
         //phyrum: get data from tbltwimlafterqueue
+        print "<br> callSID_SM_controller = " . $request->CallSid . " ";
+        Log::info('StateMachineCnt()_call_sid');
+        Log::info($request->CallSid);
         $tbl_twiml_after_queue = new tbltwimlafterqueue;
         echo $tbl_twiml_after_queue->getTwilmlText($request->CallSid);
 
