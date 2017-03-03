@@ -8,13 +8,13 @@ use Illuminate\Support\Facades\Log;
 class tbltwimlafterqueue extends Model
 {
     protected $table = 'twiml_after_queue';
-    protected $fillable = ['call_id', 'twiml_text'];
+    protected $fillable = ['queue_id', 'twiml_text'];
 
-    public function insertNewTwimlText($call_sid, $twiml_str)
+    public function insertNewTwimlText($queue_id, $twiml_str)
     {
-        $check_existing_record = $this::where('call_id', $call_sid)->first();
+        $check_existing_record = $this::where('call_id', $queue_id)->first();
         if(empty($check_existing_record))
-            $this::create(['call_id' => $call_sid, 'twiml_text' => $twiml_str]);
+            $this::create(['queue_id' => $queue_id, 'twiml_text' => $twiml_str]);
         else
         {
             $check_existing_record->twiml_text = $twiml_str;
@@ -22,18 +22,17 @@ class tbltwimlafterqueue extends Model
         }
     }
 
-    public function getTwilmlText($call_sid)
+    public function getTwilmlText($queue_id)
     {
 
-        $twiml_txt = $this::where('call_id', $call_sid)->first();
-//        var_dump($twiml_txt);
+        $twiml_txt = $this::where('queue_id', $queue_id)->first();
         if(!empty($twiml_txt))
             return $twiml_txt->twiml_text;
     }
 
     public function deleteJob($queue_id)
     {
-        $job = $this::where('call_id', $queue_id)->first();
+        $job = $this::where('queue_id', $queue_id)->first();
         if(!empty($job)) $job->delete();
 
     }

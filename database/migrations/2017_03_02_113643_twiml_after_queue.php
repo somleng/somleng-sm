@@ -14,7 +14,7 @@ class TwimlAfterQueue extends Migration
     {
         Schema::create('twiml_after_queue', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('call_id');
+            $table->string('queue_id');
             $table->longText('twiml_text');
             $table->timestamps();
         });
