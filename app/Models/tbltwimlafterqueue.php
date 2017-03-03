@@ -12,7 +12,7 @@ class tbltwimlafterqueue extends Model
 
     public function insertNewTwimlText($queue_id, $twiml_str)
     {
-        $check_existing_record = $this::where('call_id', $queue_id)->first();
+        $check_existing_record = $this::where('queue_id', $queue_id)->first();
         if(empty($check_existing_record))
             $this::create(['queue_id' => $queue_id, 'twiml_text' => $twiml_str]);
         else
