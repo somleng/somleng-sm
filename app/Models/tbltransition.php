@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class tbltransition extends Model
 {
     protected $table = 'tbltransition';
-    protected $fillable = ['state_id', 'input', 'callflow_id', 'twilml', 'path', 'action', 'new_state'];
+    protected $fillable = ['state_id', 'input', 'callflow_id', 'twiml', 'path', 'action', 'new_state'];
 
     public function state()
     {
@@ -22,18 +22,19 @@ class tbltransition extends Model
         //return $this->hasMany('App\Models\tblstate','id','state_id');
     }*/
     /**
-     * Function to Insert new data into tblstate
+     * Function to Insert new data into tblstate and
+     * get state_id to be inserted into tbltransition
      * @author: phyrum
      * @param $state
      * @param null $input
      * @param $callflow_id
-     * @param null $twilml
+     * @param null $twiml
      * @param null $path
      * @param null $action
      * @param $new_state
      * @param $state_type
      */
-    public function insertNewTransitionData($state, $input=null, $callflow_id, $twilml=null, $path=null, $action=null, $new_state=null, $state_type)
+    public function insertNewTransitionData($state, $input=null, $callflow_id, $twiml=null, $path=null, $action=null, $new_state=null, $state_type)
     {
         $state_table = new tblstate;
         $state_id = $state_table->insertNewState($state, $callflow_id, $state_type);
@@ -46,7 +47,7 @@ class tbltransition extends Model
         if(empty($check_existing_record))
             $this::create(['state_id' => $state_id,
                             'input' => $input,
-                            'twilml' => $twilml,
+                            'twiml' => $twiml,
                             'path' => $path,
                             'action' => $action,
                             'new_state' => $new_state_id]);
@@ -71,8 +72,9 @@ class tbltransition extends Model
     /**
      * get transition id
      *  @author: phyrum
-     * @param $state
+     * @param $state_id
      * @param null $input
+     * @return transition id
      */
     public function getTransitionID($state_id, $input=null)
     {

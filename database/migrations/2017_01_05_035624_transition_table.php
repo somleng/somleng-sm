@@ -16,7 +16,7 @@ class TransitionTable extends Migration
             $table->increments('id');
             $table->integer('state_id')->unsigned();
             $table->string('input')->nullable();
-            $table->text('twilml')->nullable();
+            $table->text('twiml')->nullable();
             $table->text('path')->nullable();
             $table->text('action')->nullable();
             $table->tinyInteger('new_state')->nullable();

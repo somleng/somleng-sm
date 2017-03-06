@@ -22,7 +22,7 @@ class tbltwimlafterqueue extends Model
         }
     }
 
-    public function getTwilmlText($queue_id)
+    public function getTwimlText($queue_id)
     {
 
         $twiml_txt = $this::where('queue_id', $queue_id)->first();
@@ -30,7 +30,7 @@ class tbltwimlafterqueue extends Model
             return $twiml_txt->twiml_text;
     }
 
-    public function deleteJob($queue_id)
+    public function deleteRecordOfTwimlAfterQueue($queue_id)
     {
         $job = $this::where('queue_id', $queue_id)->first();
         if(!empty($job)) $job->delete();

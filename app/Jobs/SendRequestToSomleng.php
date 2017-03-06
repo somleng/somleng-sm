@@ -32,64 +32,44 @@ class SendRequestToSomleng extends Job implements ShouldQueue
     private $digits;
     private $return_input;
     public $tbl_queue_result;
-//    public $request;
+
     /**
      * Create a new job instance.
-     *
+     * @param $request
      * @return void
      */
     public function __construct(Request $request)
     {
-//        dd($request);
-//        $this->tbl_transition = new tbltransition;
-//        $this->tbl_call = new tblcall;
-//        $this->tbl_states = new tblstate;
         $this->tbl_transition ="";
         $this->tbl_call ="";
         $this->tbl_states ="";
         $this->url_sound = "";
         $this->callID = "";
         $this->response="response in constructor";
-//        $this->response = new Twiml();
         $this->call_Sid = $request->CallSid;
         $this->digits = $request->Digits;
         $this->return_input = $request->return_input;
         $this->tbl_queue_result = "";
-//        Log:info($request);
-//        $this->rq = $request;
     }
 
     /**
      * Execute the job.
-     *
      * @return void
      */
     public function handle()
     {
-//        echo "handle";
         $this->tbl_transition = new tbltransition;
         $this->tbl_call = new tblcall;
         $this->tbl_states = new tblstate;
         $this->response = new Twiml();
-//        $this->response ="here";
-        // send request to Somleng
-//        $this->call_Sid = $request->CallSid;
-//        $this->digits = $request->Digits;
-//        $this->return_input = $request->return_input;
 
-//        dd($this->call_Sid);
-        /*if(!empty($request->return_input))
-        {*/
-//        Log::info($request);
-
-//            Log::info("return_input = " .  $request->return_input);
-//            Log::info("return_input using REQUEST= " .  $_REQUEST['return_input']);
-//            Log::info("return_input using input= " .  Input::post('return_input'));
-//            Log::info("return_input using POST= " .  $_POST['return_input']);
-//        }
-
+        /**
+         * Get all states from tblstate
+         * for each state name define state type
+         * whether it is start state, normal state or final state
+         *
+         */
         $getStates = $this->tbl_states->getStatesFromStateTable('1');
-//        dd($getStates);
         $arrayStringStates = array();
         $arrayStringTransitions = array();
         foreach ($getStates as $getState){
@@ -116,6 +96,7 @@ class SendRequestToSomleng extends Job implements ShouldQueue
                 'type' => $state_type_str,
                 'properties' => array()
             );
+            //dd($arrayStringStates);
 
             $Transitions = $getState->transition;
             //dd($Transitions);
@@ -142,42 +123,28 @@ class SendRequestToSomleng extends Job implements ShouldQueue
             'transitions' => $arrayStringTransitions,
             'callbacks' => array(
                 'before' => array(
-
                     array(
                         'from' => 'A',
                         'do' => function() {
-//                            Log::info($this->call_Sid);
-//                            echo $this->playWelcome();
-//                            return $this->playWelcome();
                             $this->response = $this->playWelcome();
                         }
                     ),
                     array(
                         'from' => 'B',
                         'do' => function() {
-//                            $this->changeState($this->call_Sid, $current_state);
-//                            Log::info('gatherInput 1');
-//                            echo $this->gatherInput();
-//                            return $this->gatherInput();
                             $this->response = $this->gatherInput();
-                            //echo $this->response; // has twiml value
                         }
                     ),
                     array(
                         'from' => 'C',
                         'do' => function() {
-//                            echo $this->validation_sound_file($this->digits);
-//                            return $this->validation_sound_file($this->digits);
                             $this->response = $this->validation_sound_file($this->digits);
-
                         }
                     ),
                     array(
                         'from' => 'D',
                         'to' => 'E0',
                         'do' => function() {
-//                            echo $this->displayIncorrectInput();
-//                            return $this->displayIncorrectInput();
                             $this->response = $this->displayIncorrectInput();
                         }
                     ),
@@ -185,8 +152,6 @@ class SendRequestToSomleng extends Job implements ShouldQueue
                         'from' => 'D',
                         'to' => 'E1',
                         'do' => function() {
-//                            echo $this->playSoundFile($this->return_input);
-//                            return $this->playSoundFile($this->return_input);
                             $this->response = $this->playSoundFile($this->return_input);
                         }
                     ),
@@ -194,16 +159,12 @@ class SendRequestToSomleng extends Job implements ShouldQueue
                         'from' => 'E0',
                         'to' => 'B',
                         'do' => function(){
-//                            echo $this->redirectToSM_Callflow();
-//                            return $this->redirectToSM_Callflow();
                             $this->response = $this->redirectToSM_Callflow();
                         }
                     ),
                     array(
                         'from' => 'E1',
                         'do' => function() {
-//                            echo $this->hangup();
-//                            return $this->hangup();
                             $this->response = $this->hangup();
                         }
                     ),
@@ -220,7 +181,7 @@ class SendRequestToSomleng extends Job implements ShouldQueue
                         'to' => array('C'), 'do' => function($current_state) {
                         $this->changeState($this->call_Sid, $current_state);
                     }
-                    ),// validation return input then what to do next???
+                    ),
                     array(
                         'to' => array('D'), 'do' => function($current_state) {
                         $this->changeState($this->call_Sid, $current_state);
@@ -247,15 +208,17 @@ class SendRequestToSomleng extends Job implements ShouldQueue
         ));
 
         $document     = new Stateful;
+
         /** find CallSid in TblCall
          * if it exists get the state and apply that state
          * if the CallSid is not exist insert this data into TblCall with the default inital state
-         *
          */
         $find_call_sid = $this->tbl_call->searchForCallID($this->call_Sid);
+
         print "<br> callSID = ".$this->call_Sid . " ";
         print "<br> Digits = ".$this->digits  . " ";
         echo 'Queued Id:'. $this->job->getJobId() . " ";
+
         if(!empty($find_call_sid))
         {
             $state_name = $this->tbl_states->getStateName($find_call_sid);
@@ -276,7 +239,6 @@ class SendRequestToSomleng extends Job implements ShouldQueue
                 $stateMachine->apply($transition[0]);
 //                Log::info('applying E0?');
             }
-
         }
         else
         {
@@ -290,69 +252,28 @@ class SendRequestToSomleng extends Job implements ShouldQueue
             $transition = $stateMachine->getCurrentState()->getTransitions();
             $stateMachine->apply($transition[0]);
         }
-        // samak: write into file
-        /*  $storage = Storage::disk('public')->put('twiml_result.xml',$this->response);
-            $content = Storage::disk('public')->get('twiml_result.xml');
-            print "content of file = ". $content;
-            return $this->response;
-        */
-
-        // phyrum: write into tbltwimlafterqueue
-//        Log::info('1=' . $this->call_Sid);
         $tbl_twiml_after_queue = new tbltwimlafterqueue;
 //        echo 'Queued Id:'. $this->job->getJobId();
-//        $tbl_twiml_after_queue->insertNewTwimlText($this->call_Sid, $this->response);
         $tbl_twiml_after_queue->insertNewTwimlText($this->job->getJobId(), $this->response);
-//        echo $tbl_twiml_after_queue->getTwilmlText($this->job->getJobId());
-
-
-
-        //echo "test";
-//        Log::debug($stateMachine->getCurrentState()->getName());
-        //Log:info($this->response);
-//        print $storage;
-//        var_dump($content);
-//        $content_twiml = Storage::get('twiml_result.xml');
-//        print "twiml content from file = ". $content_twiml;
-//        print "response in handle here = ".$this->response;
-//        var_dump($this->response);
-//        print "insert = ". $this->tbl_queue_result->insertNew(serialize($this->response));
-        //return $this->response = "t";
-//        $this->rq = $this->response;
+//        echo $tbl_twiml_after_queue->getTwimlText($this->job->getJobId());
     }
 
-    /*public function sm_callflow_new(Request $request)
-    {
+//    public function transit($sm,$tran_name)
+//    {
+//        $sm->apply($tran_name);
+//    }
 
-//        $this->dispatch(serialize(new SendRequestToSomleng($request)));
-        $job_request = new SendRequestToSomleng($request);
-
-        $this->dispatch($job_request);
-
-        return $job_request->getResponse();
-        //$job_request
-//        return $job_request;
-//        Log:info($request);
-//        Log:info($test);
-
-        //return $job_request->getResponse();
-    }*/
-
-    public function transit($sm,$tran_name)
-    {
-        $sm->apply($tran_name);
-    }
-
-    public function getResponse()
-    {
-        //echo "test inside getResponse ";
-//        echo $this->response;
-        return $this->response;
-
-    }
+//    public function getResponse()
+//    {
+//        //echo "test inside getResponse ";
+////        echo $this->response;
+//        return $this->response;
+//
+//    }
 
     public function changeState($call_sid, $current_state)
     {
+
         $this->tbl_call->updateCallData($call_sid,$current_state->state);
         return $current_state;
     }
